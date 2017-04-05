@@ -166,6 +166,12 @@
                                 </li>
                             </ul>
                         </li>
+                        <li>
+                            <a href="#">
+                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                                Logout
+                            </a>
+                        </li>
                         <br><br><br><br>
                     </ul>
                 </div>
