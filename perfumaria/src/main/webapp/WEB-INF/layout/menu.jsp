@@ -89,6 +89,12 @@
                                         Consultar
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+                                        Movimentar
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         <li role="presentation" class="dropdown">
