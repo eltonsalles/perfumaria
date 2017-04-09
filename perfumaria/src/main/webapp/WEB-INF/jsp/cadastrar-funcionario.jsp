@@ -3,38 +3,38 @@
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Cadastrar Funcionário</h2>
-    <form>
+    <form action="#" method="post">
         <div class="form-group col-md-12">
             <input type="hidden" class="form-control" id="id" name="id">
         </div>
         <div class="form-group col-md-5">
             <label for="nome">Nome</label>
-            <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome">
+            <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required>
         </div>
         <div class="form-group col-md-3">
             <label for="data-nascimento">Data de Nascimento</label>
-            <input type="date" class="form-control" id="data-nascimento" name="data-nascimento">
+            <input type="date" class="form-control" id="data-nascimento" name="data-nascimento" required>
         </div>
         <div class="form-group col-md-2">
             <label for="cpf">CPF</label>
-            <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf">
+            <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required>
         </div>
         <div class="form-group col-md-2 status">
             <label>Status</label><br>
             <label class="radio-inline">
-                <input type="radio" id="ativo" value="true" name="status" checked>Ativo
+                <input type="radio" id="ativo" value="true" name="status" checked required>Ativo
             </label>
             <label class="radio-inline">
-                <input type="radio" id="inativo" value="false" name="status">Inativo
+                <input type="radio" id="inativo" value="false" name="status" required>Inativo
             </label>
         </div>
         <div class="form-group col-md-3">
             <label for="data-admissao">Data de Admissão</label>
-            <input type="date" class="form-control" id="data-admissao" name="data-admissao">
+            <input type="date" class="form-control" id="data-admissao" name="data-admissao" required>
         </div>
         <div class="form-group col-md-3">
             <label for="cargo">Cargo</label>
-            <select class="form-control" id="cargo" name="cargo">
+            <select class="form-control" id="cargo" name="cargo" required>
                 <option value="">---</option>
                 <option value="diretor">Diretor</option>
                 <option value="gerente de backoffice">Gerente De Backoffice</option>
@@ -46,7 +46,7 @@
         </div>
         <div class="form-group col-md-3">
             <label for="estado-civil">Estado Civil</label>
-            <select class="form-control" id="estado-civil" name="estado-civil">
+            <select class="form-control" id="estado-civil" name="estado-civil" required>
                 <option value="">---</option>
                 <option value="solteiro">Solteiro</option>
                 <option value="casado">Casado</option>
@@ -57,43 +57,43 @@
         <div class="form-group col-md-3 sexo">
             <label>Sexo</label><br>
             <label class="radio-inline">
-                <input type="radio" id="feminino" value="F" name="sexo">Feminino
+                <input type="radio" id="feminino" value="F" name="sexo" required>Feminino
             </label>
             <label class="radio-inline">
-                <input type="radio" id="masculino" value="M" name="sexo">Masculino
+                <input type="radio" id="masculino" value="M" name="sexo" required>Masculino
             </label>
         </div>
         <div class="form-group col-md-3">
             <label for="celular">Celular</label>
-            <input type="tel" class="form-control" id="celular" placeholder="(xx) xxxxx-xxxx" name="celular">
+            <input type="tel" class="form-control" id="celular" placeholder="(xx) xxxxx-xxxx" name="celular" maxlength="15" required>
         </div>
         <div class="form-group col-md-3">
             <label for="telefone">Telefone</label>
-            <input type="tel" class="form-control" id="telefone" placeholder="(xx) xxxxx-xxxx" name="telefone">
+            <input type="tel" class="form-control" id="telefone" placeholder="(xx) xxxxx-xxxx" name="telefone" maxlength="15" required>
         </div>
         <div class="form-group col-md-6">
             <label for="email">E-mail</label>
-            <input type="email" class="form-control" id="email" placeholder="email@exemplo.com.br" name="email">
+            <input type="email" class="form-control" id="email" placeholder="email@exemplo.com.br" name="email" maxlength="150" required>
         </div>
         <div class="form-group col-md-6">
             <label for="logradouro">Logradouro</label>
-            <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida ..." name="logradouro">
+            <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida ..." name="logradouro" maxlength="150" required>
         </div>
         <div class="form-group col-md-2">
             <label for="numero">Número</label>
-            <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero">
+            <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero" maxlength="10" required>
         </div>
         <div class="form-group col-md-4">
             <label for="complemento">Complemento</label>
-            <input type="text" class="form-control" id="complemento" placeholder="Bloco, Sala ..." name="complemento">
+            <input type="text" class="form-control" id="complemento" placeholder="Bloco, Sala ..." name="complemento" maxlength="50">
         </div>
         <div class="form-group col-md-4">
             <label for="bairro">Bairro</label>
-            <input type="text" class="form-control" id="bairro" name="bairro">
+            <input type="text" class="form-control" id="bairro" name="bairro" maxlength="50" required>
         </div>
         <div class="form-group col-md-4">
             <label for="cidade">Cidade</label>
-            <input type="text" class="form-control" id="cidade" name="cidade">
+            <input type="text" class="form-control" id="cidade" name="cidade" maxlength="50" required>
         </div>
         <div class="form-group col-md-2">
             <label for="uf">UF</label>
@@ -130,7 +130,7 @@
         </div>
         <div class="form-group col-md-2">
             <label for="cep">CEP</label>
-            <input type="text" class="form-control" id="cep" placeholder="xxxxx-xxx" name="cep">
+            <input type="text" class="form-control" id="cep" placeholder="xxxxx-xxx" name="cep" maxlength="9" required>
         </div>
         <div class="form-group col-md-offset-8 col-md-4">
             <a href="#" class="btn btn-default">
@@ -139,7 +139,7 @@
             <button type="reset" class="btn btn-default">
                 Cancelar&nbsp;&nbsp;<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </button>
-            <button type="reset" class="btn btn-default">
+            <button type="submit" class="btn btn-default">
                 Salvar&nbsp;&nbsp;<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
             </button>
         </div>
