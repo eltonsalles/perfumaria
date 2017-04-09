@@ -7,15 +7,19 @@
         <div class="form-group col-md-12">
             <input type="hidden" class="form-control" id="id" name="id">
         </div>
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-5">
             <label for="nome">Nome</label>
             <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome">
         </div>
         <div class="form-group col-md-3">
+            <label for="data-nascimento">Data de Nascimento</label>
+            <input type="date" class="form-control" id="data-nascimento" name="data-nascimento">
+        </div>
+        <div class="form-group col-md-2">
             <label for="cpf">CPF</label>
             <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf">
         </div>
-        <div class="form-group col-md-3 status">
+        <div class="form-group col-md-2 status">
             <label>Status</label><br>
             <label class="radio-inline">
                 <input type="radio" id="ativo" value="true" name="status" checked>Ativo
@@ -25,8 +29,20 @@
             </label>
         </div>
         <div class="form-group col-md-3">
-            <label for="data-nascimento">Data de Nascimento</label>
-            <input type="date" class="form-control" id="data-nascimento" name="data-nascimento">
+            <label for="data-admissao">Data de Admissão</label>
+            <input type="date" class="form-control" id="data-admissao" name="data-admissao">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="cargo">Cargo</label>
+            <select class="form-control" id="cargo" name="cargo">
+                <option value="">---</option>
+                <option value="diretor">Diretor</option>
+                <option value="gerente de backoffice">Gerente De Backoffice</option>
+                <option value="gerente de ti">Gerente De Ti</option>
+                <option value="gerente de vendas">Gerente De Vendas</option>
+                <option value="retaguarda">Retaguarda</option>
+                <option value="vendedor">Vendedor</option>
+            </select>
         </div>
         <div class="form-group col-md-3">
             <label for="estado-civil">Estado Civil</label>
@@ -38,7 +54,7 @@
                 <option value="viúvo">Viúvo</option>
             </select>
         </div>
-        <div class="form-group col-md-6 sexo">
+        <div class="form-group col-md-3 sexo">
             <label>Sexo</label><br>
             <label class="radio-inline">
                 <input type="radio" id="feminino" value="F" name="sexo">Feminino
