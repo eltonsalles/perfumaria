@@ -65,3 +65,8 @@ body,
     height: 30px;
     background: hsl(0, 0%, 100%);
 }
+
+.sexo,
+.status {
+    height: 59px !important;
+}
