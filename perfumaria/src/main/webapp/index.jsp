@@ -1,1 +1,1 @@
-<jsp:include page="/WEB-INF/jsp/cadastrar-funcionario.jsp"/>
+<jsp:include page="/WEB-INF/jsp/esquecer-senha.jsp"/>
