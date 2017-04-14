@@ -1,1 +1,1 @@
-<jsp:include page="/WEB-INF/jsp/cadastrar-venda.jsp"/>
+<jsp:include page="/WEB-INF/jsp/cancelar-venda.jsp"/>
