@@ -40,6 +40,10 @@
             </td>
         </tr>
     </table>
+     <div class="input-group">
+                 <label for="Total">Total</label>
+               <input type="text" class="form-control" id="total"  name="Total">
+                </div>
     
     <div class="form-group col-md-offset-7 col-md-5">
             <a href="#" class="btn btn-default">
