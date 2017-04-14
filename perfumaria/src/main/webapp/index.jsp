@@ -1,1 +1,1 @@
-<jsp:include page="/WEB-INF/jsp/esquecer-senha.jsp"/>
+<jsp:include page="/WEB-INF/jsp/tela-inicio.jsp"/>
