@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
@@ -15,9 +16,9 @@
             <label for="data-nascimento">Data de Nascimento</label>
             <input type="date" class="form-control" id="data-nascimento" name="data-nascimento" required>
         </div>
-        <div class="form-group col-md-2">
-            <label for="cpf">CPF</label>
-            <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required>
+        <div class="form-group col-md-2 <c:if test="${listaErro.cpf eq true}">has-error</c:if>">
+            <label class="control-label" for="cpf">CPF</label>
+            <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" pattern="^\d{3}.\d{3}.\d{3}-\d{2}$" maxlength="14" required>
         </div>
         <div class="form-group col-md-2 status">
             <label>Status</label><br>
