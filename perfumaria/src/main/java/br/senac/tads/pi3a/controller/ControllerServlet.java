@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Elton
  */
-@WebServlet("/")
+@WebServlet("/sistema")
 public class ControllerServlet extends HttpServlet {
     @Override
     protected void service(

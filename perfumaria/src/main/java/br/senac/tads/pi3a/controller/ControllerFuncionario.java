@@ -36,7 +36,6 @@ public class ControllerFuncionario implements Logica {
     public String executa(
             HttpServletRequest request, HttpServletResponse response) 
             throws Exception {
-        System.out.println("TESTE");
         return "/WEB-INF/jsp/cadastrar-funcionario.jsp";
     }
 }
