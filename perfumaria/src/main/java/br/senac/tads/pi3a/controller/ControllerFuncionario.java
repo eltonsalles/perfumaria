@@ -31,11 +31,28 @@ import javax.servlet.http.HttpServletResponse;
  * @author Elton
  */
 public class ControllerFuncionario implements Logica {
+    @Override
+    public String novo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
-    public String executa(
-            HttpServletRequest request, HttpServletResponse response) 
-            throws Exception {
-        return "/WEB-INF/jsp/cadastrar-funcionario.jsp";
+    public String editar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String excluir(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String pesquisar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String listar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
