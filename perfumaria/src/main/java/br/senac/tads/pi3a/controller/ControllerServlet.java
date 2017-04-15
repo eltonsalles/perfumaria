@@ -24,6 +24,8 @@
 package br.senac.tads.pi3a.controller;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,15 +42,28 @@ public class ControllerServlet extends HttpServlet {
     protected void service(
             HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        String parametro = request.getParameter("controller");
-        String nomeClasse = "br.senac.tads.pi3a.controller.Controller" + parametro;
+        
+        String action = request.getParameter("action");
+        String controller = request.getParameter("controller");
+        String nomeClasse = 
+                "br.senac.tads.pi3a.controller.Controller" + controller;
         
         try {
+            // Cria uma instância conforme o parâmetro controller
             Class<?> classe = Class.forName(nomeClasse);
+            
+            // Toda classe de funcionalidade vai ter uma interface Logica
             Logica logica = (Logica) classe.newInstance();
             
-            // Recebe a String após a execução da lógica
-            String pagina = logica.executa(request, response);
+            // Variável com parâmetros padrão para cada action
+            Class<?> paramTypes[] = {
+                HttpServletRequest.class, HttpServletResponse.class};
+            
+            // Cria o método para invoca-lo dinamicamente
+            Method metodo = logica.getClass().getMethod(action, paramTypes);
+            
+            // Recebe a String (nome da jsp) após a execução do método
+            String pagina = (String) metodo.invoke(logica, request, response);
             
             // Faz o forwand para a página JSP
             request.getRequestDispatcher(pagina).forward(request, response);
@@ -59,7 +74,11 @@ public class ControllerServlet extends HttpServlet {
                 ServletException | 
                 IOException e) {
             System.out.println(e.getMessage());
-        } catch (Exception ex) {
+        } catch (
+                NoSuchMethodException | 
+                SecurityException | 
+                IllegalArgumentException | 
+                InvocationTargetException ex) {
             System.out.println(ex.getMessage());
         }
     }
