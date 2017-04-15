@@ -34,10 +34,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Elton
  */
-@WebServlet("/perfumaria")
+@WebServlet("/")
 public class ControllerServlet extends HttpServlet {
     @Override
-    protected void doGet(
+    protected void service(
             HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         String parametro = request.getParameter("controller");
