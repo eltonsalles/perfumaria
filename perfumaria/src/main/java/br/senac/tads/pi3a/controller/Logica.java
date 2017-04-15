@@ -31,6 +31,18 @@ import javax.servlet.http.HttpServletResponse;
  * @author Elton
  */
 public interface Logica {
-    String executa(HttpServletRequest request, HttpServletResponse response) 
+    String novo(HttpServletRequest request, HttpServletResponse response) 
+            throws Exception;
+    
+    String editar(HttpServletRequest request, HttpServletResponse response) 
+            throws Exception;
+    
+    String excluir(HttpServletRequest request, HttpServletResponse response) 
+            throws Exception;
+    
+    String pesquisar(HttpServletRequest request, HttpServletResponse response) 
+            throws Exception;
+    
+    String listar(HttpServletRequest request, HttpServletResponse response) 
             throws Exception;
 }
