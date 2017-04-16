@@ -23,6 +23,10 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoFuncionario;
+import br.senac.tads.pi3a.model.Funcionario;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,7 +37,44 @@ import javax.servlet.http.HttpServletResponse;
 public class ControllerFuncionario implements Logica {
     @Override
     public String novo(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Se o formulário for submetido por post então entra aqui
+        if (request.getMethod().equalsIgnoreCase("post")) {
+            // Implatar validação...
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            
+            Funcionario funcionario = new Funcionario();
+            
+            funcionario.setStatus(true);
+            Date dataAdmissao = new Date(sdf.parse(request.getParameter("data-admissao")).getTime());
+            funcionario.setDataAdmissao(dataAdmissao);
+            funcionario.setCargo(request.getParameter("cargo"));
+            funcionario.setNome(request.getParameter("nome"));
+            funcionario.setCpf(request.getParameter("cpf"));
+            Date dataNascimento = new Date(sdf.parse(request.getParameter("data-nascimento")).getTime());
+            funcionario.setDataNascimento(dataNascimento);
+            funcionario.setSexo(request.getParameter("sexo").charAt(0));
+            funcionario.setEstCivil(request.getParameter("estado-civil"));
+            funcionario.setCelular(request.getParameter("celular"));
+            funcionario.setTelefone(request.getParameter("telefone"));
+            funcionario.setEmail(request.getParameter("email"));
+            funcionario.setLogradouro(request.getParameter("logradouro"));
+            funcionario.setNumero(request.getParameter("numero"));
+            funcionario.setComplemento(request.getParameter("complemento"));
+            funcionario.setBairro(request.getParameter("bairro"));
+            funcionario.setCep(request.getParameter("cep"));
+            funcionario.setCidade(request.getParameter("cidade"));
+            funcionario.setUf(request.getParameter("uf"));
+            funcionario.setLoja(2);
+            
+            if (DaoFuncionario.insert(funcionario)) {
+                // Deu tudo certo...
+            } else {
+                // Deu errado...
+            }
+        }
+        
+        return "/WEB-INF/jsp/cadastrar-funcionario.jsp";
     }
 
     @Override
