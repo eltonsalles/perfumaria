@@ -4,7 +4,7 @@
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Cadastrar Funcionário</h2>
-    <form action="#" method="post">
+    <form action="sistema?controller=Funcionario&action=novo" method="post">
         <div class="form-group col-md-12">
             <input type="hidden" class="form-control" id="id" name="id">
         </div>
@@ -18,7 +18,7 @@
         </div>
         <div class="form-group col-md-2 <c:if test="${listaErro.cpf eq true}">has-error</c:if>">
             <label class="control-label" for="cpf">CPF</label>
-            <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" pattern="^\d{3}.\d{3}.\d{3}-\d{2}$" maxlength="14" required>
+            <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required><!--pattern="^\d{3}.\d{3}.\d{3}-\d{2}$"-->
         </div>
         <div class="form-group col-md-2 status">
             <label>Status</label><br>
