@@ -132,7 +132,7 @@ public abstract class DaoAbstract {
                         Object object = method.invoke(nameClass);
                         
                         String[] m = new String[object.getClass().getDeclaredFields().length + 1];
-                        m[0] = nameMethod(nameMethod(association.referenced()));
+                        m[0] = nameMethod(association.referenced());
                         int count = 1;
                         for (Field f : object.getClass().getDeclaredFields()) {
                             if (f.isAnnotationPresent(Columm.class)) {
@@ -182,33 +182,33 @@ public abstract class DaoAbstract {
                     Method method = nameClass.getClass().getMethod((String) object[0]);
                     Object objectAssociation = method.invoke(nameClass);
                     
-                    for (Object o : object) {
-                        Method m = objectAssociation.getClass().getMethod((String) o);
+                    for (int j = 1; j < object.length; j++) {
+                        Method m = objectAssociation.getClass().getMethod((String) object[j]);
                         String nameMethod = m.getReturnType().getName();
 
                         if (nameMethod.equalsIgnoreCase("java.util.Date")) {
-                            Date data = (Date) m.invoke(nameClass);
+                            Date data = (Date) m.invoke(objectAssociation);
                             java.sql.Date dataSql = new java.sql.Date(data.getTime());
 
                             stmt.setDate(cont, dataSql);
 
                         } else if (nameMethod.equalsIgnoreCase("java.lang.String")) {
-                            stmt.setString(cont, (String) m.invoke(nameClass));
+                            stmt.setString(cont, (String) m.invoke(objectAssociation));
 
                         } else if (nameMethod.equalsIgnoreCase("int")) {
-                            stmt.setInt(cont, (Integer) m.invoke(nameClass));
+                            stmt.setInt(cont, (Integer) m.invoke(objectAssociation));
 
                         } else if (nameMethod.equalsIgnoreCase("float")) {
-                            stmt.setFloat(cont, (Float) m.invoke(nameClass));
+                            stmt.setFloat(cont, (Float) m.invoke(objectAssociation));
 
                         } else if (nameMethod.equalsIgnoreCase("double")) {
-                            stmt.setDouble(cont, (Double) m.invoke(nameClass));
+                            stmt.setDouble(cont, (Double) m.invoke(objectAssociation));
 
                         } else if (nameMethod.equalsIgnoreCase("boolean")) {
-                            stmt.setBoolean(cont, (Boolean) m.invoke(nameClass));
+                            stmt.setBoolean(cont, (Boolean) m.invoke(objectAssociation));
 
                         } else if (nameMethod.equalsIgnoreCase("char")) {
-                            stmt.setString(cont, String.valueOf(m.invoke(nameClass)));
+                            stmt.setString(cont, String.valueOf(m.invoke(objectAssociation)));
 
                         } else {
                             throw new Exception("Tipo de campo não identificado!");
@@ -246,7 +246,9 @@ public abstract class DaoAbstract {
                             stmt.setString(cont, String.valueOf(method.invoke(nameClass)));
 
                         } else {
-                            throw new Exception("Tipo de campo não identificado!");
+                            Object l = method.invoke(nameClass);
+                            Method w = l.getClass().getMethod("getId");
+                            stmt.setInt(cont, (int) w.invoke(l));
                         }
 
                         cont++;
