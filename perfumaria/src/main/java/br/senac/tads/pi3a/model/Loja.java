@@ -27,14 +27,8 @@ package br.senac.tads.pi3a.model;
  *
  * @author Elton
  */
-public class Loja {
-    private int id = 1;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+public class Loja extends ModelAbstract {
+    public Loja() {
+        super.setId(1);
     }
 }

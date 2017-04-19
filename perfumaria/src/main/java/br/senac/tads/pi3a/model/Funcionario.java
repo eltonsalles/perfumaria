@@ -34,10 +34,7 @@ import br.senac.tads.pi3a.annotation.Table;
  * @author Elton
  */
 @Table(name = "funcionario")
-public class Funcionario {
-    @Columm(name = "id")
-    private int id;
-    
+public class Funcionario extends ModelAbstract {
     @Columm(name = "status")
     private boolean status;
     
@@ -76,14 +73,6 @@ public class Funcionario {
     
     @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
     private Loja loja;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public boolean getStatus() {
         return status;
