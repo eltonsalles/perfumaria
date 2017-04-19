@@ -46,8 +46,8 @@ public abstract class DaoAbstract {
         // Para retornar um resultado para insert
         boolean result = false;
 
-        // Cria um vetor com o tamanho dos atributos da classe 
-        // menos 1 (menos o id)
+        // ArrayList para guardar a ordem que os métodos são colocados
+        // na instrução SQL
         ArrayList<Object[]> methods = new ArrayList<>();
 
         try {
@@ -59,11 +59,14 @@ public abstract class DaoAbstract {
             sql.setEntity(entity.name());
 
             // Loop para montar a instrução sql
-            for (Field declaredField : nameClass.getClass().getDeclaredFields()) {
+            for (Field declaredField : nameClass.getClass()
+                    .getDeclaredFields()) {
                 if (!declaredField.getName().equalsIgnoreCase("id")) {
                     if (declaredField.isAnnotationPresent(Association.class)) {
-                        setRowDataAssociation(nameClass, declaredField, sql, methods);
-                    } else if (declaredField.isAnnotationPresent(ForeignKey.class)) {
+                        setRowDataAssociation(nameClass, declaredField, sql,
+                                methods);
+                    } else if (declaredField.isAnnotationPresent(
+                            ForeignKey.class)) {
                         setRowDataForeignKey(declaredField, sql, methods);
                     } else {
                         setRowDataColumm(declaredField, sql, methods);
@@ -81,8 +84,40 @@ public abstract class DaoAbstract {
             String s = sql.getInstruction();
             PreparedStatement stmt = conn.prepareStatement(s);
 
-            // Método para setar na classe PreparedStatement
-            setStmt(methods, nameClass, stmt);
+            // Loop para setar na classe PreparedStatement
+            int pos = 1;
+            for (int i = 0; i < methods.size(); i++) {
+                // Pega um objeto do ArrayList
+                Object[] object = methods.get(i);
+                
+                // Cria um objeto do tipo Method com a String da primeira
+                // posição do objeto
+                Method method = nameClass.getClass().getMethod(
+                        (String) object[0]);
+
+                // Se houver mais de uma posição significa que é objeto irá
+                // retornar uma classe (Annotation Association)
+                if (object.length > 1) {
+                    Object objectAssociation = method.invoke(nameClass);
+
+                    // Percorre as colunas da Associação
+                    for (int j = 1; j < object.length; j++) {
+                        // Cria um objeto do tipo Method para pegar o métodos
+                        // da classe de associação
+                        Method m = objectAssociation.getClass().getMethod(
+                                (String) object[j]);
+                        
+                        // Seta o valor em PreparedStatement conforme o tipo
+                        setStmt(objectAssociation, m, stmt, pos);
+                        pos++;
+                    }
+                // Se não que irá retornar apenas uma String (Annotation Columm)
+                } else {
+                    // Seta o valor em PreparedStatement conforme o tipo
+                    setStmt(nameClass, method, stmt, pos);
+                    pos++;
+                }
+            }
 
             // Executa o SQL
             result = stmt.execute();
@@ -98,6 +133,9 @@ public abstract class DaoAbstract {
 
             // Printa o erro
             e.printStackTrace();
+        } catch (NoSuchMethodException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException ex) {
+            ex.printStackTrace();
         }
 
         return result;
@@ -117,12 +155,13 @@ public abstract class DaoAbstract {
 
     /**
      * Insere uma coluna simples na instrução SQL
-     * 
+     *
      * @param field
      * @param sql
-     * @param methods 
+     * @param methods
      */
-    private static void setRowDataColumm(Field field, SqlInsert sql, ArrayList<Object[]> methods) {
+    private static void setRowDataColumm(Field field, SqlInsert sql,
+            ArrayList<Object[]> methods) {
         // Pega a annotation Columm
         Columm columm = field.getAnnotation(Columm.class);
 
@@ -131,36 +170,40 @@ public abstract class DaoAbstract {
 
         // Guarda em ordem o nome do método get referente ao field
         String[] nameMethod = {nameMethod(field.getName())};
-        
+
         // Adiciona o nome do método no ArrayList
         methods.add(nameMethod);
     }
 
     /**
      * Insere várias colunas na instrução SQL
-     * 
+     *
      * @param nameClass
      * @param field
      * @param sql
-     * @param methods 
+     * @param methods
      */
-    private static void setRowDataAssociation(Object nameClass, Field field, SqlInsert sql, ArrayList<Object[]> methods) {
+    @SuppressWarnings("CallToPrintStackTrace")
+    private static void setRowDataAssociation(Object nameClass, Field field,
+            SqlInsert sql, ArrayList<Object[]> methods) {
         try {
             // Pega a annotation Association
             Association association = field.getAnnotation(Association.class);
-            
+
             // Pega o método que faz referencia a outra classe
-            Method method = nameClass.getClass().getMethod(nameMethod(association.referenced()));
-            
+            Method method = nameClass.getClass().getMethod(
+                    nameMethod(association.referenced()));
+
             // Chama o método que vai retornar uma classe
             Object object = method.invoke(nameClass);
 
             // Cria um vetor com o tamanho dos atributos mais 1
-            String[] m = new String[object.getClass().getDeclaredFields().length + 1];
-            
+            String[] m = new String[object.getClass().getDeclaredFields()
+                    .length + 1];
+
             // Na primeira posição sempre vai o método que chama a outra classe
             m[0] = nameMethod(association.referenced());
-            
+
             // Percorre os atributos da outra classe 
             int count = 1;
             for (Field f : object.getClass().getDeclaredFields()) {
@@ -178,18 +221,22 @@ public abstract class DaoAbstract {
             }
             // Adiciona o vetor com os nomes dos métodos no ArrayList
             methods.add(m);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | SecurityException |
+                IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * Insere uma coluna do tipo Foreign Key na instrução SQL
-     * 
+     *
      * @param field
      * @param sql
-     * @param methods 
+     * @param methods
      */
-    private static void setRowDataForeignKey(Field field, SqlInsert sql, ArrayList<Object[]> methods) {
+    private static void setRowDataForeignKey(Field field, SqlInsert sql,
+            ArrayList<Object[]> methods) {
         // Pega a annotation Foreign Key
         ForeignKey foreignKey = field.getAnnotation(ForeignKey.class);
 
@@ -198,104 +245,55 @@ public abstract class DaoAbstract {
 
         // Guarda em ordem o nome do método get referente ao field
         String[] name = {nameMethod(field.getName())};
-        
+
         // Adiciona o nome do método no ArrayList
         methods.add(name);
     }
-    
+
     /**
-     * Percorre o vetor com os métodos getters e seta no stmt conforme o
-     * necessário
-     *
-     * @param methods
+     * Seta o valor em PreparedStatement para prepar o SQL para inserção
+     * 
      * @param nameClass
+     * @param method
      * @param stmt
+     * @param cont 
      */
     @SuppressWarnings("CallToPrintStackTrace")
-    private static void setStmt(ArrayList<Object[]> methods, Object nameClass,
-            PreparedStatement stmt) {
-        int cont = 1;
-
+    private static void setStmt(Object nameClass, Method method,
+            PreparedStatement stmt, int cont) {
         try {
-            for (int i = 0; i < methods.size(); i++) {
-                Object[] object = methods.get(i);
+            String nameMethod = method.getReturnType().getName();
+            
+            if (nameMethod.equalsIgnoreCase("java.util.Date")) {
+                Date data = (Date) method.invoke(nameClass);
+                java.sql.Date dataSql = new java.sql.Date(data.getTime());
 
-                if (object.length > 1) {
-                    Method method = nameClass.getClass().getMethod((String) object[0]);
-                    Object objectAssociation = method.invoke(nameClass);
+                stmt.setDate(cont, dataSql);
 
-                    for (int j = 1; j < object.length; j++) {
-                        Method m = objectAssociation.getClass().getMethod((String) object[j]);
-                        String nameMethod = m.getReturnType().getName();
+            } else if (nameMethod.equalsIgnoreCase("java.lang.String")) {
+                stmt.setString(cont, (String) method.invoke(nameClass));
 
-                        if (nameMethod.equalsIgnoreCase("java.util.Date")) {
-                            Date data = (Date) m.invoke(objectAssociation);
-                            java.sql.Date dataSql = new java.sql.Date(data.getTime());
+            } else if (nameMethod.equalsIgnoreCase("int")) {
+                stmt.setInt(cont, (Integer) method.invoke(nameClass));
 
-                            stmt.setDate(cont, dataSql);
+            } else if (nameMethod.equalsIgnoreCase("float")) {
+                stmt.setFloat(cont, (Float) method.invoke(nameClass));
 
-                        } else if (nameMethod.equalsIgnoreCase("java.lang.String")) {
-                            stmt.setString(cont, (String) m.invoke(objectAssociation));
+            } else if (nameMethod.equalsIgnoreCase("double")) {
+                stmt.setDouble(cont, (Double) method.invoke(nameClass));
 
-                        } else if (nameMethod.equalsIgnoreCase("int")) {
-                            stmt.setInt(cont, (Integer) m.invoke(objectAssociation));
+            } else if (nameMethod.equalsIgnoreCase("boolean")) {
+                stmt.setBoolean(cont, (Boolean) method.invoke(nameClass));
 
-                        } else if (nameMethod.equalsIgnoreCase("float")) {
-                            stmt.setFloat(cont, (Float) m.invoke(objectAssociation));
+            } else if (nameMethod.equalsIgnoreCase("char")) {
+                stmt.setString(cont, String.valueOf(method.invoke(nameClass)));
 
-                        } else if (nameMethod.equalsIgnoreCase("double")) {
-                            stmt.setDouble(cont, (Double) m.invoke(objectAssociation));
-
-                        } else if (nameMethod.equalsIgnoreCase("boolean")) {
-                            stmt.setBoolean(cont, (Boolean) m.invoke(objectAssociation));
-
-                        } else if (nameMethod.equalsIgnoreCase("char")) {
-                            stmt.setString(cont, String.valueOf(m.invoke(objectAssociation)));
-
-                        } else {
-                            throw new Exception("Tipo de campo não identificado!");
-                        }
-
-                        cont++;
-                    }
-                } else {
-                    //for (Object o : object) {
-                    Method method = nameClass.getClass().getMethod((String) object[0]);
-                    String nameMethod = method.getReturnType().getName();
-
-                    if (nameMethod.equalsIgnoreCase("java.util.Date")) {
-                        Date data = (Date) method.invoke(nameClass);
-                        java.sql.Date dataSql = new java.sql.Date(data.getTime());
-
-                        stmt.setDate(cont, dataSql);
-
-                    } else if (nameMethod.equalsIgnoreCase("java.lang.String")) {
-                        stmt.setString(cont, (String) method.invoke(nameClass));
-
-                    } else if (nameMethod.equalsIgnoreCase("int")) {
-                        stmt.setInt(cont, (Integer) method.invoke(nameClass));
-
-                    } else if (nameMethod.equalsIgnoreCase("float")) {
-                        stmt.setFloat(cont, (Float) method.invoke(nameClass));
-
-                    } else if (nameMethod.equalsIgnoreCase("double")) {
-                        stmt.setDouble(cont, (Double) method.invoke(nameClass));
-
-                    } else if (nameMethod.equalsIgnoreCase("boolean")) {
-                        stmt.setBoolean(cont, (Boolean) method.invoke(nameClass));
-
-                    } else if (nameMethod.equalsIgnoreCase("char")) {
-                        stmt.setString(cont, String.valueOf(method.invoke(nameClass)));
-
-                    } else {
-                        Object l = method.invoke(nameClass);
-                        Method w = l.getClass().getMethod("getId");
-                        stmt.setInt(cont, (int) w.invoke(l));
-                    }
-
-                    cont++;
-                    //}
-                }
+            } else if (nameMethod.contains("br.senac.tads.pi3a.model")) {
+                Object l = method.invoke(nameClass);
+                Method w = l.getClass().getMethod("getId");
+                stmt.setInt(cont, (int) w.invoke(l));
+            } else {
+                throw new Exception("Tipo de campo não identificado!");
             }
         } catch (Exception e) {
             e.printStackTrace();
