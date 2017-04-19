@@ -85,7 +85,7 @@ public class Funcionario {
         this.id = id;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
