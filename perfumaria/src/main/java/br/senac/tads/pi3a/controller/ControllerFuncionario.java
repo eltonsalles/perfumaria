@@ -24,7 +24,9 @@
 package br.senac.tads.pi3a.controller;
 
 import br.senac.tads.pi3a.dao.DaoFuncionario;
+import br.senac.tads.pi3a.model.Endereco;
 import br.senac.tads.pi3a.model.Funcionario;
+import br.senac.tads.pi3a.model.Loja;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
@@ -58,14 +60,20 @@ public class ControllerFuncionario implements Logica {
             funcionario.setCelular(request.getParameter("celular"));
             funcionario.setTelefone(request.getParameter("telefone"));
             funcionario.setEmail(request.getParameter("email"));
-            funcionario.setLogradouro(request.getParameter("logradouro"));
-            funcionario.setNumero(request.getParameter("numero"));
-            funcionario.setComplemento(request.getParameter("complemento"));
-            funcionario.setBairro(request.getParameter("bairro"));
-            funcionario.setCep(request.getParameter("cep"));
-            funcionario.setCidade(request.getParameter("cidade"));
-            funcionario.setUf(request.getParameter("uf"));
-            funcionario.setLoja(2);
+            
+            Endereco endereco = new Endereco();
+            endereco.setLogradouro(request.getParameter("logradouro"));
+            endereco.setNumero(request.getParameter("numero"));
+            endereco.setComplemento(request.getParameter("complemento"));
+            endereco.setBairro(request.getParameter("bairro"));
+            endereco.setCep(request.getParameter("cep"));
+            endereco.setCidade(request.getParameter("cidade"));
+            endereco.setUf(request.getParameter("uf"));
+            
+            funcionario.setEndereco(endereco);
+            
+            Loja loja = new Loja();
+            funcionario.setLoja(loja);
             
             if (DaoFuncionario.insert(funcionario)) {
                 // Deu tudo certo...
