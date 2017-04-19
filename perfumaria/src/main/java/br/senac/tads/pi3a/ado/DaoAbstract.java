@@ -23,11 +23,15 @@
  */
 package br.senac.tads.pi3a.ado;
 
+import br.senac.tads.pi3a.annotation.Association;
 import br.senac.tads.pi3a.annotation.Columm;
+import br.senac.tads.pi3a.annotation.ForeignKey;
 import br.senac.tads.pi3a.annotation.Table;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -42,8 +46,7 @@ public abstract class DaoAbstract {
         
         // Cria um vetor com o tamanho dos atributos da classe 
         // menos 1 (menos o id)
-        String methods[] = new String[
-                nameClass.getClass().getDeclaredFields().length - 1];
+        ArrayList<Object[]> methods = new ArrayList<>();
         
         try {
             // Cria um objeto do tipo SqlInsert para montar a instrução SQL
@@ -63,7 +66,8 @@ public abstract class DaoAbstract {
             java.sql.Connection conn = Transaction.get();
             
             // Prepara o sql para fazer a inserção
-            PreparedStatement stmt = conn.prepareStatement(sql.getInstruction());
+            String s = sql.getInstruction();
+            PreparedStatement stmt = conn.prepareStatement(s);
             
             // Método para setar na classe PreparedStatement
             setStmt(methods, nameClass, stmt);
@@ -107,23 +111,53 @@ public abstract class DaoAbstract {
      * @param sql
      * @param methods 
      */
-    private static void setRowData(Object nameClass, SqlInsert sql, 
-            String methods[]) {
-        int cont = 0;
-        
-        for (Field field : nameClass.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(Columm.class) && 
-                    !field.getName().equalsIgnoreCase("id")) {
-                // Pega o nome do campo conforme a tabela no banco de dados
-                Columm columm = field.getAnnotation(Columm.class);
+    private static void setRowData(Object nameClass, SqlInsert sql,
+            ArrayList<Object[]> methods) {
+        try {
+            for (Field field : nameClass.getClass().getDeclaredFields()) {
+                if (!field.getName().equalsIgnoreCase("id")) {
+                    if (field.isAnnotationPresent(Columm.class)) {
+                        // Pega o nome do campo conforme a tabela no banco de dados
+                        Columm columm = field.getAnnotation(Columm.class);
 
-                // Insere o nome do campo para montar a intrução SQL
-                sql.setRowData(columm.name(), "?");
+                        // Insere o nome do campo para montar a intrução SQL
+                        sql.setRowData(columm.name(), "?");
 
-                // Guarda em ordem o nome do método get referente ao field
-                methods[cont] = nameMethod(field.getName());
-                cont++;
+                        // Guarda em ordem o nome do método get referente ao field
+                        String[] name = {nameMethod(field.getName())};
+                        methods.add(name);
+                    } else if (field.isAnnotationPresent(Association.class)) {
+                        Association association = field.getAnnotation(Association.class);
+                        Method method = nameClass.getClass().getMethod(nameMethod(association.referenced()));
+                        Object object = method.invoke(nameClass);
+                        
+                        String[] m = new String[object.getClass().getDeclaredFields().length + 1];
+                        m[0] = nameMethod(nameMethod(association.referenced()));
+                        int count = 1;
+                        for (Field f : object.getClass().getDeclaredFields()) {
+                            if (f.isAnnotationPresent(Columm.class)) {
+                                Columm c = f.getAnnotation(Columm.class);
+                                
+                                sql.setRowData(c.name(), "?");
+                                m[count] = nameMethod(f.getName());
+                                count++;
+                            }
+                        }
+                        methods.add(m);
+                    } else if (field.isAnnotationPresent(ForeignKey.class)) {
+                        ForeignKey foreignKey = field.getAnnotation(ForeignKey.class);
+
+                        // Insere o nome do campo para montar a intrução SQL
+                        sql.setRowData(foreignKey.name(), "?");
+
+                        // Guarda em ordem o nome do método get referente ao field
+                        String[] name = {nameMethod(field.getName())};
+                        methods.add(name);
+                    }
+                }
             }
+        } catch (SecurityException | NoSuchMethodException e) {
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
         }
     }
     
@@ -136,45 +170,87 @@ public abstract class DaoAbstract {
      * @param stmt 
      */
     @SuppressWarnings("CallToPrintStackTrace")
-    private static void setStmt(String methods[], Object nameClass, 
+    private static void setStmt(ArrayList<Object[]> methods, Object nameClass, 
             PreparedStatement stmt) {
         int cont = 1;
         
         try {
-            for (String m : methods) {
-                if (m != null) {
-                    Method method = nameClass.getClass().getMethod(m);
-                    String nameMethod = method.getReturnType().getName();
+            for (int i = 0; i < methods.size(); i++) {
+                Object[] object = methods.get(i);
+                
+                if (object.length > 1) {
+                    Method method = nameClass.getClass().getMethod((String) object[0]);
+                    Object objectAssociation = method.invoke(nameClass);
+                    
+                    for (Object o : object) {
+                        Method m = objectAssociation.getClass().getMethod((String) o);
+                        String nameMethod = m.getReturnType().getName();
 
-                    if (nameMethod.equalsIgnoreCase("java.util.Date")) {
-                        Date data = (Date) method.invoke(nameClass);
-                        java.sql.Date dataSql = new java.sql.Date(data.getTime());
+                        if (nameMethod.equalsIgnoreCase("java.util.Date")) {
+                            Date data = (Date) m.invoke(nameClass);
+                            java.sql.Date dataSql = new java.sql.Date(data.getTime());
 
-                        stmt.setDate(cont, dataSql);
+                            stmt.setDate(cont, dataSql);
 
-                    } else if (nameMethod.equalsIgnoreCase("java.lang.String")) {
-                        stmt.setString(cont, (String) method.invoke(nameClass));
+                        } else if (nameMethod.equalsIgnoreCase("java.lang.String")) {
+                            stmt.setString(cont, (String) m.invoke(nameClass));
 
-                    } else if (nameMethod.equalsIgnoreCase("int")) {
-                        stmt.setInt(cont, (Integer) method.invoke(nameClass));
+                        } else if (nameMethod.equalsIgnoreCase("int")) {
+                            stmt.setInt(cont, (Integer) m.invoke(nameClass));
 
-                    } else if (nameMethod.equalsIgnoreCase("float")) {
-                        stmt.setFloat(cont, (Float) method.invoke(nameClass));
+                        } else if (nameMethod.equalsIgnoreCase("float")) {
+                            stmt.setFloat(cont, (Float) m.invoke(nameClass));
 
-                    } else if (nameMethod.equalsIgnoreCase("double")) {
-                        stmt.setDouble(cont, (Double) method.invoke(nameClass));
+                        } else if (nameMethod.equalsIgnoreCase("double")) {
+                            stmt.setDouble(cont, (Double) m.invoke(nameClass));
 
-                    } else if (nameMethod.equalsIgnoreCase("boolean")) {
-                        stmt.setBoolean(cont, (Boolean) method.invoke(nameClass));
+                        } else if (nameMethod.equalsIgnoreCase("boolean")) {
+                            stmt.setBoolean(cont, (Boolean) m.invoke(nameClass));
 
-                    } else if (nameMethod.equalsIgnoreCase("char")) {
-                        stmt.setString(cont, String.valueOf(method.invoke(nameClass)));
+                        } else if (nameMethod.equalsIgnoreCase("char")) {
+                            stmt.setString(cont, String.valueOf(m.invoke(nameClass)));
 
-                    } else {
-                        throw new Exception("Tipo de campo não identificado!");
+                        } else {
+                            throw new Exception("Tipo de campo não identificado!");
+                        }
+
+                        cont++;
                     }
+                } else {                
+                    //for (Object o : object) {
+                        Method method = nameClass.getClass().getMethod((String) object[0]);
+                        String nameMethod = method.getReturnType().getName();
 
-                    cont++;
+                        if (nameMethod.equalsIgnoreCase("java.util.Date")) {
+                            Date data = (Date) method.invoke(nameClass);
+                            java.sql.Date dataSql = new java.sql.Date(data.getTime());
+
+                            stmt.setDate(cont, dataSql);
+
+                        } else if (nameMethod.equalsIgnoreCase("java.lang.String")) {
+                            stmt.setString(cont, (String) method.invoke(nameClass));
+
+                        } else if (nameMethod.equalsIgnoreCase("int")) {
+                            stmt.setInt(cont, (Integer) method.invoke(nameClass));
+
+                        } else if (nameMethod.equalsIgnoreCase("float")) {
+                            stmt.setFloat(cont, (Float) method.invoke(nameClass));
+
+                        } else if (nameMethod.equalsIgnoreCase("double")) {
+                            stmt.setDouble(cont, (Double) method.invoke(nameClass));
+
+                        } else if (nameMethod.equalsIgnoreCase("boolean")) {
+                            stmt.setBoolean(cont, (Boolean) method.invoke(nameClass));
+
+                        } else if (nameMethod.equalsIgnoreCase("char")) {
+                            stmt.setString(cont, String.valueOf(method.invoke(nameClass)));
+
+                        } else {
+                            throw new Exception("Tipo de campo não identificado!");
+                        }
+
+                        cont++;
+                    //}
                 }
             }
         } catch (Exception e) {
