@@ -28,6 +28,7 @@ import br.senac.tads.pi3a.model.Endereco;
 import br.senac.tads.pi3a.model.Funcionario;
 import br.senac.tads.pi3a.model.Loja;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,6 +75,9 @@ public class ControllerFuncionario implements Logica {
             
             Loja loja = new Loja();
             funcionario.setLoja(loja);
+            
+            Funcionario f1 = new Funcionario();
+            ArrayList<Object> listaFuncionarios = DaoFuncionario.selectAll(f1);
             
             if (DaoFuncionario.insert(funcionario)) {
                 // Deu tudo certo...
