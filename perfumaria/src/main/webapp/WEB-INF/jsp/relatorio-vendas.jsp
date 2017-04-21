@@ -1,19 +1,23 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Relatório de vendas</h2>
     <form>
-        <div class="form-group col-md-6">
-            <label for="pesquisar">Pesquisar por data</label><br>
+        <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <h3>Pesquisar por data</h3><br>
             <label for="relat-estoque">Data Inicial:</label>
             <input type="date" id="datai" name="datainicial"/>
-            <label for="relat-estoque">Data Final:</label>
+        </div>
+        <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="relat-estoque">Data Final:</label>
             <input type="date" id="dataf" name="datafinal"/>
+        </div>
             <button type="submit" class="btn btn-primary">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
             </button>
-        </div>
+        
     </form>
     <table class="table table-striped">
         <tr>
