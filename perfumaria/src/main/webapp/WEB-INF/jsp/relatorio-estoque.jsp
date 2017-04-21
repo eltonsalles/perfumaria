@@ -5,7 +5,7 @@
 <div class="col-md-10 content">
     <form action="#" method="post" class="col-md-4">
         <h2>Relatório de Estoque</h2>
-        <div class="form-group col-md-4 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <div class="form-group col-md-4 <c:if test="${errorValidation eq true}">has-error</c:if>">
                 <label for="relat-estoque">Data Inicial:</label>
                 <input type="date" id="datai" name="datainicial"/>&nbsp;&nbsp;
             </div>
