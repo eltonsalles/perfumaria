@@ -23,8 +23,6 @@
  */
 package br.senac.tads.pi3a.validation;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
