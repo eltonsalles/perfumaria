@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Elton
  */
-public class ControllerFuncionario implements Logica {
+public class ControllerLoja implements Logica {
     @Override
     public String novo(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Se o formulário for submetido por post então entra aqui
@@ -82,7 +82,7 @@ public class ControllerFuncionario implements Logica {
             }
         }
         
-        return "/WEB-INF/jsp/cadastrar-funcionario.jsp";
+        return "/WEB-INF/jsp/cadastrar-loja.jsp";
     }
     public String consultar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Se o formulário for submetido por post então entra aqui
@@ -92,7 +92,7 @@ public class ControllerFuncionario implements Logica {
             
         }
         
-        return "/WEB-INF/jsp/consultar-funcionario.jsp";
+        return "/WEB-INF/jsp/consultar-loja.jsp";
     }
 
     @Override
