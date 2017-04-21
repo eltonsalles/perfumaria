@@ -29,7 +29,11 @@
                 <input type="radio" id="inativo" value="false" name="status" required>Inativo
             </label>
         </div>
-        <div class="form-group col-md-3 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <div class="form-group col-md-5 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="email">E-mail</label>
+            <input type="email" class="form-control" id="email" placeholder="email@exemplo.com.br" name="email" maxlength="150" required>
+        </div>
+        <div class="form-group col-md-4 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="estado-civil">Estado civil</label>
             <select class="form-control" id="estado-civil" name="estado-civil" required>
                 <option value="">---</option>
@@ -39,7 +43,7 @@
                 <option value="viúvo">Viúvo</option>
             </select>
         </div>
-        <div class="form-group col-md-3 sexo <c:if test="${errorValidation eq true}">has-error</c:if>">
+        <div class="form-group col-md-2 sexo <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label">Sexo</label><br>
             <label class="radio-inline">
                 <input type="radio" id="femino" value="F" name="sexo" required>Feminino
@@ -56,10 +60,7 @@
             <label class="control-label" for="telefone">Telefone</label>
             <input type="tel" class="form-control" id="telefone" placeholder="(xx)xxxx-xxxx" name="telefone" maxlength="15" required>
         </div>
-        <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
-            <label class="control-label" for="email">E-mail</label>
-            <input type="email" class="form-control" id="email" placeholder="email@exemplo.com.br" name="email" maxlength="150" required>
-        </div>
+    
         <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="logradouro">Logradouro</label>
             <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida..." name="logradouro" maxlength="150" required>

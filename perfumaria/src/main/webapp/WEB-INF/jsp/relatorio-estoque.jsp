@@ -5,14 +5,14 @@
 <div class="col-md-10 content">
     <h2>Relatório de Estoque</h2>
     <form action="#" method="post" class="col-md-12">
-        <div class="form-group col-md-2 <c:if test="${errorValidation eq true}">has-error</c:if>">
-                <label for="relat-estoque">Data Inicial:</label>
-                <input type="date" id="datai" name="data-inicial"/>&nbsp;&nbsp;
-            </div>
-            <div class="form-group col-md-2 <c:if test="${errorValidation eq true}">has-error</c:if>">
-                <label for="relat-estoque">Data Final:</label>
-                <input type="date" id="dataf" name="data-final"/>&nbsp;
-            </div>
+       <div class="form-group col-md-3 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="data-nascimento">Data Inicial</label>
+            <input type="date" class="form-control" id="data-inicial" name="data-inicial" required>
+        </div>
+        <div class="form-group col-md-3 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="data-nascimento">Data Final</label>
+            <input type="date" class="form-control" id="data-final" name="data-final" required>
+        </div>
             <div class="form-group col-md-4">
                 <button type="submit" class="btn btn-primary">
                     <span class="glyphicon glyphicon-search" aria-hidden="true"></span>

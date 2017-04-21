@@ -5,44 +5,49 @@
 <div class="col-md-10 content">
     <h2>Relatório de vendas</h2>
     <form>
-        <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
-            <label for="relat-estoque">Data Inicial:</label>
-            <input type="date" id="datai" name="datainicial"/>
+        <div class="form-group col-md-3 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="data-nascimento">Data Inicial</label>
+            <input type="date" class="form-control" id="data-inicial" name="data-inicial" required>
         </div>
-        <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
-            <label class="control-label" for="relat-estoque">Data Final:</label>
-            <input type="date" id="dataf" name="datafinal"/>
+        <div class="form-group col-md-3 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="data-nascimento">Data Final</label>
+            <input type="date" class="form-control" id="data-final" name="data-final" required>
         </div>
-            <button type="submit" class="btn btn-primary">
-                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            </button>
-        
+            <div class="form-group col-md-4">
+            <a href="#" class="btn btn-default">
+                Pesquisar&nbsp;&nbsp;<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </a>
+        </div>
     </form>
-    <table class="table table-striped">
-        <tr>
-            <th>Código</th>
-            <th>Status</th>
-            <th>Cliente</th>
-            <th>Data</th>
-            <th>Valor da Venda</th>
-            <th>Produtos</th>
-            <th>Qtd</th>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>Exemplo Exemplo Exemplo Exemplo</td>
-            <td>00/00/0000</td>
-            <td>000.000.000-00</td>
-            <td>
-                <a href="#" class="btn btn-default" role="button" title="Editar">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                </a>
-            </td>
-        </tr>
-    </table>
-    <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
-        <label class="control-label" for="vendasativas">Vendas Ativas</label>
-        <input type="text" class="form-control" name="vendasativas">
-    </div>
-</div><!-- content -->
+        <table class="table table-striped">
+            <tr>
+                <th>Código</th>
+                <th>Status</th>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Valor da Venda</th>
+                <th>Produtos</th>
+                <th>Qtd</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Ativo</td>
+                <td>exemplo</td>
+                <td>00/00/0000</td>
+                <td>R$: 32,00</td>
+                <td>exemplo</td>
+                <td>333</td>
+                <td>
+                    <a href="#" class="btn btn-default" role="button" title="Editar">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <div class="form-group col-md-offset-10 col-md-2 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="vendasativas">Vendas Ativas</label>
+            <input type="text" class="form-control" name="vendasativas">
+        </div>
+    </div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>

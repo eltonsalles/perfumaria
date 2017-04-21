@@ -23,7 +23,7 @@
             <input type="hidden" class="form-control" id="id" name="id">
         </div>
         <div class="form-group col-md-5 <c:if test="${errorValidation eq true}">has-error</c:if>">
-            <label class="control-label" for="nome">Nome do Produto</label>
+            <label class="control-label" for="nome">Quantidade</label>
             <input type="text" class="form-control" id="nome-produto" name="nome-produto" maxlength="150" required>
         </div>
 
@@ -32,10 +32,7 @@
             <textarea class="form-control" rows="3"></textarea>
         </div>
 
-        <div class="form-group col-md-11">
-            <div class="form-group col-md-10">
-                <input type="hidden" class="form-control" id="id" name="id">
-            </div>
+        <div class="form-group col-md-offset-8 col-md-4">
             <a href="#" class="btn btn-default">
                 Excluir&nbsp;&nbsp;<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </a>
@@ -45,6 +42,6 @@
             <button type="submit" class="btn btn-default">
                 Salvar&nbsp;&nbsp;<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
             </button>
-        </div>
+        </div>  
 </div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>

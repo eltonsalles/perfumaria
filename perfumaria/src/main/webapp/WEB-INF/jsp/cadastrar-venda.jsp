@@ -5,7 +5,7 @@
 <div class="col-md-10 content">
     <h2>Cadastrar Venda</h2>
     <form>
-        <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
+        <div class="form-group col-sm-9<c:if test="${errorValidation eq true}">has-error</c:if>">
                 <label class="control-label" for="pesquisar">Pesquisar</label>
                 <div class="input-group">
                     <input type="text" class="form-control" id="pesquisar" placeholder="Digite nome ou código" name="pesquisar">
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </form>
-        <div class="form-group col-md-5">
+        <div class="form-group col-xs-8 col-sm-4">
             <label for="nome">Nome</label>
             <input type="text" class="form-control" id="nome" name="nome">
         </div>
@@ -32,6 +32,7 @@
                 <th>Quantidade</th>
                 <th>Preço Unitário</th>
                 <th>Sub-Total</th>
+                <th>Ação</th>
             </tr>
             <tr>
                 <td>1</td>
