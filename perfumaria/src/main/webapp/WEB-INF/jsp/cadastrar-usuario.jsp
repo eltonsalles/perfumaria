@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
@@ -7,21 +8,21 @@
         <div class="form-group col-md-12">
             <input type="hidden" class="form-control" id="id" name="id">
         </div>
-        <div class="form-group col-md-12">
-            <label for="login">Login</label>
+        <div class="form-group col-md-12 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="login">Login</label>
             <input type="text" class="form-control" id="login" placeholder="Login" name="login" maxlength="50" required>
         </div>
-        <div class="form-group col-md-12">
-            <label for="senha">Senha</label>
+        <div class="form-group col-md-12 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="senha">Senha</label>
             <input type="password" class="form-control" id="senha" placeholder="Senha" name="senha" maxlength="8" required>
         </div>
-        <div class="form-group col-md-12">
-            <label for="nivel-usuario">Nível de Usuário</label>
+        <div class="form-group col-md-12 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="nivel-usuario">Nível de Usuário</label>
             <select class="form-control" id="nivel-usuario" name="nivel-usuario">
                 <option value="">---</option>
                 <option value="1">Diretor</option>
                 <option value="2">Gerente De Backoffice</option>
-                <option value="3">Gerente De Ti</option>
+                <option value="3">Gerente De TI</option>
                 <option value="4">Gerente De Vendas</option>
                 <option value="5">Retaguarda</option>
                 <option value="6">Vendedor</option>
