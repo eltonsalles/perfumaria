@@ -6,7 +6,6 @@
     <h2>Relatório de vendas</h2>
     <form>
         <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
-            <h3>Pesquisar por data</h3><br>
             <label for="relat-estoque">Data Inicial:</label>
             <input type="date" id="datai" name="datainicial"/>
         </div>
@@ -41,7 +40,9 @@
             </td>
         </tr>
     </table>
-    <label for="vendasativas">Vendas Ativas</label>
-    <input type="text" class="form-control" name="vendasativas" size="35">
+    <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
+        <label class="control-label" for="vendasativas">Vendas Ativas</label>
+        <input type="text" class="form-control" name="vendasativas">
+    </div>
 </div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>
