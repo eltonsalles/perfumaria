@@ -30,12 +30,14 @@ import java.util.regex.Pattern;
  *
  * @author Joao
  */
-public class validationString extends validationAbstract {
+public class validationAlfaNumerico extends validationAbstract{
 
     @Override
     public boolean isValid(Object objeto) {
-       // verificar se a string tem numeros caso tenha da false e caso não da true
-return objeto.toString().matches("[a-zA-Zà-úÀ-Ú ]{1,}");
+
+       
+ return objeto.toString().matches("[a-zA-Zà-úÀ-Ú0-9 .]{1,}");      
+       
+    }
     
-}
 }
