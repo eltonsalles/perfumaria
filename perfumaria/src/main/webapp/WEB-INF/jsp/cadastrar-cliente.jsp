@@ -8,11 +8,11 @@
         <div class="form-group col-md-12">
             <input type="hidden" class="form-control" id="id" name="id">
         </div>
-        <div class="form-group col-md-5">
+        <div class="form-group col-md-5 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label for="nome">Nome</label>
             <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required>
         </div>
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-3 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label for="data-nascimento">Data de Nascimento</label>
             <input type="date" class="form-control" id="data-nascimento" name="data-nascimento" required>
         </div>
