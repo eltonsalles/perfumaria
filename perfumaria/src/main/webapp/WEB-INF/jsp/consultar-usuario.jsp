@@ -4,8 +4,8 @@
 <div class="col-md-10 content">
     <h2>Consultar Usuário</h2>
     <form>
-        <div class="form-group col-md-6">
-            <label for="pesquisar">Pesquisar</label>
+        <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
                 <input type="text" class="form-control" id="pesquisar" placeholder="Código ou login" name="pesquisar" maxlength="50" required>
                 <span class="input-group-btn">
