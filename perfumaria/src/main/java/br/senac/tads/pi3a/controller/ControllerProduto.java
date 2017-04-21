@@ -78,6 +78,16 @@ public class ControllerProduto implements Logica {
         
         return "/WEB-INF/jsp/manutencao-produto.jsp";
     }
+    public String consultar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // Se o formulário for submetido por post então entra aqui
+        if (request.getMethod().equalsIgnoreCase("post")) {
+            // Implatar validação...
+            
+            
+        }
+        
+        return "/WEB-INF/jsp/consultar-produto.jsp";
+    }
     
 
     @Override

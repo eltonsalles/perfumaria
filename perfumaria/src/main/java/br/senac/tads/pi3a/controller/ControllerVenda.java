@@ -58,6 +58,16 @@ public class ControllerVenda implements Logica {
         
         return "/WEB-INF/jsp/relatorio-vendas.jsp";
     }
+    public String consultar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // Se o formulário for submetido por post então entra aqui
+        if (request.getMethod().equalsIgnoreCase("post")) {
+            // Implatar validação...
+            
+            
+        }
+        
+        return "/WEB-INF/jsp/cancelar-venda.jsp";
+    }
     @Override
     public String editar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -84,6 +84,16 @@ public class ControllerFuncionario implements Logica {
         
         return "/WEB-INF/jsp/cadastrar-funcionario.jsp";
     }
+    public String consultar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // Se o formulário for submetido por post então entra aqui
+        if (request.getMethod().equalsIgnoreCase("post")) {
+            // Implatar validação...
+            
+            
+        }
+        
+        return "/WEB-INF/jsp/consultar-funcionario.jsp";
+    }
 
     @Override
     public String editar(HttpServletRequest request, HttpServletResponse response) throws Exception {

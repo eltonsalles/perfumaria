@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Elton
  */
-public class ControllerCliente implements Logica {
+public class ControllerUsuario implements Logica {
     @Override
     public String novo(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Se o formulário for submetido por post então entra aqui
@@ -46,7 +46,7 @@ public class ControllerCliente implements Logica {
             
         }
         
-        return "/WEB-INF/jsp/cadastrar-cliente.jsp";
+        return "/WEB-INF/jsp/cadastrar-usuario.jsp";
     }
     public String consultar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Se o formulário for submetido por post então entra aqui
@@ -56,7 +56,7 @@ public class ControllerCliente implements Logica {
             
         }
         
-        return "/WEB-INF/jsp/consultar-cliente.jsp";
+        return "/WEB-INF/jsp/consultar-usuario.jsp";
     }
 
     @Override
