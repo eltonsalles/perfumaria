@@ -78,7 +78,7 @@
             <textarea class="form-control" rows="3"></textarea>
         </div>
 
-        <div class="form-group col-md-offset-10 col-md-2 <c:if test="${errorValidation eq true}">has-error</c:if>">
+        <div class="form-group col-md-offset-10 col-md-2">
             <a href="#" class="btn btn-default">
                 Excluir&nbsp;&nbsp;<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </a>
