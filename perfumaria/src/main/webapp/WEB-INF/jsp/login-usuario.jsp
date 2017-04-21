@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
+<jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <form action="#" method="post" class="col-md-4">
         <div class="form-group col-md-12">
@@ -14,7 +15,7 @@
             <label class="control-label" for="senha">Senha</label>
             <input type="password" class="form-control" id="senha" placeholder="informe sua senha" name="senha" maxlength="8" required>
         </div>
-        <div class="form-group col-md-12" id="">
+        <div class="form-group col-md-12">
             <input class="btn btn-default" type="reset" name="limpar" id="limparbtn" value="Limpar"/>
             <input class="btn btn-primary" type="submit" value="Entrar"><br><br>
             <span class="glyphicon glyphicon-log-out" aria-hidden="true"  ></span>&nbsp;Esqueceu sua senha?
