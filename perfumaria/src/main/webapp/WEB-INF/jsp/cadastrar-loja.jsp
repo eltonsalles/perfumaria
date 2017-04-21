@@ -14,11 +14,11 @@
             <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required>
         </div>
         
-        <div class="form-group col-md-2 <c:if test="${listaErro.cpf eq true}">has-error</c:if>">
+        <div class="form-group col-md-4 <c:if test="${listaErro.cpf eq true}">has-error</c:if>">
             <label class="control-label" for="cnpj">CPF</label>
             <input type="text" class="form-control" id="cpf" placeholder="xx.xxx.xxx/xxxx-xx" name="cnpj" maxlength="18" required><!--pattern="^\d{3}.\d{3}.\d{3}-\d{2}$"-->
         </div>
-        <div class="form-group col-md-2 status">
+        <div class="form-group col-md-3 status">
             <label>Status</label><br>
             <label class="radio-inline">
                 <input type="radio" id="ativo" value="true" name="status" checked required>Ativo
@@ -27,12 +27,12 @@
                 <input type="radio" id="inativo" value="false" name="status" required>Inativo
             </label>
         </div>
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-5">
             <label for="razao-social">Razão Social</label>
             <input type="tecxt" class="form-control"placeholder="Nome da empresa" id="razao-social" name="razao-social" required>
         </div>
         <div class="form-group col-md-3">
-            <label for="nome-fantasia">Razão Social</label>
+            <label for="nome-fantasia">Nome Fantasia</label>
             <input type="tecxt" class="form-control"placeholder="Nome Fantasia" id="razao-social" name="nome-fantasia" required>
         </div>
        
