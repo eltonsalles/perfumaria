@@ -36,7 +36,7 @@
             <label class="control-label" for="medida">Qtd. Medida</label>
             <input type="int" class="form-control" id="qtd-medida" placeholder="Quantidade" name="qtd-medida" maxlength="7"  required> 
         </div>
-        <div style="padding: 0; "class="form-group col-md-1">
+        <div class="form-group col-md-1" <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="medida">Tipo</label>
             <select class="form-control" id="uni-medida" name="uni-medida" required><c:if test="${errorValidation eq true}">has-error</c:if>">
                 <option value="">---</option>
@@ -67,7 +67,6 @@
             <label class="control-label" for="descricao">Descrição</label>
             <textarea class="form-control" rows="3"></textarea>
         </div>
-
         <div class="form-group col-md-offset-10 col-md-2">
             <a href="#" class="btn btn-default">
                 Excluir&nbsp;&nbsp;<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
