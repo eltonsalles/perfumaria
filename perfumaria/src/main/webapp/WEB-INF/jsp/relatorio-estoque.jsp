@@ -7,11 +7,11 @@
         <h2>Relatório de Estoque</h2>
             <div class="form-group col-md-4 <c:if test="${errorValidation eq true}">has-error</c:if>">
                 <label for="relat-estoque">Data Inicial:</label>
-                <input type="date" id="datai" name="datainicial"/>&nbsp;&nbsp;
+                <input type="date" id="datai" name="data-inicial"/>&nbsp;&nbsp;
             </div>
             <div class="form-group col-md-4 <c:if test="${errorValidation eq true}">has-error</c:if>">
                 <label for="relat-estoque">Data Final:</label>
-                <input type="date" id="dataf" name="datafinal"/>&nbsp;
+                <input type="date" id="dataf" name="data-final"/>&nbsp;
             </div>
             <div class="form-group col-md-offset-8 col-md-4">
                 <button type="submit" class="btn btn-primary">
