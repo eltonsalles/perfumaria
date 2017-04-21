@@ -31,6 +31,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,7 +90,7 @@ public abstract class DaoAbstract {
             for (int i = 0; i < methods.size(); i++) {
                 // Pega um objeto do ArrayList
                 Object[] object = methods.get(i);
-                
+
                 // Cria um objeto do tipo Method com a String da primeira
                 // posição do objeto
                 Method method = nameClass.getClass().getMethod(
@@ -106,12 +107,12 @@ public abstract class DaoAbstract {
                         // da classe de associação
                         Method m = objectAssociation.getClass().getMethod(
                                 (String) object[j]);
-                        
+
                         // Seta o valor em PreparedStatement conforme o tipo
                         setStmt(objectAssociation, m, stmt, pos);
                         pos++;
                     }
-                // Se não que irá retornar apenas uma String (Annotation Columm)
+                    // Se não que irá retornar apenas uma String (Annotation Columm)
                 } else {
                     // Seta o valor em PreparedStatement conforme o tipo
                     setStmt(nameClass, method, stmt, pos);
@@ -133,12 +134,102 @@ public abstract class DaoAbstract {
 
             // Printa o erro
             e.printStackTrace();
-        } catch (NoSuchMethodException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             ex.printStackTrace();
         }
 
         return result;
+    }
+
+    public static ArrayList<Object> selectAll(Object nameClass) {
+        try {
+            if (nameClass.getClass().isAnnotationPresent(Table.class)) {
+                ArrayList<Object> list = new ArrayList<>();
+                ResultSet result;
+
+                SqlSelect sql = new SqlSelect();
+
+                Table entity = nameClass.getClass().getAnnotation(Table.class);
+                sql.setEntity(entity.name());
+                sql.addColumn("*");
+
+                Transaction.open();
+
+                java.sql.Connection conn = Transaction.get();
+
+                PreparedStatement stmt = conn.prepareStatement(sql.getInstruction());
+
+                result = stmt.executeQuery();
+
+                while (result.next()) {
+                    Object object = nameClass.getClass().newInstance();
+
+                    for (Field declaredField : object.getClass()
+                            .getDeclaredFields()) {
+                        if (declaredField.isAnnotationPresent(Association.class)) {
+                            // 
+                        } else if (declaredField.isAnnotationPresent(
+                                ForeignKey.class)) {
+                            //
+                        } else {
+                            Columm columm = declaredField.getAnnotation(Columm.class);
+
+                            if (declaredField.getType().getName().equalsIgnoreCase("java.util.Date")) {
+                                Date date = result.getDate(columm.name());
+                                Method method = object.getClass().getMethod(nameMethodSet(declaredField.getName()), Date.class);
+                                
+                                method.invoke(object, date);
+
+                            } else if (declaredField.getType().getName().equalsIgnoreCase("java.lang.String")) {
+                                String value = result.getString(columm.name());
+                                Method method = object.getClass().getMethod(nameMethodSet(declaredField.getName()), String.class);
+
+                                method.invoke(object, value);
+
+                            } else if (declaredField.getType().getName().equalsIgnoreCase("int")) {
+                                int value = result.getInt(columm.name());
+                                Method method = object.getClass().getMethod(nameMethodSet(declaredField.getName()), Integer.class);
+
+                                method.invoke(object, value);
+
+                            } else if (declaredField.getType().getName().equalsIgnoreCase("float")) {
+                                float value = result.getFloat(columm.name());
+                                Method method = object.getClass().getMethod(nameMethodSet(declaredField.getName()), Float.class);
+
+                                method.invoke(object, value);
+
+                            } else if (declaredField.getType().getName().equalsIgnoreCase("double")) {
+                                double value = result.getDouble(columm.name());
+                                Method method = object.getClass().getMethod(nameMethodSet(declaredField.getName()), Double.class);
+
+                                method.invoke(object, value);
+
+                            } else if (declaredField.getType().getName().equalsIgnoreCase("boolean")) {
+                                boolean value = result.getBoolean(columm.name());
+                                Method method = object.getClass().getMethod(nameMethodSet(declaredField.getName()), Boolean.class);
+
+                                method.invoke(object, value);
+
+                            } else if (declaredField.getType().getName().equalsIgnoreCase("char")) {
+                                char value = result.getString(columm.name()).charAt(0);
+                                Method method = object.getClass().getMethod(nameMethodSet(declaredField.getName()), char.class);
+
+                                method.invoke(object, value);
+
+                            } else {
+                                throw new Exception("Tipo de campo não identificado!");
+                            }
+                        }
+                    }
+                }
+
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+        }
+
+        return null;
     }
 
     /**
@@ -150,6 +241,18 @@ public abstract class DaoAbstract {
     private static String nameMethod(String field) {
         char firstLetter = field.charAt(0);
         return "get" + String.valueOf(firstLetter)
+                .toUpperCase() + field.substring(1);
+    }
+
+    /**
+     * Converter a string para o nome de um método padrão do tipo getter
+     *
+     * @param field
+     * @return
+     */
+    private static String nameMethodSet(String field) {
+        char firstLetter = field.charAt(0);
+        return "set" + String.valueOf(firstLetter)
                 .toUpperCase() + field.substring(1);
     }
 
@@ -176,6 +279,17 @@ public abstract class DaoAbstract {
     }
 
     /**
+     *
+     *
+     * @param field
+     * @param sql
+     * @param methods
+     */
+    private static void getRowDataColumm(Field field, SqlInsert sql,
+            ArrayList<Object[]> methods) {
+    }
+
+    /**
      * Insere várias colunas na instrução SQL
      *
      * @param nameClass
@@ -198,8 +312,7 @@ public abstract class DaoAbstract {
             Object object = method.invoke(nameClass);
 
             // Cria um vetor com o tamanho dos atributos mais 1
-            String[] m = new String[object.getClass().getDeclaredFields()
-                    .length + 1];
+            String[] m = new String[object.getClass().getDeclaredFields().length + 1];
 
             // Na primeira posição sempre vai o método que chama a outra classe
             m[0] = nameMethod(association.referenced());
@@ -222,8 +335,7 @@ public abstract class DaoAbstract {
             // Adiciona o vetor com os nomes dos métodos no ArrayList
             methods.add(m);
         } catch (NoSuchMethodException | SecurityException |
-                IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+                IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
@@ -252,18 +364,18 @@ public abstract class DaoAbstract {
 
     /**
      * Seta o valor em PreparedStatement para prepar o SQL para inserção
-     * 
+     *
      * @param nameClass
      * @param method
      * @param stmt
-     * @param cont 
+     * @param cont
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private static void setStmt(Object nameClass, Method method,
             PreparedStatement stmt, int cont) {
         try {
             String nameMethod = method.getReturnType().getName();
-            
+
             if (nameMethod.equalsIgnoreCase("java.util.Date")) {
                 Date data = (Date) method.invoke(nameClass);
                 java.sql.Date dataSql = new java.sql.Date(data.getTime());
