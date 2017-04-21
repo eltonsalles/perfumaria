@@ -28,11 +28,7 @@ package br.senac.tads.pi3a.validation;
  * @author Joao
  */
 public abstract class validationAbstract {
-    
+
     public abstract boolean isValid(Object objeto);
-  
-    
-            
-            
-            
+
 }

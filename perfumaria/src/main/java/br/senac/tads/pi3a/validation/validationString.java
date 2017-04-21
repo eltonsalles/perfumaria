@@ -23,7 +23,6 @@
  */
 package br.senac.tads.pi3a.validation;
 
-
 /**
  *
  * @author Joao
@@ -32,8 +31,8 @@ public class validationString extends validationAbstract {
 
     @Override
     public boolean isValid(Object objeto) {
-       // verificar se a string tem numeros caso tenha da false e caso não da true
-return objeto.toString().matches("[a-zA-Zà-úÀ-Ú ]{1,}");
-    
-}
+        // verificar se a string tem numeros caso tenha da false e caso não da true
+        return objeto.toString().matches("[a-zA-Zà-úÀ-Ú ]{1,}");
+
+    }
 }

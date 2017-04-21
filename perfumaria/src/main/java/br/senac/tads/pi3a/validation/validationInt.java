@@ -27,20 +27,18 @@ package br.senac.tads.pi3a.validation;
  *
  * @author Joao
  */
-public class validationInt extends validationAbstract{
+public class validationInt extends validationAbstract {
 
     @Override
     public boolean isValid(Object objeto) {
-        
-                    try {
-                Integer.parseInt(objeto.toString());
-                return true;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        
+
+        try {
+            Integer.parseInt(objeto.toString());
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
     }
-    
-    
-    
+
 }

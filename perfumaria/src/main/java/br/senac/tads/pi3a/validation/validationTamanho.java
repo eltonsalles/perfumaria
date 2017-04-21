@@ -27,27 +27,23 @@ package br.senac.tads.pi3a.validation;
  *
  * @author Joao
  */
-public class validationTamanho extends validationAbstract{
+public class validationTamanho extends validationAbstract {
 
     int tamanho;
 
     public validationTamanho() {
         this.tamanho = 0;
     }
-    
-    
 
     public void setTamanho(int tamanho) {
         this.tamanho = tamanho;
     }
-    
-    
-@Override
+
+    @Override
     public boolean isValid(Object objeto) {
-      
+
         return objeto.toString().length() <= tamanho;
-       
-     
+
     }
 
 }

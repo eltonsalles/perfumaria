@@ -27,17 +27,12 @@ package br.senac.tads.pi3a.validation;
  *
  * @author Joao
  */
-public class validationVazio extends validationAbstract{
+public class validationVazio extends validationAbstract {
 
     @Override
     public boolean isValid(Object objeto) {
-      
-        if(objeto.toString().isEmpty())
-        return true;
-        else
-            return false;
+
+        return objeto.toString().isEmpty();
     }
-    
-    
-    
+
 }

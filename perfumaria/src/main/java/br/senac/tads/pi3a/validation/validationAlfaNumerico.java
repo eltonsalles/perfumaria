@@ -30,14 +30,13 @@ import java.util.regex.Pattern;
  *
  * @author Joao
  */
-public class validationAlfaNumerico extends validationAbstract{
+public class validationAlfaNumerico extends validationAbstract {
 
     @Override
     public boolean isValid(Object objeto) {
 
-       
- return objeto.toString().matches("[a-zA-Zà-úÀ-Ú0-9 .]{1,}");      
-       
+        return objeto.toString().matches("[a-zA-Zà-úÀ-Ú0-9 .]{1,}");
+
     }
-    
+
 }

@@ -31,19 +31,17 @@ import java.util.Date;
  *
  * @author Joao
  */
-public class validationDate extends validationAbstract{
-    
-    
+public class validationDate extends validationAbstract {
+
     /**
      * Converte a data que será digitada em String para Date
-     * 
+     *
      * @param objeto
-     * @return 
+     * @return
      */
-
     @Override
     public boolean isValid(Object objeto) {
-   
+
         Date dataValida, inicio, fim;
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -52,13 +50,11 @@ public class validationDate extends validationAbstract{
             dataValida = sdf.parse(objeto.toString());
             inicio = sdf.parse("01/01/1900");
             fim = new Date();
-            
+
             // caso seja uma data valida retorna trrue caso contrario false
             return dataValida.after(inicio) && dataValida.before(fim);
         } catch (ParseException e) {
             return false;
         }
     }
-    }
-    
-
+}
