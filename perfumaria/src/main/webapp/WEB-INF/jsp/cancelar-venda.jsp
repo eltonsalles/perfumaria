@@ -1,18 +1,12 @@
-<%-- 
-    Document   : cancelar-venda
-    Created on : 14/04/2017, 01:20:56
-    Author     : Fabiano
---%>
-
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Cancelar Venda</h2>
     <form>
-        <div class="form-group col-md-6">
-            <label for="pesquisar">Pesquisar</label>
+        <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
                 <input type="text" class="form-control" id="pesquisar" placeholder="Digite nome ou código" name="pesquisar">
                 <span class="input-group-btn">
