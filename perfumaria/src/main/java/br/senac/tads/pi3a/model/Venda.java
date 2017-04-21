@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Elton.
+ * Copyright 2017 Daniel Freitas.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,37 +23,40 @@
  */
 package br.senac.tads.pi3a.model;
 
-import br.senac.tads.pi3a.annotation.Association;
 import br.senac.tads.pi3a.annotation.Columm;
+import br.senac.tads.pi3a.annotation.ForeignKey;
 import br.senac.tads.pi3a.annotation.Table;
+import java.util.Date;
 
 /**
  *
- * @author Elton
+ * @author Douglas Oliveira
  */
-@Table(name = "loja")
-public class Loja extends ModelAbstract {
+@Table(name = "venda")
+public class Venda extends ModelAbstract {
+
+    @Columm(name = "data_venda")
+    private Date dataVenda;
 
     @Columm(name = "status")
     private boolean status;
 
-    @Columm(name = "cnjp")
-    private String cnpj;
+    @ForeignKey(name = "cliente_id", referenced = "Cliente", referencedName = "id")
+    private Cliente cliente;
+    
+    @ForeignKey(name = "funcionario_id", referenced = "Funcionario", referencedName = "id")
+    private Funcionario funcionario;
+    
+    @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
+    private Loja loja;
 
-    @Columm(name = "razao_social")
-    private String razaoSocial;
+    public Date getDataVenda() {
+        return dataVenda;
+    }
 
-    @Columm(name = "nome_fantasia")
-    private String nomeFantasia;
-
-    @Columm(name = "telefone")
-    private String telefone;
-
-    @Columm(name = "email")
-    private String email;
-
-    @Association(referenced = "Endereco")
-    private Endereco endereco;
+    public void setDataVenda(Date dataVenda) {
+        this.dataVenda = dataVenda;
+    }
 
     public boolean isStatus() {
         return status;
@@ -63,44 +66,29 @@ public class Loja extends ModelAbstract {
         this.status = status;
     }
 
-    public String getCnpj() {
-        return cnpj;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
-    public String getRazaoSocial() {
-        return razaoSocial;
+    public Funcionario getFuncionario() {
+        return funcionario;
     }
 
-    public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
+    public void setFuncionario(Funcionario funcionario) {
+        this.funcionario = funcionario;
     }
 
-    public String getNomeFantasia() {
-        return nomeFantasia;
+    public Loja getLoja() {
+        return loja;
     }
 
-    public void setNomeFantasia(String nomeFantasia) {
-        this.nomeFantasia = nomeFantasia;
+    public void setLoja(Loja loja) {
+        this.loja = loja;
     }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
+    
+    
 }
