@@ -68,6 +68,16 @@ public class ControllerProduto implements Logica {
         
         return "/WEB-INF/jsp/historico-produto.jsp";
     }
+    public String manutencao(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // Se o formulário for submetido por post então entra aqui
+        if (request.getMethod().equalsIgnoreCase("post")) {
+            // Implatar validação...
+            
+            
+        }
+        
+        return "/WEB-INF/jsp/manutencao-produto.jsp";
+    }
     
 
     @Override
