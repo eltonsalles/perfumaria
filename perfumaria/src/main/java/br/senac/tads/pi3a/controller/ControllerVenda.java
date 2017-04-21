@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Elton
  */
-public class ControllerProduto implements Logica {
+public class ControllerVenda implements Logica {
     @Override
     public String novo(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Se o formulário for submetido por post então entra aqui
@@ -46,9 +46,9 @@ public class ControllerProduto implements Logica {
             
         }
         
-        return "/WEB-INF/jsp/cadastrar-produto.jsp";
+        return "/WEB-INF/jsp/cadastrar-venda.jsp";
     }
-    public String estoque(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String relatorio(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Se o formulário for submetido por post então entra aqui
         if (request.getMethod().equalsIgnoreCase("post")) {
             // Implatar validação...
@@ -56,25 +56,13 @@ public class ControllerProduto implements Logica {
             
         }
         
-        return "/WEB-INF/jsp/relatorio-estoque.jsp";
+        return "/WEB-INF/jsp/relatorio-vendas.jsp";
     }
-    public String historico(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // Se o formulário for submetido por post então entra aqui
-        if (request.getMethod().equalsIgnoreCase("post")) {
-            // Implatar validação...
-            
-            
-        }
-        
-        return "/WEB-INF/jsp/historico-produto.jsp";
-    }
-    
-
     @Override
     public String editar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public String excluir(HttpServletRequest request, HttpServletResponse response) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
