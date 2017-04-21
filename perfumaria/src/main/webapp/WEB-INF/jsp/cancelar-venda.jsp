@@ -38,8 +38,7 @@
      <div class="input-group">
                  <label for="Total">Total</label>
                <input type="text" class="form-control" id="total"  name="Total">
-                </div>
-    
+                </div>    
     <div class="form-group col-md-offset-7 col-md-5">
             <a href="#" class="btn btn-default">
                 Excluir&nbsp;&nbsp;<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
@@ -47,8 +46,6 @@
         <button type="reset" class="btn btn-default">
                 Cancelar&nbsp;&nbsp;<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
          </button>
-       
-        </div>
-    
+    </div>    
 </div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>
