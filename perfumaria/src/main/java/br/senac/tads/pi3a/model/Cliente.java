@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Elton.
+ * Copyright 2017 Daniel Freitas.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,57 +24,52 @@
 package br.senac.tads.pi3a.model;
 
 import br.senac.tads.pi3a.annotation.Association;
-import java.util.Date;
 import br.senac.tads.pi3a.annotation.Columm;
 import br.senac.tads.pi3a.annotation.ForeignKey;
 import br.senac.tads.pi3a.annotation.Table;
+import java.util.Date;
 
 /**
  *
- * @author Elton
+ * @author Douglas Oliveira
  */
-@Table(name = "funcionario")
-public class Funcionario extends ModelAbstract {
-    @Columm(name = "status")
+@Table(name="cliente")
+public class Cliente extends ModelAbstract {
+    
+    @Columm (name ="status")
     private boolean status;
     
-    @Columm(name = "data_admissao")
-    private Date dataAdmissao;
+    @Columm(name="cpf")
+    private boolean cpf;
     
-    @Columm(name = "cargo")
-    private String cargo;
-    
-    @Columm(name = "nome")
+    @Columm(name="nome")
     private String nome;
     
-    @Columm(name = "cpf")
-    private String cpf;
-    
-    @Columm(name = "data_nasc")
+    @Columm(name="data_nasc")
     private Date dataNascimento;
     
-    @Columm(name = "sexo")
-    private char sexo;
+    @Columm(name="sexo")
+    private String sexo;
     
-    @Columm(name = "est_civil")
+    @Columm(name="est_civil")
     private String estadoCivil;
     
-    @Columm(name = "celular")
+    @Columm(name="celular")
     private String celular;
     
-    @Columm(name = "telefone")
+    @Columm(name="telefone")
     private String telefone;
     
-    @Columm(name = "email")
+    @Columm(name="email")
     private String email;
     
     @Association(referenced = "Endereco")
     private Endereco endereco;
     
-    @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
+      @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
     private Loja loja;
 
-    public boolean getStatus() {
+    public boolean isStatus() {
         return status;
     }
 
@@ -82,20 +77,12 @@ public class Funcionario extends ModelAbstract {
         this.status = status;
     }
 
-    public Date getDataAdmissao() {
-        return dataAdmissao;
+    public boolean isCpf() {
+        return cpf;
     }
 
-    public void setDataAdmissao(Date dataAdmissao) {
-        this.dataAdmissao = dataAdmissao;
-    }
-
-    public String getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(String cargo) {
-        this.cargo = cargo;
+    public void setCpf(boolean cpf) {
+        this.cpf = cpf;
     }
 
     public String getNome() {
@@ -106,14 +93,6 @@ public class Funcionario extends ModelAbstract {
         this.nome = nome;
     }
 
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
     public Date getDataNascimento() {
         return dataNascimento;
     }
@@ -122,11 +101,11 @@ public class Funcionario extends ModelAbstract {
         this.dataNascimento = dataNascimento;
     }
 
-    public char getSexo() {
+    public String getSexo() {
         return sexo;
     }
 
-    public void setSexo(char sexo) {
+    public void setSexo(String sexo) {
         this.sexo = sexo;
     }
 
@@ -177,4 +156,6 @@ public class Funcionario extends ModelAbstract {
     public void setLoja(Loja loja) {
         this.loja = loja;
     }
+    
+    
 }
