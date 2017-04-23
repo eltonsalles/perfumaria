@@ -79,7 +79,7 @@ public class ControllerFuncionario implements Logica {
             Funcionario f1 = new Funcionario();
             ArrayList<Object> listaFuncionarios = DaoFuncionario.selectAll(f1);
             
-            if (DaoFuncionario.insert(funcionario)) {
+            if (DaoFuncionario.insert(funcionario) != -1) {
                 // Deu tudo certo...
             } else {
                 // Deu errado...
