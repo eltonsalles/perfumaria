@@ -23,7 +23,9 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoCliente;
 import br.senac.tads.pi3a.dao.DaoFuncionario;
+import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Endereco;
 import br.senac.tads.pi3a.model.Funcionario;
 import br.senac.tads.pi3a.model.Loja;
@@ -43,7 +45,41 @@ public class ControllerCliente implements Logica {
         if (request.getMethod().equalsIgnoreCase("post")) {
             // Implatar validação...
             
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             
+            Cliente cliente = new Cliente();
+            cliente.setStatus(true);
+            cliente.setCpf(request.getParameter("cpf").replaceAll("\\D", ""));
+            cliente.setNome(request.getParameter("nome"));
+            
+            Date dataNascimento = new Date(sdf.parse(request.getParameter("data-nascimento")).getTime());
+            cliente.setDataNascimento(dataNascimento);
+            cliente.setSexo(request.getParameter("sexo").charAt(0));
+            cliente.setEstadoCivil(request.getParameter("estado-civil"));
+            cliente.setCelular(request.getParameter("celular").replaceAll("\\D", ""));
+            cliente.setTelefone(request.getParameter("telefone").replaceAll("\\D", ""));
+            cliente.setEmail(request.getParameter("email"));
+            
+            Endereco endereco = new Endereco();
+            endereco.setLogradouro(request.getParameter("logradouro"));
+            endereco.setNumero(request.getParameter("numero"));
+            endereco.setComplemento(request.getParameter("complemento"));
+            endereco.setBairro(request.getParameter("bairro"));
+            endereco.setCep(request.getParameter("cep").replaceAll("\\D", ""));
+            endereco.setCidade(request.getParameter("cidade"));
+            endereco.setUf(request.getParameter("uf"));
+            
+            cliente.setEndereco(endereco);
+            
+            Loja loja = new Loja();
+            loja.setId(1);
+            cliente.setLoja(loja);
+            
+            if (DaoCliente.insert(cliente) != -1) {
+                // Deu certo
+            } else {
+                // Deu errado
+            }
         }
         
         return "/WEB-INF/jsp/cadastrar-cliente.jsp";
