@@ -176,33 +176,7 @@ public abstract class DaoAbstract {
         ResultSet result;
 
         try {
-            // Se não tiver a anotação então não continua
-            if (!nameClass.getClass().isAnnotationPresent(Table.class)) {
-                return null;
-            }
-
-            // Cria um objeto do tipo SqlSelect para montar a intrução SQL
-            SqlSelect sql = new SqlSelect();
-
-            // Pega o valor da anotação que representa a tabela
-            Table entity = nameClass.getClass().getAnnotation(Table.class);
-            sql.setEntity(entity.name());
-
-            // Traz todas as colunas da tabela
-            sql.addColumn("*");
-
-            // Abre a conexão
-            Transaction.open();
-
-            // Pega a conexão aberta
-            java.sql.Connection conn = Transaction.get();
-
-            // Prepara o sql para fazer a seleção
-            PreparedStatement stmt = conn.prepareStatement(
-                    sql.getInstruction());
-
-            // Executa a instrução SQL
-            result = stmt.executeQuery();
+            result = getResultSetAll(nameClass);
 
             // Percorre o resultado da consulta para montar a lista de retorno
             while (result.next()) {
@@ -456,6 +430,60 @@ public abstract class DaoAbstract {
     }
     
     /**
+     * Retorna uma consulta do banco de dados
+     * 
+     * @param nameClass
+     * @return 
+     */
+    @SuppressWarnings("CallToPrintStackTrace")
+    private static ResultSet getResultSetAll(Object nameClass) {
+        // Variável para manipular o retorno do banco de dados
+        ResultSet result;
+
+        try {
+            // Se não tiver a anotação então não continua
+            if (!nameClass.getClass().isAnnotationPresent(Table.class)) {
+                return null;
+            }
+
+            // Cria um objeto do tipo SqlSelect para montar a intrução SQL
+            SqlSelect sql = new SqlSelect();
+
+            // Pega o valor da anotação que representa a tabela
+            Table entity = nameClass.getClass().getAnnotation(Table.class);
+            sql.setEntity(entity.name());
+
+            // Traz todas as colunas da tabela
+            sql.addColumn("*");
+
+            // Abre a conexão
+            Transaction.open();
+
+            // Pega a conexão aberta
+            java.sql.Connection conn = Transaction.get();
+
+            // Prepara o sql para fazer a seleção
+            PreparedStatement stmt = conn.prepareStatement(
+                    sql.getInstruction());
+
+            // Executa a instrução SQL
+            result = stmt.executeQuery();
+
+            return result;
+
+        } catch (SQLException | SecurityException
+                | IllegalArgumentException e) {
+            // Reseta as transações no banco de dados e fecha a conexão
+            Transaction.rollback();
+            
+            // Printa o erro
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+    
+    /**
      * Cria um objeto com seus respectivos valores conforme o ResultSet passado
      * 
      * @param nameClass Object
@@ -467,10 +495,16 @@ public abstract class DaoAbstract {
         try {
             // Cria um objeto igual ao passado no parâmetro
             Object object = nameClass.getClass().newInstance();
+            
+            // Junta os atributos da classe e da super classe
+            Field[] fieldsA = object.getClass().getSuperclass().getDeclaredFields();
+            Field[] fieldsB = object.getClass().getDeclaredFields();
+            Field[] fieldsC = new Field[fieldsA.length + fieldsB.length];
+            System.arraycopy(fieldsA, 0, fieldsC, 0, fieldsA.length);
+            System.arraycopy(fieldsB, 0, fieldsC, fieldsA.length, fieldsB.length);
 
             // Percorre todos os atributos do objeto
-            for (Field declaredField : object.getClass()
-                    .getDeclaredFields()) {
+            for (Field declaredField : fieldsC) {
                 if (declaredField.isAnnotationPresent(Association.class)) {
                     Association association = declaredField
                             .getAnnotation(Association.class);
@@ -510,7 +544,7 @@ public abstract class DaoAbstract {
                     Object o = referenced.newInstance();
 
                     // Chama recursivamente o preparedObject
-                    Object objectReferenced = preparedObject(o, result);
+                    Object objectReferenced = preparedObject(o, getResultSetAll(o));
 
                     // Pega o método do objeto para setar o 
                     // objeto da associação
