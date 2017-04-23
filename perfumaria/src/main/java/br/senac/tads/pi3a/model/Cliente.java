@@ -40,7 +40,7 @@ public class Cliente extends ModelAbstract {
     private boolean status;
     
     @Columm(name="cpf")
-    private boolean cpf;
+    private String cpf;
     
     @Columm(name="nome")
     private String nome;
@@ -49,7 +49,7 @@ public class Cliente extends ModelAbstract {
     private Date dataNascimento;
     
     @Columm(name="sexo")
-    private String sexo;
+    private char sexo;
     
     @Columm(name="est_civil")
     private String estadoCivil;
@@ -66,10 +66,10 @@ public class Cliente extends ModelAbstract {
     @Association(referenced = "Endereco")
     private Endereco endereco;
     
-      @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
+    @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
     private Loja loja;
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
@@ -77,11 +77,11 @@ public class Cliente extends ModelAbstract {
         this.status = status;
     }
 
-    public boolean isCpf() {
+    public String getCpf() {
         return cpf;
     }
 
-    public void setCpf(boolean cpf) {
+    public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
@@ -101,11 +101,11 @@ public class Cliente extends ModelAbstract {
         this.dataNascimento = dataNascimento;
     }
 
-    public String getSexo() {
+    public char getSexo() {
         return sexo;
     }
 
-    public void setSexo(String sexo) {
+    public void setSexo(char sexo) {
         this.sexo = sexo;
     }
 
@@ -156,6 +156,4 @@ public class Cliente extends ModelAbstract {
     public void setLoja(Loja loja) {
         this.loja = loja;
     }
-    
-    
 }
