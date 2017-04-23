@@ -206,88 +206,15 @@ public abstract class DaoAbstract {
 
             // Percorre o resultado da consulta para montar a lista de retorno
             while (result.next()) {
-                // Cria um objeto igual ao passado no parâmetro de selectAll
-                Object object = nameClass.getClass().newInstance();
-
-                // Percorre todos os atributos do objeto
-                for (Field declaredField : object.getClass()
-                        .getDeclaredFields()) {
-                    if (declaredField.isAnnotationPresent(Association.class)) {
-                        Association association = declaredField
-                                .getAnnotation(Association.class);
-
-                        // Cria um objeto conforme a associação
-                        Class referenced = Class.forName(
-                                "br.senac.tads.pi3a.model."
-                                        + association.referenced());
-                        
-                        // Cria uma instância do objeto da associação
-                        Object objectReferenced = referenced.newInstance();
-
-                        // Percorre todos os atributos do objeto da associação
-                        for (Field f : objectReferenced.getClass()
-                                .getDeclaredFields()) {
-                            if (f.isAnnotationPresent(Columm.class)) {
-                                getRowDataColumm(objectReferenced, f, result);
-                            }
-                        }
-
-                        // Pega o método do objeto para setar o 
-                        // objeto da associação
-                        Method methodReferenced = nameClass.getClass()
-                                .getMethod(nameMethodSet(
-                                        declaredField.getName()),
-                                        objectReferenced.getClass());
-                        
-                        // Invoca o método
-                        methodReferenced.invoke(object, objectReferenced);
-
-                    } else if (declaredField.isAnnotationPresent(
-                            ForeignKey.class)) {
-                        ForeignKey foreignKey = declaredField.getAnnotation(
-                                ForeignKey.class);
-
-                        // Cria um objeto conforme a associação
-                        Class referenced = Class.forName(
-                                "br.senac.tads.pi3a.model."
-                                        + foreignKey.referenced());
-                        
-                        // Cria uma instância do objeto da associação
-                        Object objectReferenced = referenced.newInstance();
-                        
-                        // Percorre todos os atributos do objeto da associação
-                        for (Field f : objectReferenced.getClass()
-                                .getDeclaredFields()) {
-                            if (f.isAnnotationPresent(Columm.class)) {
-                                getRowDataColumm(objectReferenced, f, result);
-                            }
-                        }
-
-                        // Pega o método do objeto para setar o 
-                        // objeto da associação
-                        Method methodReferenced = nameClass.getClass()
-                                .getMethod(nameMethodSet(
-                                        foreignKey.referenced()),
-                                        objectReferenced.getClass());
-                        
-                        // Invoca o método
-                        methodReferenced.invoke(object, objectReferenced);
-                    } else {
-                        getRowDataColumm(object, declaredField, result);
-                    }
-                }
-
-                // Depois de montar o objeto ele é adicionado na lista
+                Object object = preparedObject(nameClass, result);
                 list.add(object);
             }
             
             // Retorna a lista preenchida
             return list;
 
-        } catch (SQLException | InstantiationException | IllegalAccessException
-                | SecurityException | ClassNotFoundException
-                | NoSuchMethodException | IllegalArgumentException
-                | InvocationTargetException e) {
+        } catch (SQLException | SecurityException
+                | IllegalArgumentException e) {
             // Reseta as transações no banco de dados e fecha a conexão
             Transaction.rollback();
             
@@ -517,14 +444,96 @@ public abstract class DaoAbstract {
                 stmt.setString(cont, String.valueOf(method.invoke(nameClass)));
 
             } else if (nameMethod.contains("br.senac.tads.pi3a.model")) {
-                Object l = method.invoke(nameClass);
-                Method w = l.getClass().getMethod("getId");
-                stmt.setInt(cont, (int) w.invoke(l));
+                Object o = method.invoke(nameClass);
+                Method m = o.getClass().getMethod("getId");
+                stmt.setInt(cont, (int) m.invoke(o));
             } else {
                 throw new Exception("Tipo de campo não identificado!");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * Cria um objeto com seus respectivos valores conforme o ResultSet passado
+     * 
+     * @param nameClass Object
+     * @param result ResultSet
+     * @return Object
+     */
+    @SuppressWarnings("CallToPrintStackTrace")
+    private static Object preparedObject(Object nameClass, ResultSet result) {
+        try {
+            // Cria um objeto igual ao passado no parâmetro
+            Object object = nameClass.getClass().newInstance();
+
+            // Percorre todos os atributos do objeto
+            for (Field declaredField : object.getClass()
+                    .getDeclaredFields()) {
+                if (declaredField.isAnnotationPresent(Association.class)) {
+                    Association association = declaredField
+                            .getAnnotation(Association.class);
+
+                    // Cria um objeto conforme a associação
+                    Class referenced = Class.forName(
+                            "br.senac.tads.pi3a.model."
+                                    + association.referenced());
+                    
+                    // Cria uma instância do objeto da associação
+                    Object o = referenced.newInstance();
+
+                    // Chama recursivamente o preparedObject
+                    Object objectReferenced = preparedObject(o, result);
+
+                    // Pega o método do objeto para setar o 
+                    // objeto da associação
+                    Method methodReferenced = nameClass.getClass()
+                            .getMethod(nameMethodSet(
+                                    declaredField.getName()),
+                                    objectReferenced.getClass());
+
+                    // Invoca o método
+                    methodReferenced.invoke(object, objectReferenced);
+
+                } else if (declaredField.isAnnotationPresent(
+                        ForeignKey.class)) {
+                    ForeignKey foreignKey = declaredField.getAnnotation(
+                            ForeignKey.class);
+
+                    // Cria um objeto conforme a associação
+                    Class referenced = Class.forName(
+                            "br.senac.tads.pi3a.model."
+                                    + foreignKey.referenced());
+                    
+                    // Cria uma instância do objeto da associação
+                    Object o = referenced.newInstance();
+
+                    // Chama recursivamente o preparedObject
+                    Object objectReferenced = preparedObject(o, result);
+
+                    // Pega o método do objeto para setar o 
+                    // objeto da associação
+                    Method methodReferenced = nameClass.getClass()
+                            .getMethod(nameMethodSet(
+                                    foreignKey.referenced()),
+                                    objectReferenced.getClass());
+
+                    // Invoca o método
+                    methodReferenced.invoke(object, objectReferenced);
+                } else {
+                    getRowDataColumm(object, declaredField, result);
+                }
+            }
+            
+            return object;
+        } catch (InstantiationException | IllegalAccessException
+                | SecurityException | ClassNotFoundException
+                | NoSuchMethodException | IllegalArgumentException
+                | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        
+        return null;
     }
 }
