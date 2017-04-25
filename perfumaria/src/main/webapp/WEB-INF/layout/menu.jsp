@@ -2,7 +2,7 @@
                 <div class="col-md-2 sidebar">
                     <ul class="nav nav-sidebar">
                         <li class="active">
-                            <a href="#">
+                            <a href="/perfumaria/">
                                 <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
                                 Inicio
                             </a>
@@ -15,13 +15,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Cliente&action=novo">
                                         <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                                         Cadastrar
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Cliente&action=consultar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
@@ -36,13 +36,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Funcionario&action=novo">
                                         <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                                         Cadastrar
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Funcionario&action=consultar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
@@ -57,13 +57,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Loja&action=novo">
                                         <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                                         Cadastrar
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Loja&action=consultar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
@@ -78,19 +78,19 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Produto&action=novo">
                                         <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                                         Cadastrar
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Produto&action=consultar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Produto&action=movimentar">
                                         <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
                                         Movimentar
                                     </a>
@@ -105,13 +105,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Venda&action=novo">
                                         <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                                         Cadastrar
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Venda&action=consultar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
@@ -126,13 +126,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Usuario&action=novo">
                                         <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                                         Cadastrar
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Usuario&action=consultar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
@@ -147,19 +147,19 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Venda&action=relatorio">
                                         <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
                                         Vendas
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Produto&action=relatorio">
                                         <span class="glyphicon glyphicon-tag" aria-hidden="true"></span>
                                         Estoque
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/perfumaria/sistema?controller=Produto&action=historico">
                                         <span class="glyphicon glyphicon-inbox" aria-hidden="true"></span>
                                         Histórico de Produto
                                     </a>
