@@ -55,7 +55,7 @@ public class Loja extends ModelAbstract {
     @Association(referenced = "Endereco")
     private Endereco endereco;
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
@@ -103,4 +103,11 @@ public class Loja extends ModelAbstract {
         this.email = email;
     }
 
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
 }
