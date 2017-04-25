@@ -31,6 +31,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -57,16 +58,28 @@ public class ControllerServlet extends HttpServlet {
             
             // Variável com parâmetros padrão para cada action
             Class<?> paramTypes[] = {
-                HttpServletRequest.class, HttpServletResponse.class};
+                HttpServletRequest.class, HttpServletResponse.class,
+                HttpSession.class};
             
             // Cria o método para invoca-lo dinamicamente
             Method metodo = logica.getClass().getMethod(action, paramTypes);
             
-            // Recebe a String (nome da jsp) após a execução do método
-            String pagina = (String) metodo.invoke(logica, request, response);
+            // Prepara a variável de session
+            HttpSession session = request.getSession();
             
-            // Faz o forwand para a página JSP
-            request.getRequestDispatcher(pagina).forward(request, response);
+            // Recebe a String (nome da jsp) após a execução do método
+            String pagina = (String) metodo.invoke(logica, request, response,
+                    session);
+            
+            // Se foi executado um método POST então é necessário o redirect
+            // Caso contrário pode fazer o forwand para a página JSP
+            if (pagina.equalsIgnoreCase("redirect")) {
+                response.sendRedirect(
+                        request.getContextPath() + "/sistema?controller="
+                                + controller + "&action=" + action);
+            } else {
+                request.getRequestDispatcher(pagina).forward(request, response);
+            }
         } catch (
                 ClassNotFoundException | 
                 InstantiationException | 
