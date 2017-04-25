@@ -4,7 +4,25 @@
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Cadastrar Cliente</h2>
-    <form action="#" method="post">
+    <c:choose>
+        <c:when test="${sessionScope.alert == 'success'}">
+            <div class="col-md-12">
+                <div class="alert alert-success" role="alert">Cadastro realizado com sucesso.</div>
+            </div>
+        </c:when>
+        <c:when test="${sessionScope.alert == 'failure'}">
+            <div class="col-md-12">
+                <div class="alert alert-danger" role="alert">Verifique os campos em vermelho.</div>
+            </div>
+        </c:when>
+        <c:when test="${sessionScope.alert == 'danger'}">
+            <div class="col-md-12">
+                <div class="alert alert-danger" role="alert">Não foi possível realizar o cadastro.</div>
+            </div>
+        </c:when>
+    </c:choose>
+    <c:remove scope="session" var="alert"></c:remove>
+    <form action="sistema?controller=Cliente&action=novo" method="post">
         <div class="form-group col-md-12">
             <input type="hidden" class="form-control" id="id" name="id">
         </div>
