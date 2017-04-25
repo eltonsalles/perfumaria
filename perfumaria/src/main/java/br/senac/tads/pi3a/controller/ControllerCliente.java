@@ -24,15 +24,14 @@
 package br.senac.tads.pi3a.controller;
 
 import br.senac.tads.pi3a.dao.DaoCliente;
-import br.senac.tads.pi3a.dao.DaoFuncionario;
 import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Endereco;
-import br.senac.tads.pi3a.model.Funcionario;
 import br.senac.tads.pi3a.model.Loja;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -40,11 +39,15 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ControllerCliente implements Logica {
     @Override
-    public String novo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         // Se o formulário for submetido por post então entra aqui
         if (request.getMethod().equalsIgnoreCase("post")) {
             // Implatar validação...
             
+            /**
+             * #Mock - Pegando os dados do formulário e apenas arrumando
+             * o tamanho para fazer a inserção
+             */
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             
             Cliente cliente = new Cliente();
@@ -76,6 +79,8 @@ public class ControllerCliente implements Logica {
             cliente.setLoja(loja);
             
             if (DaoCliente.insert(cliente) != -1) {
+                session.setAttribute("msgTeste", true);
+                return "redirect";
                 // Deu certo
             } else {
                 // Deu errado
@@ -84,34 +89,24 @@ public class ControllerCliente implements Logica {
         
         return "/WEB-INF/jsp/cadastrar-cliente.jsp";
     }
-    public String consultar(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // Se o formulário for submetido por post então entra aqui
-        if (request.getMethod().equalsIgnoreCase("post")) {
-            // Implatar validação...
-            
-            
-        }
-        
-        return "/WEB-INF/jsp/consultar-cliente.jsp";
-    }
 
     @Override
-    public String editar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String excluir(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String pesquisar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String listar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String listar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    }    
 }
