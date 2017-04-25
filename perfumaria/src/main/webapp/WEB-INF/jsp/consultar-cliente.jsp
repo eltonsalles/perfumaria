@@ -1,10 +1,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Consultar Cliente</h2>
-    <form>
+    <form action="sistema?controller=Cliente&action=pesquisar" method="post">
         <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
@@ -26,15 +27,18 @@
             <th>Ações</th>
         </tr>
         <tr>
-            <td>1</td>
-            <td>Exemplo Exemplo Exemplo Exemplo</td>
-            <td>00/00/0000</td>
-            <td>000.000.000-00</td>
+        <c:forEach items="${sessionScope.listaClientes}" var="cliente">
+            <td><c:out value="${cliente.id}"></c:out></td>
+            <td><c:out value="${cliente.nome}"></c:out></td>
+            <td><fmt:formatDate pattern="dd/MM/yyyy" value="${cliente.dataNascimento}" /></td>
+            <td><c:out value="${cliente.cpf}"></c:out></td>
             <td>
-                <a href="#" class="btn btn-default" role="button" title="Editar">
+                <a href="sistema?controller=Cliente&action=editar&id=<c:out value="${cliente.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                 </a>
             </td>
+        </c:forEach>
+        <c:remove scope="session" var="listaClientes"></c:remove>
         </tr>
     </table>
 </div><!-- content -->
