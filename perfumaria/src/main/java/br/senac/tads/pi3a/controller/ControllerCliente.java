@@ -28,6 +28,7 @@ import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Endereco;
 import br.senac.tads.pi3a.model.Loja;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,7 +80,7 @@ public class ControllerCliente implements Logica {
             cliente.setLoja(loja);
             
             if (DaoCliente.insert(cliente) != -1) {
-                session.setAttribute("msgTeste", true);
+                session.setAttribute("alert", "success");
                 return "redirect";
                 // Deu certo
             } else {
@@ -102,6 +103,19 @@ public class ControllerCliente implements Logica {
 
     @Override
     public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+        if (request.getMethod().equalsIgnoreCase("post")) {
+            // Implatar validação porque pode existir parâmetros de pesquisa
+            
+            // Não havendo parâmtro de pesquisa retorna toda a lista do banco
+            Cliente cliente = new Cliente();
+            ArrayList<Object> lista = DaoCliente.selectAll(cliente);
+            
+            if (!lista.isEmpty()) {
+                session.setAttribute("listaClientes", lista);
+                return "redirect";
+            }
+        }
+        
         return "/WEB-INF/jsp/consultar-cliente.jsp";
     }
 
