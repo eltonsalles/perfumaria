@@ -25,24 +25,25 @@ package br.senac.tads.pi3a.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Elton
  */
 public interface Logica {
-    String novo(HttpServletRequest request, HttpServletResponse response) 
-            throws Exception;
+    String novo(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session) throws Exception;
     
-    String editar(HttpServletRequest request, HttpServletResponse response) 
-            throws Exception;
+    String editar(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session) throws Exception;
     
-    String excluir(HttpServletRequest request, HttpServletResponse response) 
-            throws Exception;
+    String excluir(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session) throws Exception;
     
-    String pesquisar(HttpServletRequest request, HttpServletResponse response) 
-            throws Exception;
+    String pesquisar(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session) throws Exception;
     
-    String listar(HttpServletRequest request, HttpServletResponse response) 
-            throws Exception;
+    String listar(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session) throws Exception;
 }
