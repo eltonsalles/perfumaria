@@ -35,7 +35,7 @@ public class ControllerVenda implements Logica {
 
     @Override
     public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "/WEB-INF/jsp/cadastrar-venda.jsp";
     }
 
     @Override
@@ -50,11 +50,15 @@ public class ControllerVenda implements Logica {
 
     @Override
     public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "/WEB-INF/jsp/cancelar-venda.jsp";
     }
 
     @Override
     public String listar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public String relatorio(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        return "/WEB-INF/jsp/relatorio-vendas.jsp";
     }
 }

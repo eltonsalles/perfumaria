@@ -102,7 +102,7 @@ public class ControllerCliente implements Logica {
 
     @Override
     public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "/WEB-INF/jsp/consultar-cliente.jsp";
     }
 
     @Override

@@ -35,7 +35,7 @@ public class ControllerProduto implements Logica {
 
     @Override
     public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "/WEB-INF/jsp/cadastrar-produto.jsp";
     }
 
     @Override
@@ -50,11 +50,23 @@ public class ControllerProduto implements Logica {
 
     @Override
     public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "/WEB-INF/jsp/consultar-produto.jsp";
     }
 
     @Override
     public String listar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public String movimentar(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        return "/WEB-INF/jsp/manutencao-produto.jsp";
+    }
+    
+    public String relatorio(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        return "/WEB-INF/jsp/relatorio-estoque.jsp";
+    }
+    
+    public String historico(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        return "/WEB-INF/jsp/historico-produto.jsp";
     }
 }
