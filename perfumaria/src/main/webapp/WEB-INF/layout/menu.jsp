@@ -21,7 +21,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/perfumaria/sistema?controller=Cliente&action=consultar">
+                                    <a href="/perfumaria/sistema?controller=Cliente&action=pesquisar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
@@ -42,7 +42,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/perfumaria/sistema?controller=Funcionario&action=consultar">
+                                    <a href="/perfumaria/sistema?controller=Funcionario&action=pesquisar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
@@ -63,7 +63,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/perfumaria/sistema?controller=Loja&action=consultar">
+                                    <a href="/perfumaria/sistema?controller=Loja&action=pesquisar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
@@ -84,7 +84,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/perfumaria/sistema?controller=Produto&action=consultar">
+                                    <a href="/perfumaria/sistema?controller=Produto&action=pesquisar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
@@ -111,7 +111,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/perfumaria/sistema?controller=Venda&action=consultar">
+                                    <a href="/perfumaria/sistema?controller=Venda&action=pesquisar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
@@ -132,7 +132,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/perfumaria/sistema?controller=Usuario&action=consultar">
+                                    <a href="/perfumaria/sistema?controller=Usuario&action=pesquisar">
                                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                                         Consultar
                                     </a>
