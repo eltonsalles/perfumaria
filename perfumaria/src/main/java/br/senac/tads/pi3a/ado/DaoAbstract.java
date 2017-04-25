@@ -196,7 +196,7 @@ public abstract class DaoAbstract {
             e.printStackTrace();
         }
 
-        return null;
+        return list;
     }
 
     /**
