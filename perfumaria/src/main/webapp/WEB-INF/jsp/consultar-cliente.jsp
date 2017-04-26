@@ -26,20 +26,20 @@
             <th>CPF</th>
             <th>Ações</th>
         </tr>
-        <tr>
         <c:forEach items="${sessionScope.listaClientes}" var="cliente">
-            <td><c:out value="${cliente.id}"></c:out></td>
-            <td><c:out value="${cliente.nome}"></c:out></td>
-            <td><fmt:formatDate pattern="dd/MM/yyyy" value="${cliente.dataNascimento}" /></td>
-            <td><c:out value="${cliente.cpf}"></c:out></td>
-            <td>
-                <a href="sistema?controller=Cliente&action=editar&id=<c:out value="${cliente.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                </a>
-            </td>
+            <tr>
+                <td><c:out value="${cliente.id}"></c:out></td>
+                <td><c:out value="${cliente.nome}"></c:out></td>
+                <td><fmt:formatDate pattern="dd/MM/yyyy" value="${cliente.dataNascimento}" /></td>
+                <td><c:out value="${cliente.cpf}"></c:out></td>
+                <td>
+                    <a href="sistema?controller=Cliente&action=editar&id=<c:out value="${cliente.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                </td>
+            </tr>
         </c:forEach>
         <c:remove scope="session" var="listaClientes"></c:remove>
-        </tr>
     </table>
 </div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>
