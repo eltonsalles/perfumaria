@@ -13,9 +13,9 @@
             <label for="razao-social">Razão Social</label>
             <input type="text" class="form-control" id="nome" placeholder="Razão social" name="razao-social" maxlength="150" required>
         </div>
-        <div class="form-group col-md-3 <c:if test="${listaErro.cpf eq true}">has-error</c:if>">
+        <div class="form-group col-md-3 <c:if test="${listaErro.cnpj eq true}">has-error</c:if>">
                 <label class="control-label" for="cnpj">CNPJ</label>
-                <input type="text" class="form-control" id="cnpj" placeholder="xx.xxx.xxx/xxxx-xx" name="cnpj" maxlength="18" required><!--pattern="^\d{3}.\d{3}.\d{3}-\d{2}$"-->
+                <input type="text" class="form-control" id="cnpj" placeholder="xx.xxx.xxx/xxxx-xx" name="cnpj" maxlength="18" required pattern="d{2}.\d{3}.\d{3}\\d{4}\d{2}$">
             </div>
             <div class="form-group col-md-3 status">
                 <label>Status</label><br>
@@ -28,39 +28,39 @@
             </div>
             <div class="form-group col-md-5">
                 <label for="nome-fantasia">Nome Fantasia</label>
-                <input type="text" class="form-control" id="nome-fantasia" placeholder="Nome Fantasia" name="nome-fantasia" maxlength="150" required>
+                <input type="text" class="form-control" id="nome-fantasia" placeholder="Nome Fantasia" name="nome-fantasia" maxlength="150" required pattern="[a-z\s]{1,150}">
             </div>
             <div class="form-group col-md-3">
                 <label for="celular">Celular</label>
-                <input type="tel" class="form-control" id="celular" placeholder="(xx) xxxxx-xxxx" name="celular" maxlength="15" required>
+                <input type="tel" class="form-control" id="celular" placeholder="(xx) xxxxx-xxxx" name="celular" maxlength="15" required pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}$">
             </div>
             <div class="form-group col-md-3">
                 <label for="telefone">Telefone</label>
-                <input type="tel" class="form-control" id="telefone" placeholder="(xx) xxxxx-xxxx" name="telefone" maxlength="15" required>
+                <input type="tel" class="form-control" id="telefone" placeholder="(xx) xxxxx-xxxx" name="telefone" maxlength="15" required pattern="\([0-9]{2}\) [0-9]{4}-[0-9]{4}$">
             </div>
             <div class="form-group col-md-5">
                 <label for="email">E-mail</label>
-                <input type="email" class="form-control" id="email" placeholder="email@exemplo.com.br" name="email" maxlength="150" required>
+                <input type="email" class="form-control" id="email" placeholder="email@exemplo.com.br" name="email" maxlength="150" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
             </div>
             <div class="form-group col-md-6">
                 <label for="logradouro">Logradouro</label>
-                <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida ..." name="logradouro" maxlength="150" required>
+                <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida ..." name="logradouro" maxlength="150" required  pattern="[a-z\s][0-9]{1,150}+$">
             </div>
             <div class="form-group col-md-2">
                 <label for="numero">Número</label>
-                <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero" maxlength="10" required>
+                <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero" maxlength="10" required pattern="[0-9]{1,10}+$">
             </div>
             <div class="form-group col-md-4">
                 <label for="complemento">Complemento</label>
-                <input type="text" class="form-control" id="complemento" placeholder="Bloco, Sala ..." name="complemento" maxlength="50">
+                <input type="text" class="form-control" id="complemento" placeholder="Bloco, Sala ..." name="complemento" maxlength="50" pattern="[a-z\s][0-9]{1,50}+$">
             </div>
             <div class="form-group col-md-4">
                 <label for="bairro">Bairro</label>
-                <input type="text" class="form-control" id="bairro" name="bairro" maxlength="50" required>
+                <input type="text" class="form-control" id="bairro" name="bairro" maxlength="50" required pattern="[a-z\s][0-9]{1,50}+$">
             </div>
             <div class="form-group col-md-4">
                 <label for="cidade">Cidade</label>
-                <input type="text" class="form-control" id="cidade" name="cidade" maxlength="50" required>
+                <input type="text" class="form-control" id="cidade" name="cidade" maxlength="50" required pattern="[a-z\s][0-9]{1,50}+$">
             </div>
             <div class="form-group col-md-2">
                 <label for="uf">UF</label>
@@ -97,7 +97,7 @@
             </div>
             <div class="form-group col-md-2">
                 <label for="cep">CEP</label>
-                <input type="text" class="form-control" id="cep" placeholder="xxxxx-xxx" name="cep" maxlength="9" required>
+                <input type="text" class="form-control" id="cep" placeholder="xxxxx-xxx" name="cep" maxlength="9" required pattern="[0-9]{5}-[0-9]{3}$">
             </div>
             <div class="form-group col-md-offset-8 col-md-4">
                 <a href="#" class="btn btn-default">
