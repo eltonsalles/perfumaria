@@ -484,6 +484,65 @@ public abstract class DaoAbstract {
     }
     
     /**
+     * Retorna uma consulta do banco de dados
+     * 
+     * @param nameClass
+     * @return 
+     */
+    @SuppressWarnings("CallToPrintStackTrace")
+    private static ResultSet getResultSetFindId(Object nameClass, String name, int id) {
+        // Variável para manipular o retorno do banco de dados
+        ResultSet result;
+
+        try {
+            // Se não tiver a anotação então não continua
+            if (!nameClass.getClass().isAnnotationPresent(Table.class)) {
+                return null;
+            }
+
+            // Cria um objeto do tipo SqlSelect para montar a intrução SQL
+            SqlSelect sql = new SqlSelect();
+
+            // Pega o valor da anotação que representa a tabela
+            Table entity = nameClass.getClass().getAnnotation(Table.class);
+            sql.setEntity(entity.name());
+
+            // Traz todas as colunas da tabela
+            sql.addColumn("*");
+            
+            Criteria criteria = new Criteria();
+            criteria.add(new Filter(name, "=", id));
+            
+            sql.setCriteria(criteria);
+
+            // Abre a conexão
+            Transaction.open();
+
+            // Pega a conexão aberta
+            java.sql.Connection conn = Transaction.get();
+
+            // Prepara o sql para fazer a seleção
+            PreparedStatement stmt = conn.prepareStatement(
+                    sql.getInstruction());
+
+            // Executa a instrução SQL
+            result = stmt.executeQuery();
+
+            return result;
+
+        } catch (SQLException | SecurityException
+                | IllegalArgumentException e) {
+            // Reseta as transações no banco de dados e fecha a conexão
+            Transaction.rollback();
+            
+            // Printa o erro
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+    
+    /**
      * Cria um objeto com seus respectivos valores conforme o ResultSet passado
      * 
      * @param nameClass Object
@@ -491,7 +550,7 @@ public abstract class DaoAbstract {
      * @return Object
      */
     @SuppressWarnings("CallToPrintStackTrace")
-    private static Object preparedObject(Object nameClass, ResultSet result) {
+    private static Object preparedObject(Object nameClass, ResultSet result) throws SQLException {
         try {
             // Cria um objeto igual ao passado no parâmetro
             Object object = nameClass.getClass().newInstance();
@@ -542,19 +601,23 @@ public abstract class DaoAbstract {
                     
                     // Cria uma instância do objeto da associação
                     Object o = referenced.newInstance();
+                    
+                    ResultSet r = getResultSetFindId(o, foreignKey.referencedName(), (int) result.getObject(foreignKey.name()));
+                    
+                    if (r.next()) {
+                        // Chama recursivamente o preparedObject
+                        Object objectReferenced = preparedObject(o, r);
 
-                    // Chama recursivamente o preparedObject
-                    Object objectReferenced = preparedObject(o, getResultSetAll(o));
+                        // Pega o método do objeto para setar o 
+                        // objeto da associação
+                        Method methodReferenced = nameClass.getClass()
+                                .getMethod(nameMethodSet(
+                                        foreignKey.referenced()),
+                                        objectReferenced.getClass());
 
-                    // Pega o método do objeto para setar o 
-                    // objeto da associação
-                    Method methodReferenced = nameClass.getClass()
-                            .getMethod(nameMethodSet(
-                                    foreignKey.referenced()),
-                                    objectReferenced.getClass());
-
-                    // Invoca o método
-                    methodReferenced.invoke(object, objectReferenced);
+                        // Invoca o método
+                        methodReferenced.invoke(object, objectReferenced);
+                    }
                 } else {
                     getRowDataColumm(object, declaredField, result);
                 }
