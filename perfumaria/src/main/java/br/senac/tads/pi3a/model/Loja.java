@@ -37,7 +37,7 @@ public class Loja extends ModelAbstract {
     @Columm(name = "status")
     private boolean status;
 
-    @Columm(name = "cnjp")
+    @Columm(name = "cnpj")
     private String cnpj;
 
     @Columm(name = "razao_social")
