@@ -10,7 +10,7 @@
         </div>
         <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
                 <label class="control-label" for="nome">Nome</label>
-                <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="[a-zA-Zà-úÀ-Ú ]{1,150}">
+                <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="[a-z\s]{1,150}">
             </div>
             <div class="form-group col-md-3 <c:if test="${errorValidation.dataNascimento eq true}">has-error</c:if>">
                 <label class="control-label" for="data-nascimento">Data de Nascimento</label>
