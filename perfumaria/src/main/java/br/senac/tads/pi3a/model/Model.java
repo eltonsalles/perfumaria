@@ -29,7 +29,7 @@ import br.senac.tads.pi3a.annotation.Columm;
  *
  * @author Elton
  */
-public abstract class ModelAbstract {
+public class Model {
     @Columm(name = "id")
     private int id;
 

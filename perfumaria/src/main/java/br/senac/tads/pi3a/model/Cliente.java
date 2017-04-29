@@ -23,7 +23,6 @@
  */
 package br.senac.tads.pi3a.model;
 
-import br.senac.tads.pi3a.annotation.Association;
 import br.senac.tads.pi3a.annotation.Columm;
 import br.senac.tads.pi3a.annotation.ForeignKey;
 import br.senac.tads.pi3a.annotation.Table;
@@ -36,35 +35,53 @@ import java.util.Date;
 @Table(name="cliente")
 public class Cliente extends ModelAbstract {
     
-    @Columm (name ="status")
+    @Columm(name = "status")
     private boolean status;
     
-    @Columm(name="cpf")
+    @Columm(name = "cpf")
     private String cpf;
     
-    @Columm(name="nome")
+    @Columm(name = "nome")
     private String nome;
     
-    @Columm(name="data_nasc")
+    @Columm(name = "data_nasc")
     private Date dataNascimento;
     
-    @Columm(name="sexo")
+    @Columm(name = "sexo")
     private char sexo;
     
-    @Columm(name="est_civil")
+    @Columm(name = "est_civil")
     private String estadoCivil;
     
-    @Columm(name="celular")
+    @Columm(name = "celular")
     private String celular;
     
-    @Columm(name="telefone")
+    @Columm(name = "telefone")
     private String telefone;
     
-    @Columm(name="email")
+    @Columm(name = "email")
     private String email;
     
-    @Association(referenced = "Endereco")
-    private Endereco endereco;
+    @Columm(name = "logradouro")
+    private String logradouro;
+    
+    @Columm(name = "numero")
+    private String numero;
+    
+    @Columm(name = "complemento")
+    private String complemento;
+    
+    @Columm(name = "bairro")
+    private String bairro;
+    
+    @Columm(name = "cep")
+    private String cep;
+    
+    @Columm(name = "cidade")
+    private String cidade;
+    
+    @Columm(name = "uf")
+    private String uf;
     
     @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
     private Loja loja;
@@ -141,14 +158,62 @@ public class Cliente extends ModelAbstract {
         this.email = email;
     }
 
-    public Endereco getEndereco() {
-        return endereco;
+    public String getLogradouro() {
+        return logradouro;
     }
 
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
     }
 
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
+    
     public Loja getLoja() {
         return loja;
     }
