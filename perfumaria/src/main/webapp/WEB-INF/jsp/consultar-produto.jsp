@@ -5,10 +5,10 @@
 <div class="col-md-10 content">
     <h2>Consultar Produto</h2>
     <form>
-        <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
+        <div class="form-group col-md-6 <c:if test="${errorValidation.pesquisar eq true}">has-error</c:if>">
             <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o ID ou nome do produto" name="pesquisar">
+                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o código ou nome" name="pesquisar" pattern="[0-9]{1,150}+$">
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
