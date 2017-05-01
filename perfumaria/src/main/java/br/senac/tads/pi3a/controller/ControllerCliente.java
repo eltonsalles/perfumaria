@@ -25,11 +25,11 @@ package br.senac.tads.pi3a.controller;
 
 import br.senac.tads.pi3a.dao.DaoCliente;
 import br.senac.tads.pi3a.model.Cliente;
-import br.senac.tads.pi3a.model.Endereco;
 import br.senac.tads.pi3a.model.Loja;
+import br.senac.tads.pi3a.model.Model;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -63,26 +63,24 @@ public class ControllerCliente implements Logica {
             cliente.setCelular(request.getParameter("celular").replaceAll("\\D", ""));
             cliente.setTelefone(request.getParameter("telefone").replaceAll("\\D", ""));
             cliente.setEmail(request.getParameter("email"));
-            
-            Endereco endereco = new Endereco();
-            endereco.setLogradouro(request.getParameter("logradouro"));
-            endereco.setNumero(request.getParameter("numero"));
-            endereco.setComplemento(request.getParameter("complemento"));
-            endereco.setBairro(request.getParameter("bairro"));
-            endereco.setCep(request.getParameter("cep").replaceAll("\\D", ""));
-            endereco.setCidade(request.getParameter("cidade"));
-            endereco.setUf(request.getParameter("uf"));
-            
-            cliente.setEndereco(endereco);
+            cliente.setLogradouro(request.getParameter("logradouro"));
+            cliente.setNumero(request.getParameter("numero"));
+            cliente.setComplemento(request.getParameter("complemento"));
+            cliente.setBairro(request.getParameter("bairro"));
+            cliente.setCep(request.getParameter("cep").replaceAll("\\D", ""));
+            cliente.setCidade(request.getParameter("cidade"));
+            cliente.setUf(request.getParameter("uf"));
             
             Loja loja = new Loja();
             loja.setId(1);
             cliente.setLoja(loja);
             
-            if (DaoCliente.insert(cliente) != -1) {
-                session.setAttribute("alert", "success");
-                return "redirect";
+            DaoCliente dao = new DaoCliente(cliente);
+            
+            if (dao.insert() != -1) {
                 // Deu certo
+                session.setAttribute("alert", "success");
+                return "novo";
             } else {
                 // Deu errado
             }
@@ -93,34 +91,142 @@ public class ControllerCliente implements Logica {
 
     @Override
     public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Se o formulário for submetido por post então entra aqui
+        if (request.getMethod().equalsIgnoreCase("post")) {
+            // Implatar validação
+            
+            /**
+             * #Mock - Pegando os dados do formulário e apenas arrumando
+             * o tamanho para fazer a alteração
+             */
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            
+            Cliente cliente = new Cliente();
+            int id = Integer.valueOf(request.getParameter("id"));
+            
+            cliente.setId(id);
+            cliente.setStatus(true);
+            cliente.setCpf(request.getParameter("cpf").replaceAll("\\D", ""));
+            cliente.setNome(request.getParameter("nome"));
+            
+            Date dataNascimento = new Date(sdf.parse(request.getParameter("data-nascimento")).getTime());
+            cliente.setDataNascimento(dataNascimento);
+            cliente.setSexo(request.getParameter("sexo").charAt(0));
+            cliente.setEstadoCivil(request.getParameter("estado-civil"));
+            cliente.setCelular(request.getParameter("celular").replaceAll("\\D", ""));
+            cliente.setTelefone(request.getParameter("telefone").replaceAll("\\D", ""));
+            cliente.setEmail(request.getParameter("email"));
+            cliente.setLogradouro(request.getParameter("logradouro"));
+            cliente.setNumero(request.getParameter("numero"));
+            cliente.setComplemento(request.getParameter("complemento"));
+            cliente.setBairro(request.getParameter("bairro"));
+            cliente.setCep(request.getParameter("cep").replaceAll("\\D", ""));
+            cliente.setCidade(request.getParameter("cidade"));
+            cliente.setUf(request.getParameter("uf"));
+            
+            Loja loja = new Loja();
+            loja.setId(1);
+            cliente.setLoja(loja);
+            
+            DaoCliente dao = new DaoCliente(cliente);
+            
+            if (dao.update()) {
+                // Deu certo
+                session.setAttribute("alert", "success");
+                session.setAttribute("id", id);
+                return "editar";
+            } else {
+                // Deu errado
+            }
+        }
+        
+        if (request.getParameter("id") != null) {
+            String id = request.getParameter("id");
+            boolean digito = true;
+            
+            for (int i = 0; i < id.length(); i++) {
+                if (!Character.isDigit(id.charAt(i))) {
+                    digito = false;
+                    break;
+                }
+            }
+            
+            if (digito) {
+                Model cliente = new Cliente();
+                DaoCliente dao = new DaoCliente();
+                cliente = dao.findOne(cliente, Integer.valueOf(request.getParameter("id")));
+
+                session.setAttribute("cliente", cliente);
+            }
+        }
+        
+        return "/WEB-INF/jsp/cadastrar-cliente.jsp";
     }
 
     @Override
     public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (request.getParameter("id") != null) {
+            String id = request.getParameter("id");
+            boolean digito = true;
+            
+            for (int i = 0; i < id.length(); i++) {
+                if (!Character.isDigit(id.charAt(i))) {
+                    digito = false;
+                    break;
+                }
+            }
+            
+            if (digito) {
+                Cliente cliente = new Cliente();
+                DaoCliente dao = new DaoCliente(cliente);
+
+                if (dao.delete(Integer.valueOf(id))) {
+                    session.setAttribute("alert", "success");
+                    return "excluir";
+                }
+            }
+        }
+        
+        return "/WEB-INF/jsp/cadastrar-cliente.jsp";
     }
 
     @Override
     public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         if (request.getMethod().equalsIgnoreCase("post")) {
-            // Implatar validação porque pode existir parâmetros de pesquisa
-            
-            // Não havendo parâmtro de pesquisa retorna toda a lista do banco
             Cliente cliente = new Cliente();
-            ArrayList<Object> lista = DaoCliente.selectAll(cliente);
+            DaoCliente dao = new DaoCliente();
+            List<Model> lista;
             
-            if (!lista.isEmpty()) {
+            // Se não houver valor para pesquisar então retorna tudo
+            if (request.getParameter("pesquisar") !=  null & !request.getParameter("pesquisar").isEmpty()) {
+                String pesquisar = request.getParameter("pesquisar");
+                
+                /**
+                 * #Mock para fazer consulta por cpf ou ppor nome
+                 */
+                boolean digito = true;
+                for (int i = 0; i < pesquisar.length(); i++) {
+                    if (!Character.isDigit(pesquisar.charAt(i))) {
+                        digito = false;
+                        break;
+                    }
+                }
+                if (digito) {
+                    lista = dao.findAll(cliente, "cpf", "=", pesquisar);
+                } else {
+                    lista = dao.findAll(cliente, "nome", "LIKE", "%" + pesquisar + "%");
+                }
+                
+            } else {
+                lista = dao.findAll(cliente);
+            }
+            
+            if (lista != null && !lista.isEmpty()) {
                 session.setAttribute("listaClientes", lista);
-                return "redirect";
+                return "pesquisar";
             }
         }
         
         return "/WEB-INF/jsp/consultar-cliente.jsp";
     }
-
-    @Override
-    public String listar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }    
 }

@@ -53,11 +53,6 @@ public class ControllerVenda implements Logica {
         return "/WEB-INF/jsp/cancelar-venda.jsp";
     }
 
-    @Override
-    public String listar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
     public String relatorio(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         return "/WEB-INF/jsp/relatorio-vendas.jsp";
     }
