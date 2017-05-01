@@ -71,28 +71,38 @@ public class ControllerServlet extends HttpServlet {
             String pagina = (String) metodo.invoke(logica, request, response,
                     session);
             
-            // Se foi executado um método POST então é necessário o redirect
+            // Se foi executado o método POST então é necessário o redirect
             // Caso contrário pode fazer o forwand para a página JSP
-            if (pagina.equalsIgnoreCase("redirect")) {
-                response.sendRedirect(
-                        request.getContextPath() + "/sistema?controller="
-                                + controller + "&action=" + action);
-            } else {
-                request.getRequestDispatcher(pagina).forward(request, response);
+            switch (pagina) {
+                case "excluir":
+                    response.sendRedirect(request.getContextPath()
+                            + "/sistema?controller=" + controller
+                            + "&action=pesquisar");
+                    break;
+                
+                case "editar":
+                    response.sendRedirect(request.getContextPath()
+                            + "/sistema?controller=" + controller
+                            + "&action=" + action
+                            + "&id=" + session.getAttribute("id"));
+                    break;
+                
+                case "novo":
+                case "pesquisar":
+                    response.sendRedirect(request.getContextPath()
+                            + "/sistema?controller=" + controller
+                            + "&action=" + action);
+                    break;
+                
+                default:
+                    request.getRequestDispatcher(pagina)
+                            .forward(request, response);
             }
-        } catch (
-                ClassNotFoundException | 
-                InstantiationException | 
-                IllegalAccessException | 
-                ServletException | 
-                IOException e) {
-            System.out.println(e.getMessage());
-        } catch (
-                NoSuchMethodException | 
-                SecurityException | 
-                IllegalArgumentException | 
-                InvocationTargetException ex) {
-            System.out.println(ex.getMessage());
+        } catch (ClassNotFoundException | InstantiationException
+                | IllegalAccessException | ServletException | IOException
+                | NoSuchMethodException | SecurityException
+                | IllegalArgumentException | InvocationTargetException e) {
+            e.printStackTrace(System.err);
         }
     }
 }
