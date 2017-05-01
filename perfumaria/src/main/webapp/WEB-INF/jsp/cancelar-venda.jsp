@@ -8,7 +8,7 @@
         <div class="form-group col-md-6 <c:if test="${errorValidation.pesquisar eq true}">has-error</c:if>">
             <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o código da venda" name="pesquisar" pattern="[0-9]{1,10}+$">
+                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o código da venda" name="pesquisar" maxlength="150" pattern="[0-9]{1,10}+$">
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
