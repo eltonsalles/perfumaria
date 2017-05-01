@@ -31,18 +31,18 @@ import br.senac.tads.pi3a.annotation.Table;
  *
  * @author Douglas Oliveira
  */
-@Table (name="itens_venda")
-public class itensVenda{
+@Table(name = "itens_venda")
+public class itensVenda extends Model {
     @ForeignKey(name = "venda_id", referenced = "Venda", referencedName = "id")
     private Venda venda;
     
     @ForeignKey(name = "produto_id", referenced = "Produto", referencedName = "id")
     private Produto produto;
     
-    @Columm(name="qtde_item")
+    @Columm(name = "qtde_item")
     private int quantidadeItem;
     
-    @Columm(name="valor_unitario")
+    @Columm(name = "valor_unitario")
     private float valorUnitario;
 
     public Venda getVenda() {
@@ -76,7 +76,4 @@ public class itensVenda{
     public void setValorUnitario(float valorUnitario) {
         this.valorUnitario = valorUnitario;
     }
-    
-    
-    
 }

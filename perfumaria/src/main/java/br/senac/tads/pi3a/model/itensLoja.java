@@ -32,9 +32,8 @@ import java.util.Date;
  *
  * @author Douglas Oliveira
  */
-@Table(name="itens_loja")
-public class itensLoja extends ModelAbstract {
-
+@Table(name = "itens_loja")
+public class itensLoja extends Model {
     @ForeignKey(name = "produto_id", referenced = "Produto", referencedName = "id")
     private Produto produto;
 
@@ -111,6 +110,4 @@ public class itensLoja extends ModelAbstract {
     public void setValorVenda(float valorVenda) {
         this.valorVenda = valorVenda;
     }
-
-    
 }

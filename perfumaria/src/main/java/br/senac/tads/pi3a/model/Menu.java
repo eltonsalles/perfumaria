@@ -30,9 +30,9 @@ import br.senac.tads.pi3a.annotation.Table;
  *
  * @author Douglas Oliveira
  */
-@Table (name="menu")
-public class Menu extends ModelAbstract {
-    @Columm(name="nome")
+@Table(name = "menu")
+public class Menu extends Model {
+    @Columm(name = "nome")
     private String nome;
 
     public String getNome() {
@@ -42,5 +42,4 @@ public class Menu extends ModelAbstract {
     public void setNome(String nome) {
         this.nome = nome;
     }
-    
 }

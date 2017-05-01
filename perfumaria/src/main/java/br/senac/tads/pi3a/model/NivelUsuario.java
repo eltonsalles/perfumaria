@@ -30,10 +30,10 @@ import br.senac.tads.pi3a.annotation.Table;
  *
  * @author Douglas Oliveira
  */
-@Table (name="nivel_usuario")
-public class NivelUsuario extends ModelAbstract {
+@Table(name = "nivel_usuario")
+public class NivelUsuario extends Model {
     
-    @Columm (name="tipo")
+    @Columm(name = "tipo")
     private String tipo;
 
     public String getTipo() {
@@ -43,6 +43,4 @@ public class NivelUsuario extends ModelAbstract {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-    
-    
 }

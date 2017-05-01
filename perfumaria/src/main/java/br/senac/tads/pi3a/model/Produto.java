@@ -30,24 +30,24 @@ import br.senac.tads.pi3a.annotation.Table;
  *
  * @author Douglas Oliveira
  */
-@Table(name="produto")
-public class Produto extends ModelAbstract{
-    @Columm (name="nome")
+@Table(name = "produto")
+public class Produto extends Model {
+    @Columm(name = "nome")
     private String nome;
     
-    @Columm(name="marca")
+    @Columm(name = "marca")
     private String marca;
     
-    @Columm(name="categoria")
+    @Columm(name = "categoria")
     private String categoria;
     
-    @Columm(name="vlr_unidade_medida")
+    @Columm(name = "vlr_unidade_medida")
     private int valorUnidadeMedida;
     
-    @Columm(name="genero")
+    @Columm(name = "genero")
     private String genero;
     
-    @Columm(name="descricao")
+    @Columm(name = "descricao")
     private String descricao;
 
     public String getNome() {
@@ -97,6 +97,4 @@ public class Produto extends ModelAbstract{
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
-    
-    
 }

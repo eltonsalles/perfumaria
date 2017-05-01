@@ -33,8 +33,7 @@ import java.util.Date;
  * @author Douglas Oliveira
  */
 @Table(name="cliente")
-public class Cliente extends ModelAbstract {
-    
+public class Cliente extends Model {    
     @Columm(name = "status")
     private boolean status;
     
