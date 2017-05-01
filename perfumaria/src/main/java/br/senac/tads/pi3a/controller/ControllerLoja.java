@@ -56,7 +56,7 @@ public class ControllerLoja implements Logica {
             Date dataNascimento = new Date(sdf.parse(request.getParameter("data-nascimento")).getTime());
             funcionario.setDataNascimento(dataNascimento);
             funcionario.setSexo(request.getParameter("sexo").charAt(0));
-            funcionario.setEstCivil(request.getParameter("estado-civil"));
+            funcionario.setEstadoCivil(request.getParameter("estado-civil"));
             funcionario.setCelular(request.getParameter("celular"));
             funcionario.setTelefone(request.getParameter("telefone"));
             funcionario.setEmail(request.getParameter("email"));
