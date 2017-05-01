@@ -41,192 +41,221 @@ import javax.servlet.http.HttpSession;
 public class ControllerCliente implements Logica {
     @Override
     public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        // Se o formulário for submetido por post então entra aqui
-        if (request.getMethod().equalsIgnoreCase("post")) {
-            // Implatar validação...
-            
-            /**
-             * #Mock - Pegando os dados do formulário e apenas arrumando
-             * o tamanho para fazer a inserção
-             */
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            
-            Cliente cliente = new Cliente();
-            cliente.setStatus(true);
-            cliente.setCpf(request.getParameter("cpf").replaceAll("\\D", ""));
-            cliente.setNome(request.getParameter("nome"));
-            
-            Date dataNascimento = new Date(sdf.parse(request.getParameter("data-nascimento")).getTime());
-            cliente.setDataNascimento(dataNascimento);
-            cliente.setSexo(request.getParameter("sexo").charAt(0));
-            cliente.setEstadoCivil(request.getParameter("estado-civil"));
-            cliente.setCelular(request.getParameter("celular").replaceAll("\\D", ""));
-            cliente.setTelefone(request.getParameter("telefone").replaceAll("\\D", ""));
-            cliente.setEmail(request.getParameter("email"));
-            cliente.setLogradouro(request.getParameter("logradouro"));
-            cliente.setNumero(request.getParameter("numero"));
-            cliente.setComplemento(request.getParameter("complemento"));
-            cliente.setBairro(request.getParameter("bairro"));
-            cliente.setCep(request.getParameter("cep").replaceAll("\\D", ""));
-            cliente.setCidade(request.getParameter("cidade"));
-            cliente.setUf(request.getParameter("uf"));
-            
-            Loja loja = new Loja();
-            loja.setId(1);
-            cliente.setLoja(loja);
-            
-            DaoCliente dao = new DaoCliente(cliente);
-            
-            if (dao.insert() != -1) {
-                // Deu certo
-                session.setAttribute("alert", "success");
-                return "novo";
-            } else {
-                // Deu errado
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                // Implatar validação...
+
+                /**
+                 * #Mock - Pegando os dados do formulário e apenas arrumando
+                 * o tamanho para fazer a inserção
+                 */
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+                Cliente cliente = new Cliente();
+                cliente.setStatus(true);
+                cliente.setCpf(request.getParameter("cpf").replaceAll("\\D", ""));
+                cliente.setNome(request.getParameter("nome"));
+
+                Date dataNascimento = new Date(sdf.parse(request.getParameter("data-nascimento")).getTime());
+                cliente.setDataNascimento(dataNascimento);
+                cliente.setSexo(request.getParameter("sexo").charAt(0));
+                cliente.setEstadoCivil(request.getParameter("estado-civil"));
+                cliente.setCelular(request.getParameter("celular").replaceAll("\\D", ""));
+                cliente.setTelefone(request.getParameter("telefone").replaceAll("\\D", ""));
+                cliente.setEmail(request.getParameter("email"));
+                cliente.setLogradouro(request.getParameter("logradouro"));
+                cliente.setNumero(request.getParameter("numero"));
+                cliente.setComplemento(request.getParameter("complemento"));
+                cliente.setBairro(request.getParameter("bairro"));
+                cliente.setCep(request.getParameter("cep").replaceAll("\\D", ""));
+                cliente.setCidade(request.getParameter("cidade"));
+                cliente.setUf(request.getParameter("uf"));
+
+                Loja loja = new Loja();
+                loja.setId(1);
+                cliente.setLoja(loja);
+
+                DaoCliente dao = new DaoCliente(cliente);
+
+                if (dao.insert() != -1) {
+                    session.setAttribute("alert", "alert-success");
+                    session.setAttribute("alertMessage", "Cadastro realizado com sucesso.");
+                    return "novo";
+                }
             }
+            
+            return "/WEB-INF/jsp/cadastrar-cliente.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage", "Não foi possível realizar o cadastro.");
+            return "novo";
         }
-        
-        return "/WEB-INF/jsp/cadastrar-cliente.jsp";
     }
 
     @Override
     public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        // Se o formulário for submetido por post então entra aqui
-        if (request.getMethod().equalsIgnoreCase("post")) {
-            // Implatar validação
-            
-            /**
-             * #Mock - Pegando os dados do formulário e apenas arrumando
-             * o tamanho para fazer a alteração
-             */
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            
-            Cliente cliente = new Cliente();
-            int id = Integer.valueOf(request.getParameter("id"));
-            
-            cliente.setId(id);
-            cliente.setStatus(true);
-            cliente.setCpf(request.getParameter("cpf").replaceAll("\\D", ""));
-            cliente.setNome(request.getParameter("nome"));
-            
-            Date dataNascimento = new Date(sdf.parse(request.getParameter("data-nascimento")).getTime());
-            cliente.setDataNascimento(dataNascimento);
-            cliente.setSexo(request.getParameter("sexo").charAt(0));
-            cliente.setEstadoCivil(request.getParameter("estado-civil"));
-            cliente.setCelular(request.getParameter("celular").replaceAll("\\D", ""));
-            cliente.setTelefone(request.getParameter("telefone").replaceAll("\\D", ""));
-            cliente.setEmail(request.getParameter("email"));
-            cliente.setLogradouro(request.getParameter("logradouro"));
-            cliente.setNumero(request.getParameter("numero"));
-            cliente.setComplemento(request.getParameter("complemento"));
-            cliente.setBairro(request.getParameter("bairro"));
-            cliente.setCep(request.getParameter("cep").replaceAll("\\D", ""));
-            cliente.setCidade(request.getParameter("cidade"));
-            cliente.setUf(request.getParameter("uf"));
-            
-            Loja loja = new Loja();
-            loja.setId(1);
-            cliente.setLoja(loja);
-            
-            DaoCliente dao = new DaoCliente(cliente);
-            
-            if (dao.update()) {
-                // Deu certo
-                session.setAttribute("alert", "success");
-                session.setAttribute("id", id);
-                return "editar";
-            } else {
-                // Deu errado
-            }
-        }
-        
-        if (request.getParameter("id") != null) {
-            String id = request.getParameter("id");
-            boolean digito = true;
-            
-            for (int i = 0; i < id.length(); i++) {
-                if (!Character.isDigit(id.charAt(i))) {
-                    digito = false;
-                    break;
-                }
-            }
-            
-            if (digito) {
-                Model cliente = new Cliente();
-                DaoCliente dao = new DaoCliente();
-                cliente = dao.findOne(cliente, Integer.valueOf(request.getParameter("id")));
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                // Implatar validação
 
-                session.setAttribute("cliente", cliente);
-            }
-        }
-        
-        return "/WEB-INF/jsp/cadastrar-cliente.jsp";
-    }
+                /**
+                 * #Mock - Pegando os dados do formulário e apenas arrumando
+                 * o tamanho para fazer a alteração
+                 */
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    @Override
-    public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        if (request.getParameter("id") != null) {
-            String id = request.getParameter("id");
-            boolean digito = true;
-            
-            for (int i = 0; i < id.length(); i++) {
-                if (!Character.isDigit(id.charAt(i))) {
-                    digito = false;
-                    break;
-                }
-            }
-            
-            if (digito) {
                 Cliente cliente = new Cliente();
+                int id = Integer.valueOf(request.getParameter("id"));
+
+                cliente.setId(id);
+                cliente.setStatus(true);
+                cliente.setCpf(request.getParameter("cpf").replaceAll("\\D", ""));
+                cliente.setNome(request.getParameter("nome"));
+
+                Date dataNascimento = new Date(sdf.parse(request.getParameter("data-nascimento")).getTime());
+                cliente.setDataNascimento(dataNascimento);
+                cliente.setSexo(request.getParameter("sexo").charAt(0));
+                cliente.setEstadoCivil(request.getParameter("estado-civil"));
+                cliente.setCelular(request.getParameter("celular").replaceAll("\\D", ""));
+                cliente.setTelefone(request.getParameter("telefone").replaceAll("\\D", ""));
+                cliente.setEmail(request.getParameter("email"));
+                cliente.setLogradouro(request.getParameter("logradouro"));
+                cliente.setNumero(request.getParameter("numero"));
+                cliente.setComplemento(request.getParameter("complemento"));
+                cliente.setBairro(request.getParameter("bairro"));
+                cliente.setCep(request.getParameter("cep").replaceAll("\\D", ""));
+                cliente.setCidade(request.getParameter("cidade"));
+                cliente.setUf(request.getParameter("uf"));
+
+                Loja loja = new Loja();
+                loja.setId(1);
+                cliente.setLoja(loja);
+
                 DaoCliente dao = new DaoCliente(cliente);
 
-                if (dao.delete(Integer.valueOf(id))) {
-                    session.setAttribute("alert", "success");
-                    return "excluir";
+                if (dao.update()) {
+                    session.setAttribute("alert", "alert-success");
+                    session.setAttribute("alertMessage", "Cadastro alterado com sucesso.");
+                    session.setAttribute("id", id);
+                    return "editar";
                 }
             }
-        }
-        
-        return "/WEB-INF/jsp/cadastrar-cliente.jsp";
-    }
 
-    @Override
-    public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        if (request.getMethod().equalsIgnoreCase("post")) {
-            Cliente cliente = new Cliente();
-            DaoCliente dao = new DaoCliente();
-            List<Model> lista;
-            
-            // Se não houver valor para pesquisar então retorna tudo
-            if (request.getParameter("pesquisar") !=  null & !request.getParameter("pesquisar").isEmpty()) {
-                String pesquisar = request.getParameter("pesquisar");
-                
-                /**
-                 * #Mock para fazer consulta por cpf ou ppor nome
-                 */
+            if (request.getParameter("id") != null) {
+                String id = request.getParameter("id");
                 boolean digito = true;
-                for (int i = 0; i < pesquisar.length(); i++) {
-                    if (!Character.isDigit(pesquisar.charAt(i))) {
+
+                for (int i = 0; i < id.length(); i++) {
+                    if (!Character.isDigit(id.charAt(i))) {
                         digito = false;
                         break;
                     }
                 }
+
                 if (digito) {
-                    lista = dao.findAll(cliente, "cpf", "=", pesquisar);
-                } else {
-                    lista = dao.findAll(cliente, "nome", "LIKE", "%" + pesquisar + "%");
+                    Model cliente = new Cliente();
+                    DaoCliente dao = new DaoCliente();
+                    cliente = dao.findOne(cliente, Integer.valueOf(request.getParameter("id")));
+
+                    session.setAttribute("cliente", cliente);
                 }
-                
-            } else {
-                lista = dao.findAll(cliente);
             }
-            
-            if (lista != null && !lista.isEmpty()) {
-                session.setAttribute("listaClientes", lista);
-                return "pesquisar";
-            }
+
+            return "/WEB-INF/jsp/cadastrar-cliente.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage", "Não foi possível realizar a alteração.");
+            session.setAttribute("id", 0);
+            return "editar";
         }
-        
-        return "/WEB-INF/jsp/consultar-cliente.jsp";
+    }
+
+    @Override
+    public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+        try {
+            if (request.getParameter("id") != null) {
+                String id = request.getParameter("id");
+                boolean digito = true;
+
+                for (int i = 0; i < id.length(); i++) {
+                    if (!Character.isDigit(id.charAt(i))) {
+                        digito = false;
+                        break;
+                    }
+                }
+
+                if (digito) {
+                    Cliente cliente = new Cliente();
+                    DaoCliente dao = new DaoCliente(cliente);
+
+                    if (dao.delete(Integer.valueOf(id))) {
+                        session.setAttribute("alert", "alert-warning");
+                        session.setAttribute("alertMessage", "Cadastro excluído com sucesso.");
+                        return "excluir";
+                    }
+                }
+            }
+
+            return "/WEB-INF/jsp/cadastrar-cliente.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage", "Não foi possível realizar a exclusão.");
+            return "excluir";
+        }
+    }
+
+    @Override
+    public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+        try {
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                Cliente cliente = new Cliente();
+                DaoCliente dao = new DaoCliente();
+                List<Model> lista;
+
+                // Se não houver valor para pesquisar então retorna tudo
+                if (request.getParameter("pesquisar") !=  null & !request.getParameter("pesquisar").isEmpty()) {
+                    String pesquisar = request.getParameter("pesquisar");
+
+                    /**
+                     * #Mock para fazer consulta por cpf ou ppor nome
+                     */
+                    boolean digito = true;
+                    for (int i = 0; i < pesquisar.length(); i++) {
+                        if (!Character.isDigit(pesquisar.charAt(i))) {
+                            digito = false;
+                            break;
+                        }
+                    }
+                    if (digito) {
+                        lista = dao.findAll(cliente, "cpf", "=", pesquisar);
+                    } else {
+                        lista = dao.findAll(cliente, "nome", "LIKE", "%" + pesquisar + "%");
+                    }
+
+                } else {
+                    lista = dao.findAll(cliente);
+                }
+
+                if (lista != null && !lista.isEmpty()) {
+                    session.setAttribute("listaClientes", lista);
+                    return "pesquisar";
+                } else {
+                    session.setAttribute("alert", "alert-warning");
+                    session.setAttribute("alertMessage", "A consulta não retornou nenhum resultado.");
+                }
+            }
+
+            return "/WEB-INF/jsp/consultar-cliente.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage", "Não foi possível realizar a consulta.");
+            return "pesquisar";
+        }
     }
 }
