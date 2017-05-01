@@ -4,11 +4,11 @@
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Consultar Loja</h2>
-    <form>
-        <div class="form-group col-md-6">
-            <label for="pesquisar">Pesquisar</label>
+    <form action="#" method="post">
+        <div class="form-group col-md-6 <c:if test="${errorValidation.pesquisar eq true}">has-error</c:if>">
+            <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="pesquisar" placeholder="id ou nome da loja" name="pesquisar">
+                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o nome ou CNPJ" name="pesquisar" pattern="[a-z\s][0-9]{1,150}">
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
