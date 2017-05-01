@@ -23,12 +23,10 @@
  */
 package br.senac.tads.pi3a.dao;
 
-import br.senac.tads.pi3a.ado.DaoAbstract;
-
 /**
  *
  * @author Elton
  */
-public class DaoFuncionario extends DaoAbstract {
+public class DaoFuncionario {
 
 }
