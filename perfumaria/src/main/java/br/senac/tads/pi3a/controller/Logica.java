@@ -43,7 +43,4 @@ public interface Logica {
     
     String pesquisar(HttpServletRequest request, HttpServletResponse response,
             HttpSession session) throws Exception;
-    
-    String listar(HttpServletRequest request, HttpServletResponse response,
-            HttpSession session) throws Exception;
 }
