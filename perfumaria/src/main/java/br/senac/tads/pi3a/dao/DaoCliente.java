@@ -23,12 +23,19 @@
  */
 package br.senac.tads.pi3a.dao;
 
-import br.senac.tads.pi3a.ado.DaoAbstract;
+import br.senac.tads.pi3a.model.Cliente;
 
 /**
  *
  * @author Elton
  */
-public class DaoCliente extends DaoAbstract {
+public class DaoCliente extends AbstractDao {
 
+    public DaoCliente() {
+        
+    }
+    
+    public DaoCliente(Cliente model) {
+        super(model);
+    }
 }
