@@ -1,4 +1,3 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -13,7 +12,7 @@
         </div>
         <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
             <label for="nome">Nome</label>
-            <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="[a-zA-Zà-úÀ-Ú ]{1,150}" value="<c:out value="${sessionScope.cliente.nome}"></c:out>">
+            <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="[a-zA-Z ]{1,150}" value="<c:out value="${sessionScope.cliente.nome}"></c:out>">
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.dataNascimento eq true}">has-error</c:if>"> 
             <label for="data-nascimento">Data de Nascimento</label>
@@ -50,10 +49,10 @@
         <div class="form-group col-md-4 sexo <c:if test="${errorValidation.sexo eq true}">has-error</c:if>">
             <label class="control-label">Sexo</label><br>
             <label class="radio-inline">
-                <input type="radio" id="femino" value="F" name="sexo" required <c:if test="${fn:containsIgnoreCase(sessionScope.cliente.sexo, 'F')}">checked</c:if>>Feminino
+                <input type="radio" id="feminino" value="F" name="sexo" required>Feminino
             </label>
             <label class="radio-inline">
-                <input type="radio" id="masculino" value="M" name="sexo" required <c:if test="${fn:containsIgnoreCase(sessionScope.cliente.sexo, 'M')}">checked</c:if>>Masculino
+                <input type="radio" id="masculino" value="M" name="sexo" required>Masculino
             </label>
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.celular eq true}">has-error</c:if>">
@@ -69,7 +68,7 @@
             <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida..." name="logradouro" maxlength="150" required  pattern="[a-z\s][0-9]{1,150}+$" value="<c:out value="${sessionScope.cliente.logradouro}"></c:out>">
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.numero eq true}">has-error</c:if>">
-            <label class="control-label" for="numero">Número</label>
+            <label class="control-label" for="numero">N�mero</label>
             <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero" maxlength="10" required pattern="[0-9]{1,10}+$" value="<c:out value="${sessionScope.cliente.numero}"></c:out>">
         </div>
         <div class="form-group col-md-4">
