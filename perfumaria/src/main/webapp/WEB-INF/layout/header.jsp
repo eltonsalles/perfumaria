@@ -3,7 +3,7 @@
 <html>
     <head>
         <title>The Code</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="Content-Type" content="text/html" charset=UTF-8">
         
         <!-- Bootstrap minified CSS -->
         <link rel="stylesheet" href="assets/lib/bootstrap/3.3.7/css/bootstrap.min.css">
