@@ -53,7 +53,7 @@ public class ControllerCliente implements Logica {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
                 Cliente cliente = new Cliente();
-                cliente.setStatus(true);
+                cliente.setStatus(Boolean.valueOf(request.getParameter("status")));
                 cliente.setCpf(request.getParameter("cpf").replaceAll("\\D", ""));
                 cliente.setNome(request.getParameter("nome"));
 
@@ -111,7 +111,7 @@ public class ControllerCliente implements Logica {
                 int id = Integer.valueOf(request.getParameter("id"));
 
                 cliente.setId(id);
-                cliente.setStatus(true);
+                cliente.setStatus(Boolean.valueOf(request.getParameter("status")));
                 cliente.setCpf(request.getParameter("cpf").replaceAll("\\D", ""));
                 cliente.setNome(request.getParameter("nome"));
 
