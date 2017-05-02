@@ -23,90 +23,45 @@
  */
 package br.senac.tads.pi3a.controller;
 
-import br.senac.tads.pi3a.dao.DaoFuncionario;
-import br.senac.tads.pi3a.model.Endereco;
-import br.senac.tads.pi3a.model.Funcionario;
-import br.senac.tads.pi3a.model.Loja;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Elton
  */
 public class ControllerProduto implements Logica {
+
     @Override
-    public String novo(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // Se o formulário for submetido por post então entra aqui
-        if (request.getMethod().equalsIgnoreCase("post")) {
-            // Implatar validação...
-            
-            
-        }
-        
+    public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         return "/WEB-INF/jsp/cadastrar-produto.jsp";
     }
-    public String estoque(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // Se o formulário for submetido por post então entra aqui
-        if (request.getMethod().equalsIgnoreCase("post")) {
-            // Implatar validação...
-            
-            
-        }
-        
-        return "/WEB-INF/jsp/relatorio-estoque.jsp";
+
+    @Override
+    public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    public String historico(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // Se o formulário for submetido por post então entra aqui
-        if (request.getMethod().equalsIgnoreCase("post")) {
-            // Implatar validação...
-            
-            
-        }
-        
-        return "/WEB-INF/jsp/historico-produto.jsp";
+
+    @Override
+    public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    public String manutencao(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // Se o formulário for submetido por post então entra aqui
-        if (request.getMethod().equalsIgnoreCase("post")) {
-            // Implatar validação...
-            
-            
-        }
-        
-        return "/WEB-INF/jsp/manutencao-produto.jsp";
-    }
-    public String consultar(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // Se o formulário for submetido por post então entra aqui
-        if (request.getMethod().equalsIgnoreCase("post")) {
-            // Implatar validação...
-            
-            
-        }
-        
+
+    @Override
+    public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         return "/WEB-INF/jsp/consultar-produto.jsp";
     }
     
-
-    @Override
-    public String editar(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String movimentar(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        return "/WEB-INF/jsp/manutencao-produto.jsp";
     }
-
-    @Override
-    public String excluir(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    public String relatorio(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        return "/WEB-INF/jsp/relatorio-estoque.jsp";
     }
-
-    @Override
-    public String pesquisar(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String listar(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    public String historico(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        return "/WEB-INF/jsp/historico-produto.jsp";
     }
 }

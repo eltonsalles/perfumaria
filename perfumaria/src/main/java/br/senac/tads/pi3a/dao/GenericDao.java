@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Daniel Freitas.
+ * Copyright 2017 Elton.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,48 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package br.senac.tads.pi3a.model;
+package br.senac.tads.pi3a.dao;
 
-import br.senac.tads.pi3a.annotation.Columm;
-import br.senac.tads.pi3a.annotation.ForeignKey;
-import br.senac.tads.pi3a.annotation.Table;
+import java.util.List;
 
 /**
  *
- * @author Douglas Oliveira
+ * @author Elton
+ * @param <T>
  */
-@Table(name = "usuario")
-public class Usuario extends Model {
-    @Columm(name = "login")
-    private String nome;
-
-    @Columm(name = "senha")
-    private String senha;
-
-    @ForeignKey(name = "nivel_usuario_id", referenced = "NivelUsuario", referencedName = "id")
-    private NivelUsuario nivelUsuario;
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public NivelUsuario getNivelUsuario() {
-        return nivelUsuario;
-    }
-
-    public void setNivelUsuario(NivelUsuario nivelUsuario) {
-        this.nivelUsuario = nivelUsuario;
-    } 
+public interface GenericDao<T> {
+    int insert() throws Exception;
+    
+    boolean update() throws Exception;
+    
+    boolean delete(int id) throws Exception;
+    
+    T findOne(T obj, int id) throws Exception;
+    
+    List<T> findAll(T obj) throws Exception;
+    
+    List<T> findAll(T obj, String field, String criteria, String value)
+            throws Exception;
 }

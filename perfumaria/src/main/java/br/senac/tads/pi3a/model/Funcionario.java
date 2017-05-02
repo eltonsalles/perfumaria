@@ -23,7 +23,6 @@
  */
 package br.senac.tads.pi3a.model;
 
-import br.senac.tads.pi3a.annotation.Association;
 import java.util.Date;
 import br.senac.tads.pi3a.annotation.Columm;
 import br.senac.tads.pi3a.annotation.ForeignKey;
@@ -34,7 +33,7 @@ import br.senac.tads.pi3a.annotation.Table;
  * @author Elton
  */
 @Table(name = "funcionario")
-public class Funcionario extends ModelAbstract {
+public class Funcionario extends Model {
     @Columm(name = "status")
     private boolean status;
     
@@ -68,8 +67,26 @@ public class Funcionario extends ModelAbstract {
     @Columm(name = "email")
     private String email;
     
-    @Association(referenced = "Endereco")
-    private Endereco endereco;
+    @Columm(name = "logradouro")
+    private String logradouro;
+    
+    @Columm(name = "numero")
+    private String numero;
+    
+    @Columm(name = "complemento")
+    private String complemento;
+    
+    @Columm(name = "bairro")
+    private String bairro;
+    
+    @Columm(name = "cep")
+    private String cep;
+    
+    @Columm(name = "cidade")
+    private String cidade;
+    
+    @Columm(name = "uf")
+    private String uf;
     
     @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
     private Loja loja;
@@ -162,14 +179,62 @@ public class Funcionario extends ModelAbstract {
         this.email = email;
     }
 
-    public Endereco getEndereco() {
-        return endereco;
+    public String getLogradouro() {
+        return logradouro;
     }
 
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
     }
 
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
+    
     public Loja getLoja() {
         return loja;
     }

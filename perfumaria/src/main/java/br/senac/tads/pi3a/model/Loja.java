@@ -23,7 +23,6 @@
  */
 package br.senac.tads.pi3a.model;
 
-import br.senac.tads.pi3a.annotation.Association;
 import br.senac.tads.pi3a.annotation.Columm;
 import br.senac.tads.pi3a.annotation.Table;
 
@@ -32,12 +31,11 @@ import br.senac.tads.pi3a.annotation.Table;
  * @author Elton
  */
 @Table(name = "loja")
-public class Loja extends ModelAbstract {
-
+public class Loja extends Model {
     @Columm(name = "status")
     private boolean status;
 
-    @Columm(name = "cnjp")
+    @Columm(name = "cnpj")
     private String cnpj;
 
     @Columm(name = "razao_social")
@@ -52,10 +50,28 @@ public class Loja extends ModelAbstract {
     @Columm(name = "email")
     private String email;
 
-    @Association(referenced = "Endereco")
-    private Endereco endereco;
+    @Columm(name = "logradouro")
+    private String logradouro;
+    
+    @Columm(name = "numero")
+    private String numero;
+    
+    @Columm(name = "complemento")
+    private String complemento;
+    
+    @Columm(name = "bairro")
+    private String bairro;
+    
+    @Columm(name = "cep")
+    private String cep;
+    
+    @Columm(name = "cidade")
+    private String cidade;
+    
+    @Columm(name = "uf")
+    private String uf;
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
@@ -103,4 +119,59 @@ public class Loja extends ModelAbstract {
         this.email = email;
     }
 
+    public String getLogradouro() {
+        return logradouro;
+    }
+
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
 }

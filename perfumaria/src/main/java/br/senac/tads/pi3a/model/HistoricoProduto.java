@@ -33,17 +33,17 @@ import java.util.Date;
  * @author Douglas Oliveira
  */
 @Table(name="historico_produto")
-public class HistoricoProduto extends ModelAbstract{
-    @Columm(name="data_movimentacao")
+public class HistoricoProduto extends Model{
+    @Columm(name = "data_movimentacao")
     private Date dataMovimentacao;
     
-    @Columm(name="tipo_movimentacao")
+    @Columm(name = "tipo_movimentacao")
     private String tipoMovimentacao;
     
-    @Columm(name="descricao")
+    @Columm(name = "descricao")
     private String descricao;
             
-    @Columm(name="qtde")
+    @Columm(name = "qtde")
     private int quantidade;
     
     @ForeignKey(name = "produto_id", referenced = "Produto", referencedName = "id")
@@ -99,6 +99,4 @@ public class HistoricoProduto extends ModelAbstract{
     public void setLoja(Loja loja) {
         this.loja = loja;
     }
-    
-    
 }

@@ -33,8 +33,7 @@ import java.util.Date;
  * @author Douglas Oliveira
  */
 @Table(name = "venda")
-public class Venda extends ModelAbstract {
-
+public class Venda extends Model {
     @Columm(name = "data_venda")
     private Date dataVenda;
 
@@ -89,6 +88,4 @@ public class Venda extends ModelAbstract {
     public void setLoja(Loja loja) {
         this.loja = loja;
     }
-    
-    
 }

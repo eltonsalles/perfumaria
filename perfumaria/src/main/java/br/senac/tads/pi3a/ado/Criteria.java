@@ -63,6 +63,16 @@ public class Criteria extends Expression {
     }
     
     /**
+     * Adiciona uma expressão ao critério
+     * 
+     * @param expression Objeto Expression
+     */
+    public void add(Expression expression) {
+        this.expressions.add(expression);
+        this.operators.add("");
+    }
+    
+    /**
      * Retorna a expressão final
      * 
      * @return 

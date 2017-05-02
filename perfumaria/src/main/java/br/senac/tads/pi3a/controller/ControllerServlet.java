@@ -31,6 +31,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -57,29 +58,51 @@ public class ControllerServlet extends HttpServlet {
             
             // Variável com parâmetros padrão para cada action
             Class<?> paramTypes[] = {
-                HttpServletRequest.class, HttpServletResponse.class};
+                HttpServletRequest.class, HttpServletResponse.class,
+                HttpSession.class};
             
             // Cria o método para invoca-lo dinamicamente
             Method metodo = logica.getClass().getMethod(action, paramTypes);
             
-            // Recebe a String (nome da jsp) após a execução do método
-            String pagina = (String) metodo.invoke(logica, request, response);
+            // Prepara a variável de session
+            HttpSession session = request.getSession();
             
-            // Faz o forwand para a página JSP
-            request.getRequestDispatcher(pagina).forward(request, response);
-        } catch (
-                ClassNotFoundException | 
-                InstantiationException | 
-                IllegalAccessException | 
-                ServletException | 
-                IOException e) {
-            System.out.println(e.getMessage());
-        } catch (
-                NoSuchMethodException | 
-                SecurityException | 
-                IllegalArgumentException | 
-                InvocationTargetException ex) {
-            System.out.println(ex.getMessage());
+            // Recebe a String (nome da jsp) após a execução do método
+            String pagina = (String) metodo.invoke(logica, request, response,
+                    session);
+            
+            // Se foi executado o método POST então é necessário o redirect
+            // Caso contrário pode fazer o forwand para a página JSP
+            switch (pagina) {
+                case "excluir":
+                    response.sendRedirect(request.getContextPath()
+                            + "/sistema?controller=" + controller
+                            + "&action=pesquisar");
+                    break;
+                
+                case "editar":
+                    response.sendRedirect(request.getContextPath()
+                            + "/sistema?controller=" + controller
+                            + "&action=" + action
+                            + "&id=" + session.getAttribute("id"));
+                    break;
+                
+                case "novo":
+                case "pesquisar":
+                    response.sendRedirect(request.getContextPath()
+                            + "/sistema?controller=" + controller
+                            + "&action=" + action);
+                    break;
+                
+                default:
+                    request.getRequestDispatcher(pagina)
+                            .forward(request, response);
+            }
+        } catch (ClassNotFoundException | InstantiationException
+                | IllegalAccessException | ServletException | IOException
+                | NoSuchMethodException | SecurityException
+                | IllegalArgumentException | InvocationTargetException e) {
+            e.printStackTrace(System.err);
         }
     }
 }
