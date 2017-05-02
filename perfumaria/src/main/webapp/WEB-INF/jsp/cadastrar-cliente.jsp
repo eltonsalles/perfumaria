@@ -25,7 +25,7 @@
         <div class="form-group col-md-2 status">
             <label>Status</label><br>
             <label class="radio-inline">
-                <input type="radio" id="ativo" value="true" name="status" checked required <c:if test="${sessionScope.cliente.status eq true}">checked</c:if>>Ativo
+                <input type="radio" id="ativo" value="true" name="status" checked required>Ativo
             </label>
             <label class="radio-inline">
                 <input type="radio" id="inativo" value="false" name="status" required <c:if test="${sessionScope.cliente.status eq false}">checked</c:if>>Inativo
@@ -49,10 +49,10 @@
         <div class="form-group col-md-4 sexo <c:if test="${errorValidation.sexo eq true}">has-error</c:if>">
             <label class="control-label">Sexo</label><br>
             <label class="radio-inline">
-                <input type="radio" id="feminino" value="F" name="sexo" required>Feminino
+                <input type="radio" id="feminino" value="F" name="sexo" required <c:if test="${sessionScope.cliente.sexo == 'F'.charAt(0)}">checked</c:if>>Feminino
             </label>
             <label class="radio-inline">
-                <input type="radio" id="masculino" value="M" name="sexo" required>Masculino
+                <input type="radio" id="masculino" value="M" name="sexo" required <c:if test="${sessionScope.cliente.sexo == 'M'.charAt(0)}">checked</c:if>>Masculino
             </label>
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.celular eq true}">has-error</c:if>">
