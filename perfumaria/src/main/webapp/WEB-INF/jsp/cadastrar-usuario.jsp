@@ -8,6 +8,10 @@
         <div class="form-group col-md-12">
             <input type="hidden" class="form-control" id="id" name="id">
         </div>
+        <div class="form-group col-md-12 <c:if test="${errorValidation.funcionario eq true}">has-error</c:if>">
+            <label class="control-label" for="funcionario">Código do Funcionário</label>
+            <input type="text" class="form-control" id="funcionario" placeholder="Código do Funcionário" name="funcionario" maxlength="10" required>
+        </div>
         <div class="form-group col-md-12 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="login">Login</label>
             <input type="text" class="form-control" id="login" placeholder="Login" name="login" maxlength="50" required>
@@ -20,12 +24,14 @@
             <label class="control-label" for="nivel-usuario">Nível de Usuário</label>
             <select class="form-control" id="nivel-usuario" name="nivel-usuario">
                 <option value="">---</option>
-                <option value="1">Diretor</option>
-                <option value="2">Gerente De Backoffice</option>
-                <option value="3">Gerente De TI</option>
-                <option value="4">Gerente De Vendas</option>
-                <option value="5">Retaguarda</option>
-                <option value="6">Vendedor</option>
+                <option value="1">Admin</option>
+                <option value="2">Diretor</option>
+                <option value="3">Gerente De Backoffice</option>
+                <option value="4">Gerente De TI</option>
+                <option value="5">Gerente De Vendas</option>
+                <option value="6">Retaguarda</option>
+                <option value="7">Suporte Técnico</option>
+                <option value="8">Vendedor</option>
             </select>
         </div>
         <div class="form-group col-md-12">
