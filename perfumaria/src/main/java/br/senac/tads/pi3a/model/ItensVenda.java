@@ -26,34 +26,32 @@ package br.senac.tads.pi3a.model;
 import br.senac.tads.pi3a.annotation.Columm;
 import br.senac.tads.pi3a.annotation.ForeignKey;
 import br.senac.tads.pi3a.annotation.Table;
-import java.util.Date;
 
 /**
  *
  * @author Douglas Oliveira
  */
-@Table(name = "itens_loja")
-public class itensLoja extends Model {
+@Table(name = "itens_venda")
+public class ItensVenda extends Model {
+    @ForeignKey(name = "venda_id", referenced = "Venda", referencedName = "id")
+    private Venda venda;
+    
     @ForeignKey(name = "produto_id", referenced = "Produto", referencedName = "id")
     private Produto produto;
+    
+    @Columm(name = "qtde_item")
+    private int quantidadeItem;
+    
+    @Columm(name = "valor_unitario")
+    private float valorUnitario;
 
-    @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
-    private Loja loja;
+    public Venda getVenda() {
+        return venda;
+    }
 
-    @Columm(name = "status")
-    private boolean status;
-
-    @Columm(name = "data_cadastro")
-    private Date dataCadastro;
-
-    @Columm(name = "estoque")
-    private int estoque;
-
-    @Columm(name = "vlr_compra")
-    private float valorCompra;
-
-    @Columm(name = "vlr_venda")
-    private float valorVenda;
+    public void setVenda(Venda venda) {
+        this.venda = venda;
+    }
 
     public Produto getProduto() {
         return produto;
@@ -63,51 +61,19 @@ public class itensLoja extends Model {
         this.produto = produto;
     }
 
-    public Loja getLoja() {
-        return loja;
+    public int getQuantidadeItem() {
+        return quantidadeItem;
     }
 
-    public void setLoja(Loja loja) {
-        this.loja = loja;
+    public void setQuantidadeItem(int quantidadeItem) {
+        this.quantidadeItem = quantidadeItem;
     }
 
-    public boolean isStatus() {
-        return status;
+    public float getValorUnitario() {
+        return valorUnitario;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public Date getDataCadastro() {
-        return dataCadastro;
-    }
-
-    public void setDataCadastro(Date dataCadastro) {
-        this.dataCadastro = dataCadastro;
-    }
-
-    public int getEstoque() {
-        return estoque;
-    }
-
-    public void setEstoque(int estoque) {
-        this.estoque = estoque;
-    }
-
-    public float getValorCompra() {
-        return valorCompra;
-    }
-
-    public void setValorCompra(float valorCompra) {
-        this.valorCompra = valorCompra;
-    }
-
-    public float getValorVenda() {
-        return valorVenda;
-    }
-
-    public void setValorVenda(float valorVenda) {
-        this.valorVenda = valorVenda;
+    public void setValorUnitario(float valorUnitario) {
+        this.valorUnitario = valorUnitario;
     }
 }
