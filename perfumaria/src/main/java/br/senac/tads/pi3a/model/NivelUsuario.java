@@ -32,7 +32,6 @@ import br.senac.tads.pi3a.annotation.Table;
  */
 @Table(name = "nivel_usuario")
 public class NivelUsuario extends Model {
-    
     @Columm(name = "tipo")
     private String tipo;
 

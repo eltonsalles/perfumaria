@@ -39,6 +39,9 @@ public class Usuario extends Model {
     @Columm(name = "senha")
     private String senha;
 
+    @ForeignKey(name = "funcionario_id", referenced = "Funcionario", referencedName = "id")
+    private Funcionario funcionario;
+    
     @ForeignKey(name = "nivel_usuario_id", referenced = "NivelUsuario", referencedName = "id")
     private NivelUsuario nivelUsuario;
 
@@ -57,6 +60,14 @@ public class Usuario extends Model {
     public void setSenha(String senha) {
         this.senha = senha;
     }
+    
+    public Funcionario getFuncionario() {
+        return funcionario;
+    }
+
+    public void setFuncionario(Funcionario funcionario) {
+        this.funcionario = funcionario;
+    }
 
     public NivelUsuario getNivelUsuario() {
         return nivelUsuario;
@@ -64,5 +75,5 @@ public class Usuario extends Model {
 
     public void setNivelUsuario(NivelUsuario nivelUsuario) {
         this.nivelUsuario = nivelUsuario;
-    } 
+    }
 }
