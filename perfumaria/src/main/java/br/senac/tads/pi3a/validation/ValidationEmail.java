@@ -25,12 +25,13 @@ package br.senac.tads.pi3a.validation;
 
 /**
  *
- * @author Joao
+ * @author Elton
  */
-public class ValidationString extends ValidationAbstract {
+public class ValidationEmail extends ValidationAbstract {
     @Override
     public boolean isValid(Object objeto) {
-        // verificar se a string tem números caso tenha da false e caso não da true
-        return objeto.toString().matches("[a-zA-Zà-úÀ-Ú ]{1,}");
+        // Verificar se a string tem o padrão de um email válido
+        return objeto.toString().matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)"
+                + "*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
     }
 }
