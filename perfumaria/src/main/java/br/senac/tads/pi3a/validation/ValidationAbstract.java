@@ -27,18 +27,6 @@ package br.senac.tads.pi3a.validation;
  *
  * @author Joao
  */
-public class validationFloat extends validationAbstract {
-
-    @Override
-    public boolean isValid(Object objeto) {
-
-        try {
-            Float.parseFloat(objeto.toString());
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-
-    }
-
+public abstract class ValidationAbstract {
+    public abstract boolean isValid(Object objeto);
 }

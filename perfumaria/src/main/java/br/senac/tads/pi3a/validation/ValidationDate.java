@@ -23,12 +23,30 @@
  */
 package br.senac.tads.pi3a.validation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author Joao
  */
-public abstract class validationAbstract {
+public class ValidationDate extends ValidationAbstract {
+    @Override
+    public boolean isValid(Object objeto) {
+        Date dataValida, inicio, fim;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    public abstract boolean isValid(Object objeto);
+        try {
+            sdf.setLenient(false);
+            dataValida = sdf.parse(objeto.toString());
+            inicio = sdf.parse("01/01/1900");
+            fim = new Date();
 
+            // caso seja uma data valida retorna trrue caso contrario false
+            return dataValida.after(inicio) && dataValida.before(fim);
+        } catch (ParseException e) {
+            return false;
+        }
+    }
 }

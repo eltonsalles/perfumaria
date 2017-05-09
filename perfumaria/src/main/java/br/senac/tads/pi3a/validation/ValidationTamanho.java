@@ -27,12 +27,19 @@ package br.senac.tads.pi3a.validation;
  *
  * @author Joao
  */
-public class validationString extends validationAbstract {
+public class ValidationTamanho extends ValidationAbstract {
+    private int tamanho;
+
+    public ValidationTamanho() {
+        this.tamanho = 0;
+    }
+
+    public void setTamanho(int tamanho) {
+        this.tamanho = tamanho;
+    }
 
     @Override
     public boolean isValid(Object objeto) {
-        // verificar se a string tem numeros caso tenha da false e caso não da true
-        return objeto.toString().matches("[a-zA-Zà-úÀ-Ú ]{1,}");
-
+        return objeto.toString().length() <= tamanho;
     }
 }

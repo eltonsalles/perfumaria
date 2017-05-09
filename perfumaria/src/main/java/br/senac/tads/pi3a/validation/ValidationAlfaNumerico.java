@@ -23,20 +23,13 @@
  */
 package br.senac.tads.pi3a.validation;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  *
  * @author Joao
  */
-public class validationAlfaNumerico extends validationAbstract {
-
+public class ValidationAlfaNumerico extends ValidationAbstract {
     @Override
     public boolean isValid(Object objeto) {
-
         return objeto.toString().matches("[a-zA-Zà-úÀ-Ú0-9 .]{1,}");
-
     }
-
 }

@@ -27,11 +27,9 @@ package br.senac.tads.pi3a.validation;
  *
  * @author Joao
  */
-public class validationCpf extends validationAbstract {
-
+public class ValidationCpf extends ValidationAbstract {
     @Override
     public boolean isValid(Object objeto) {
-
         int d1, d2, digito1, digito2, resto, digitoCPF;
         String digVerificador, digResultado, cpf = objeto.toString();
 
@@ -41,11 +39,12 @@ public class validationCpf extends validationAbstract {
             return false;
         }
 
-        if (cpf.equals("00000000000") || cpf.equals("11111111111")
-                || cpf.equals("22222222222") || cpf.equals("33333333333")
-                || cpf.equals("44444444444") || cpf.equals("55555555555")
-                || cpf.equals("66666666666") || cpf.equals("77777777777")
-                || cpf.equals("88888888888") || cpf.equals("99999999999")) {
+        if (
+                cpf.equals("00000000000") || cpf.equals("11111111111") ||
+                cpf.equals("22222222222") || cpf.equals("33333333333") ||
+                cpf.equals("44444444444") || cpf.equals("55555555555") ||
+                cpf.equals("66666666666") || cpf.equals("77777777777") ||
+                cpf.equals("88888888888") || cpf.equals("99999999999")) {
             return false;
         }
 
@@ -92,5 +91,4 @@ public class validationCpf extends validationAbstract {
         // Se for inválido retorna false
         return false;
     }
-
 }
