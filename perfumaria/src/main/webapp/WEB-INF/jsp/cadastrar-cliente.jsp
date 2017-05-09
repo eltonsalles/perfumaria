@@ -11,11 +11,11 @@
             <input type="hidden" class="form-control" id="id" name="id" value="<c:out value="${sessionScope.cliente.id}"></c:out>">
         </div>
         <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
-            <label for="nome">Nome</label>
+            <label class="control-label" for="nome">Nome</label>
             <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="[a-zA-Z ]{1,150}" value="<c:out value="${sessionScope.cliente.nome}"></c:out>">
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.dataNascimento eq true}">has-error</c:if>"> 
-            <label for="data-nascimento">Data de Nascimento</label>
+            <label class="control-label" for="data-nascimento">Data de Nascimento</label>
             <input type="date" class="form-control" id="data-nascimento" name="data-nascimento" required pattern="[0-9]{2}\/[0-9]{2}\/[0-9]{4}$" min="1900-01-01" max="2100-12-31" value="<fmt:formatDate pattern="yyyy-MM-dd" value="${cliente.dataNascimento}" />">
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.cpf eq true}">has-error</c:if>">
@@ -43,7 +43,7 @@
                 <option value="solteiro" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'solteiro')}">selected</c:if>>Solteiro</option>
                 <option value="casado" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'casado')}">selected</c:if>>Casado</option>
                 <option value="divorciado" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'divorciado')}">selected</c:if>>Divorciado</option>
-                <option value="viúvo" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'viúvo')}">selected</c:if>>Viúvo</option>
+                <option value="viuvo" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'viúvo')}">selected</c:if>>Viúvo</option>
             </select>
         </div>
         <div class="form-group col-md-4 sexo <c:if test="${errorValidation.sexo eq true}">has-error</c:if>">
