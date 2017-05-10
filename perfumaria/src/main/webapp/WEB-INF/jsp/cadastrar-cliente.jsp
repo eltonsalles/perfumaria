@@ -8,7 +8,7 @@
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
     <form action="sistema?controller=Cliente&action=<c:out value="${sessionScope.cliente.id > 0 ? 'editar' : 'novo'}"></c:out>" method="post">
         <div class="form-group col-md-12">
-            <input type="hidden" class="form-control" id="id" name="id" value="<c:out value="${sessionScope.cliente.id}"></c:out>">
+            <input type="hidden" class="form-control" id="id" name="id" value="<c:out value="${sessionScope.cliente.id > 0 ? sessionScope.cliente.id : ''}"></c:out>">
         </div>
         <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
             <label class="control-label" for="nome">Nome</label>
@@ -136,5 +136,6 @@
         </div>        
     </form>
     <c:remove scope="session" var="cliente"></c:remove>
+    <c:remove scope="session" var="errorValidation"></c:remove>
 </div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>
