@@ -58,13 +58,22 @@ public class ControllerCliente implements Logica {
                             .createModel();
                     
                     DaoCliente dao = new DaoCliente(cliente);
-
-                    // A dao retorna um id válido se conseguir fazer a inserção
-                    if (dao.insert() != -1) {
-                        session.setAttribute("alert", "alert-success");
+                    
+                    // Garante que o cpf não esteja cadastrado na base de dados
+                    if (dao.findAll(cliente, "cpf", "=", cliente.getCpf())
+                            .isEmpty()) {
+                        // A dao retorna um id válido se conseguir fazer a
+                        // inserção
+                        if (dao.insert() != -1) {
+                            session.setAttribute("alert", "alert-success");
+                            session.setAttribute("alertMessage",
+                                    "Cadastro realizado com sucesso.");
+                            return "novo";
+                        }
+                    } else {
+                        session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
-                                "Cadastro realizado com sucesso.");
-                        return "novo";
+                                "Este CPF já está cadastrado.");
                     }
                 } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
