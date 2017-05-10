@@ -23,7 +23,6 @@
  */
 package br.senac.tads.pi3a.inputFilter;
 
-import br.senac.tads.pi3a.dao.DaoCliente;
 import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
@@ -41,15 +40,19 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author Elton
  */
 public class InputFilterCliente extends InputFilter {
-    public InputFilterCliente(HttpServletRequest request) {
-        super(request);
+    /**
+     * Construtor padrão
+     * 
+     * @param allMap 
+     */
+    public InputFilterCliente(Map<String, String[]> allMap) {
+        super(allMap);
     }
     
     /**
