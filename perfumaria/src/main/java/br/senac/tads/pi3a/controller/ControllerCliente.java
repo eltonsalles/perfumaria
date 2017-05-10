@@ -48,14 +48,15 @@ public class ControllerCliente implements Logica {
             if (request.getMethod().equalsIgnoreCase("post")) {
                 // Classe de validação do formulário cliente
                 InputFilterCliente inputFilterCliente
-                        = new InputFilterCliente(request);
+                        = new InputFilterCliente(request.getParameterMap());
+
+                // Cria um objeto cliente com os dados do formulário
+                Cliente cliente = (Cliente) inputFilterCliente.createModel();
                 
                 // Faz a validação do formulário cliente
                 if (inputFilterCliente.isValid()) {
-                    // Estando tudo certo, então é criado o objeto cliente com
-                    // os dados do formulário
-                    Cliente cliente = (Cliente) inputFilterCliente
-                            .createModel();
+                    // Atualiza o objeto cliente com os dados validados
+                    cliente = (Cliente) inputFilterCliente.createModel();
                     
                     DaoCliente dao = new DaoCliente(cliente);
                     
@@ -71,6 +72,7 @@ public class ControllerCliente implements Logica {
                             return "novo";
                         }
                     } else {
+                        session.setAttribute("cliente", cliente);
                         session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
                                 "Este CPF já está cadastrado.");
@@ -80,6 +82,7 @@ public class ControllerCliente implements Logica {
                     // de aviso
                     session.setAttribute("errorValidation",
                             inputFilterCliente.getErrorValidation());
+                    session.setAttribute("cliente", cliente);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
                             "Verifique os campo em vermelho.");
