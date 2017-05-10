@@ -46,10 +46,12 @@ public abstract class InputFilter {
         Map<String, Object> error = new LinkedHashMap<>();
         
         for (String key : map.keySet()) {
-            if (key.contains("-")) {
-                key = arrangeName(key);
+            if (!key.equalsIgnoreCase("controller") && !key.equalsIgnoreCase("action")) {
+                if (key.contains("-")) {
+                    key = arrangeName(key);
+                }
+                error.put(key, true);
             }
-            error.put(key, true);
         }
         
         return error;
