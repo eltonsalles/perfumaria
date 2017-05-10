@@ -283,27 +283,16 @@ public class InputFilterCliente extends InputFilter {
             }
         }
         
-        // Pegar a lista de erros
-        Map<String, Object> error = this.getErrorValidation();
-        
-        for (String key : error.keySet()) {
-            // Verifica na lista de erros se existe um campo com true e
-            // se existir pelo menos um erro retorna false
-            if ((boolean) error.get(key)) {
-                return false;
-            }
-        }
-        return true;
+        return this.errorStatus();
     }
 
     /**
-     * Retorna um objeto cliente com todos os dados preenchidos conforme as
-     * informações validadas
+     * Retorna um objeto cliente
      * 
      * @return 
      */
     @Override
-    public Model createModel() {
+    protected Model getModel() {
         Cliente cliente = new Cliente();
         
         try {
@@ -343,5 +332,5 @@ public class InputFilterCliente extends InputFilter {
         }
         
         return cliente;
-    }
+    }   
 }
