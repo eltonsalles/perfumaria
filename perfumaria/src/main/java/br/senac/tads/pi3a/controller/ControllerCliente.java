@@ -26,10 +26,7 @@ package br.senac.tads.pi3a.controller;
 import br.senac.tads.pi3a.dao.DaoCliente;
 import br.senac.tads.pi3a.inputFilter.InputFilterCliente;
 import br.senac.tads.pi3a.model.Cliente;
-import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,9 +46,10 @@ public class ControllerCliente implements Logica {
                 // Classe de validação do formulário cliente
                 InputFilterCliente inputFilterCliente
                         = new InputFilterCliente(request.getParameterMap());
-
-                // Cria um objeto cliente com os dados do formulário
-                Cliente cliente = (Cliente) inputFilterCliente.createModel();
+                
+                // Cria um objeto cliente com os dados do formulário,
+                // mas sem validação
+                Cliente cliente = (Cliente) inputFilterCliente.getData();
                 
                 // Faz a validação do formulário cliente
                 if (inputFilterCliente.isValid()) {
@@ -63,8 +61,7 @@ public class ControllerCliente implements Logica {
                     // Garante que o cpf não esteja cadastrado na base de dados
                     if (dao.findAll(cliente, "cpf", "=", cliente.getCpf())
                             .isEmpty()) {
-                        // A dao retorna um id válido se conseguir fazer a
-                        // inserção
+                        // A dao retorna um id válido se fizer a inserção
                         if (dao.insert() != -1) {
                             session.setAttribute("alert", "alert-success");
                             session.setAttribute("alertMessage",
@@ -72,6 +69,7 @@ public class ControllerCliente implements Logica {
                             return "novo";
                         }
                     } else {
+                        // Manda para a jsp os campos inválidos e uma mensagem
                         session.setAttribute("cliente", cliente);
                         session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
@@ -79,7 +77,6 @@ public class ControllerCliente implements Logica {
                     }
                 } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
-                    // de aviso
                     session.setAttribute("errorValidation",
                             inputFilterCliente.getErrorValidation());
                     session.setAttribute("cliente", cliente);
@@ -100,52 +97,63 @@ public class ControllerCliente implements Logica {
     }
 
     @Override
-    public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String editar(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
         try {
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
-                // Implatar validação
-
-                /**
-                 * #Mock - Pegando os dados do formulário e apenas arrumando
-                 * o tamanho para fazer a alteração
-                 */
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-                Cliente cliente = new Cliente();
-                int id = Integer.valueOf(request.getParameter("id"));
-
-                cliente.setId(id);
-                cliente.setStatus(Boolean.valueOf(request.getParameter("status")));
-                cliente.setCpf(request.getParameter("cpf").replaceAll("\\D", ""));
-                cliente.setNome(request.getParameter("nome"));
-
-                Date dataNascimento = new Date(sdf.parse(request.getParameter("data-nascimento")).getTime());
-                cliente.setDataNascimento(dataNascimento);
-                cliente.setSexo(request.getParameter("sexo").charAt(0));
-                cliente.setEstadoCivil(request.getParameter("estado-civil"));
-                cliente.setCelular(request.getParameter("celular").replaceAll("\\D", ""));
-                cliente.setTelefone(request.getParameter("telefone").replaceAll("\\D", ""));
-                cliente.setEmail(request.getParameter("email"));
-                cliente.setLogradouro(request.getParameter("logradouro"));
-                cliente.setNumero(request.getParameter("numero"));
-                cliente.setComplemento(request.getParameter("complemento"));
-                cliente.setBairro(request.getParameter("bairro"));
-                cliente.setCep(request.getParameter("cep").replaceAll("\\D", ""));
-                cliente.setCidade(request.getParameter("cidade"));
-                cliente.setUf(request.getParameter("uf"));
-
-                Loja loja = new Loja();
-                loja.setId(1);
-                cliente.setLoja(loja);
-
-                DaoCliente dao = new DaoCliente(cliente);
-
-                if (dao.update()) {
-                    session.setAttribute("alert", "alert-success");
-                    session.setAttribute("alertMessage", "Cadastro alterado com sucesso.");
-                    session.setAttribute("id", id);
-                    return "editar";
+                // Classe de validação do formulário cliente
+                InputFilterCliente inputFilterCliente
+                        = new InputFilterCliente(request.getParameterMap());
+                
+                // Cria um objeto cliente com os dados do formulário,
+                // mas sem validação
+                Cliente cliente = (Cliente) inputFilterCliente.getData();
+                
+                // Faz a validação do formulário cliente
+                if (inputFilterCliente.isValid()) {
+                    // Atualiza o objeto cliente com os dados validados
+                    cliente = (Cliente) inputFilterCliente.createModel();
+                    
+                    DaoCliente dao = new DaoCliente(cliente);
+                    
+                    // Garante que não exista cpf repetido na base de dados
+                    List<Model> lista = dao.findAll(cliente, "cpf", "=",
+                            cliente.getCpf());
+                    
+                    if (lista.size() == 1) {
+                        if (lista.get(0).getId() == cliente.getId()) {
+                            if (dao.update()) {
+                                session.setAttribute("alert", "alert-success");
+                                session.setAttribute("alertMessage",
+                                        "Cadastro alterado com sucesso.");
+                                session.setAttribute("id", cliente.getId());
+                                return "editar";
+                            }
+                        } else {
+                            // Manda para jsp os campos inválidos e uma mensagem
+                            session.setAttribute("cliente", cliente);
+                            session.setAttribute("alert", "alert-danger");
+                            session.setAttribute("alertMessage",
+                                    "Este CPF já está cadastrado.");
+                        }
+                    } else {
+                        // Manda para jsp os campos inválidos e uma mensagem
+                        session.setAttribute("cliente", cliente);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage",
+                                "Não foi encontrado nenhum cadastro com o CPF"
+                                        + " informado.");
+                    }
+                } else {
+                    // Manda para a jsp os campos inválidos e uma mensagem
+                    session.setAttribute("errorValidation",
+                            inputFilterCliente.getErrorValidation());
+                    session.setAttribute("cliente", cliente);
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage",
+                            "Verifique os campo em vermelho.");
                 }
             }
 
@@ -163,7 +171,8 @@ public class ControllerCliente implements Logica {
                 if (digito) {
                     Model cliente = new Cliente();
                     DaoCliente dao = new DaoCliente();
-                    cliente = dao.findOne(cliente, Integer.valueOf(request.getParameter("id")));
+                    cliente = dao.findOne(cliente, Integer.valueOf(request
+                            .getParameter("id")));
 
                     session.setAttribute("cliente", cliente);
                 }
@@ -173,14 +182,17 @@ public class ControllerCliente implements Logica {
         } catch (Exception e) {
             e.printStackTrace(System.err);
             session.setAttribute("alert", "alert-danger");
-            session.setAttribute("alertMessage", "Não foi possível realizar a alteração.");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a alteração.");
             session.setAttribute("id", 0);
             return "editar";
         }
     }
 
     @Override
-    public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String excluir(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
         try {
             if (request.getParameter("id") != null) {
                 String id = request.getParameter("id");
@@ -199,7 +211,8 @@ public class ControllerCliente implements Logica {
 
                     if (dao.delete(Integer.valueOf(id))) {
                         session.setAttribute("alert", "alert-warning");
-                        session.setAttribute("alertMessage", "Cadastro excluído com sucesso.");
+                        session.setAttribute("alertMessage",
+                                "Cadastro excluído com sucesso.");
                         return "excluir";
                     }
                 }
@@ -209,26 +222,29 @@ public class ControllerCliente implements Logica {
         } catch (Exception e) {
             e.printStackTrace(System.err);
             session.setAttribute("alert", "alert-danger");
-            session.setAttribute("alertMessage", "Não foi possível realizar a exclusão.");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a exclusão.");
             return "excluir";
         }
     }
 
     @Override
-    public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String pesquisar(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
         try {
+            // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 Cliente cliente = new Cliente();
                 DaoCliente dao = new DaoCliente();
                 List<Model> lista;
 
                 // Se não houver valor para pesquisar então retorna tudo
-                if (request.getParameter("pesquisar") !=  null & !request.getParameter("pesquisar").isEmpty()) {
+                if (request.getParameter("pesquisar") != null
+                        && !request.getParameter("pesquisar").isEmpty()) {
                     String pesquisar = request.getParameter("pesquisar");
 
-                    /**
-                     * #Mock para fazer consulta por cpf ou ppor nome
-                     */
+                    // Verifica por onde a consulta será feita por cpf ou nome
                     boolean digito = true;
                     for (int i = 0; i < pesquisar.length(); i++) {
                         if (!Character.isDigit(pesquisar.charAt(i))) {
@@ -236,10 +252,11 @@ public class ControllerCliente implements Logica {
                             break;
                         }
                     }
-                    if (digito) {
+                    if (digito && pesquisar.length() == 11) {
                         lista = dao.findAll(cliente, "cpf", "=", pesquisar);
                     } else {
-                        lista = dao.findAll(cliente, "nome", "LIKE", "%" + pesquisar + "%");
+                        lista = dao.findAll(cliente, "nome", "LIKE",
+                                "%" + pesquisar + "%");
                     }
 
                 } else {
@@ -251,7 +268,8 @@ public class ControllerCliente implements Logica {
                     return "pesquisar";
                 } else {
                     session.setAttribute("alert", "alert-warning");
-                    session.setAttribute("alertMessage", "A consulta não retornou nenhum resultado.");
+                    session.setAttribute("alertMessage",
+                            "A consulta não retornou nenhum resultado.");
                 }
             }
 
@@ -259,7 +277,8 @@ public class ControllerCliente implements Logica {
         } catch (Exception e) {
             e.printStackTrace(System.err);
             session.setAttribute("alert", "alert-danger");
-            session.setAttribute("alertMessage", "Não foi possível realizar a consulta.");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a consulta.");
             return "pesquisar";
         }
     }
