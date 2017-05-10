@@ -32,6 +32,7 @@ import br.senac.tads.pi3a.validation.ValidationBoolean;
 import br.senac.tads.pi3a.validation.ValidationCpf;
 import br.senac.tads.pi3a.validation.ValidationDate;
 import br.senac.tads.pi3a.validation.ValidationEmail;
+import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
 import java.text.SimpleDateFormat;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -57,11 +59,25 @@ public class InputFilterCliente extends InputFilter {
      */
     @Override
     public boolean isValid() {
-        boolean result = false;
-        
         ValidationTamanho validationTamanho = new ValidationTamanho();
         ValidationAlfaNumerico validationAlfaNumerico
                 = new ValidationAlfaNumerico();
+        
+        // Garante que o id do formulário cliente está vazio ou que é um inteiro
+        // maior que 0
+        if (this.allMap.containsKey("id")) {
+            if (!this.allMap.get("id")[0].isEmpty()) {
+                ValidationInt validationInt = new ValidationInt();
+                
+                if (validationInt.isValid(this.allMap.get("id")[0])) {
+                    if (Integer.valueOf(this.allMap.get("id")[0]) > 0) {
+                        this.errorValidation.replace("id", false);
+                    }
+                }
+            } else {
+                this.errorValidation.replace("id", false);
+            }
+        }
         
         // Verifica o nome do formulário cliente validando o tamanho e 
         // deixando apenas caracteres válidos na string
@@ -73,9 +89,6 @@ public class InputFilterCliente extends InputFilter {
             if (validationTamanho.isValid(this.allMap.get("nome")[0]) &&
                     validationString.isValid(this.allMap.get("nome")[0])) {
                 this.errorValidation.replace("nome", false);
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -86,39 +99,19 @@ public class InputFilterCliente extends InputFilter {
             
             if (validationDate.isValid(this.allMap.get("data-nascimento")[0])) {
                 this.errorValidation.replace("dataNascimento", false);
-                result = true;
-            } else {
-                result = false;
             }
         }
         
-        // Verifica se o cpf do formulário cliente informado é válido e se
-        // ele ainda não existe na base de dados
+        // Verifica se o cpf informado no formulário cliente é válido
         if (this.allMap.containsKey("cpf")) {
             // Deixa só os digitos
             String cpf = this.allMap.get("cpf")[0].replaceAll("\\D", "");
             
             ValidationCpf validationCpf = new ValidationCpf();
             
-            // Se for um cpf válido olha no banco para verificar que não existe
             if (validationCpf.isValid(cpf)) {
-                DaoCliente daoCliente = new DaoCliente();
-                
-                try {
-                    List lista = daoCliente.findAll(new Cliente(), "cpf", "=",
-                            cpf);
-                    
-                    if (lista.isEmpty()) {
-                        this.errorValidation.replace("cpf", false);
-                        this.allMap.replace("cpf", new String[]{cpf});
-                        result = true;
-                    } else {
-                        result = false;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace(System.err);
-                    result = false;
-                }
+                this.errorValidation.replace("cpf", false);
+                this.allMap.replace("cpf", new String[]{cpf});
             }
         }
         
@@ -128,9 +121,6 @@ public class InputFilterCliente extends InputFilter {
             
             if (validationBoolean.isValid(this.allMap.get("status")[0])) {
                 this.errorValidation.replace("status", false);
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -144,9 +134,6 @@ public class InputFilterCliente extends InputFilter {
             if (validationTamanho.isValid(this.allMap.get("email")[0])
                     && validationEmail.isValid(this.allMap.get("email")[0])) {
                 this.errorValidation.replace("email", false);
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -161,12 +148,7 @@ public class InputFilterCliente extends InputFilter {
                         || estadoCivil.equalsIgnoreCase("divorciado")
                         || estadoCivil.equalsIgnoreCase("viuvo")) {
                     this.errorValidation.replace("estadoCivil", false);
-                    result = true;
-                } else {
-                    result = false;
                 }
-            } else {
-                result = false;
             }
         }
         
@@ -176,9 +158,6 @@ public class InputFilterCliente extends InputFilter {
             if (this.allMap.get("sexo")[0].equalsIgnoreCase("F")
                     || this.allMap.get("sexo")[0].equalsIgnoreCase("M")) {
                 this.errorValidation.replace("sexo", false);
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -193,9 +172,6 @@ public class InputFilterCliente extends InputFilter {
             if (validationTamanho.isValid(celular)) {
                 this.errorValidation.replace("celular", false);
                 this.allMap.replace("celular", new String[]{celular});
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -210,9 +186,6 @@ public class InputFilterCliente extends InputFilter {
             if (validationTamanho.isValid(telefone)) {
                 this.errorValidation.replace("telefone", false);
                 this.allMap.replace("telefone", new String[]{telefone});
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -225,9 +198,6 @@ public class InputFilterCliente extends InputFilter {
                     validationAlfaNumerico.isValid(this.allMap
                             .get("logradouro")[0])) {
                 this.errorValidation.replace("logradouro", false);
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -240,9 +210,6 @@ public class InputFilterCliente extends InputFilter {
                     validationAlfaNumerico.isValid(this.allMap
                             .get("numero")[0])) {
                 this.errorValidation.replace("numero", false);
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -256,13 +223,9 @@ public class InputFilterCliente extends InputFilter {
                         && validationAlfaNumerico.isValid(this.allMap
                                 .get("complemento")[0])) {
                     this.errorValidation.replace("complemento", false);
-                    result = true;
-                } else {
-                    result = true;
                 }
             } else {
                 this.errorValidation.replace("complemento", false);
-                result = true;
             }
         }
         
@@ -275,9 +238,6 @@ public class InputFilterCliente extends InputFilter {
                     validationAlfaNumerico.isValid(this.allMap
                             .get("bairro")[0])) {
                 this.errorValidation.replace("bairro", false);
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -290,9 +250,6 @@ public class InputFilterCliente extends InputFilter {
                     validationAlfaNumerico.isValid(this.allMap
                             .get("cidade")[0])) {
                 this.errorValidation.replace("cidade", false);
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -307,9 +264,6 @@ public class InputFilterCliente extends InputFilter {
             
             if (ufs.contains(this.allMap.get("uf")[0])) {
                 this.errorValidation.replace("uf", false);
-                result = true;
-            } else {
-                result = false;
             }
         }
         
@@ -323,13 +277,20 @@ public class InputFilterCliente extends InputFilter {
             if (validationTamanho.isValid(cep)) {
                 this.errorValidation.replace("cep", false);
                 this.allMap.replace("cep", new String[]{cep});
-                result = true;
-            } else {
-                result = false;
             }
         }
         
-        return result;
+        // Pegar a lista de erros
+        Map<String, Object> error = this.getErrorValidation();
+        
+        for (String key : error.keySet()) {
+            // Verifica na lista de erros se existe um campo com true e
+            // se existir pelo menos um erro retorna false
+            if ((boolean) error.get(key)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
