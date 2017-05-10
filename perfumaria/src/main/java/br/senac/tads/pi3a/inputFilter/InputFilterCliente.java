@@ -34,6 +34,7 @@ import br.senac.tads.pi3a.validation.ValidationEmail;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -296,6 +297,9 @@ public class InputFilterCliente extends InputFilter {
         Cliente cliente = new Cliente();
         
         try {
+            if (!this.allMap.get("id")[0].isEmpty()) {
+                cliente.setId(Integer.valueOf(this.allMap.get("id")[0]));
+            }
             cliente.setStatus(Boolean.valueOf(this.allMap.get("status")[0]));
             cliente.setCpf(this.allMap.get("cpf")[0]);
             cliente.setNome(this.allMap.get("nome")[0]);
@@ -326,11 +330,11 @@ public class InputFilterCliente extends InputFilter {
             Loja loja = new Loja();
             loja.setId(1);
             cliente.setLoja(loja);
-        } catch (Exception e) {
+        } catch (NumberFormatException | ParseException e) {
             e.printStackTrace(System.err);
             cliente = null;
         }
         
         return cliente;
-    }   
+    }
 }
