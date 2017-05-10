@@ -26,7 +26,6 @@ package br.senac.tads.pi3a.inputFilter;
 import br.senac.tads.pi3a.model.Model;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -37,11 +36,23 @@ public abstract class InputFilter {
     
     protected Map<String, Object> errorValidation;
 
-    public InputFilter(HttpServletRequest request) {
-        this.allMap = request.getParameterMap();
+    /**
+     * Faz o mapeamento do formulário
+     * 
+     * @param allMap 
+     */
+    public InputFilter(Map<String, String[]> allMap) {
+        this.allMap = allMap;
         this.errorValidation = initErrorValidation(this.allMap);
     }
     
+    /**
+     * Inicia o atributo errorValidation com os campos do form e com valor
+     * default true (Tem erro)
+     * 
+     * @param map
+     * @return 
+     */
     private Map<String, Object> initErrorValidation(Map<String, String[]> map) {
         Map<String, Object> error = new LinkedHashMap<>();
         
@@ -57,6 +68,12 @@ public abstract class InputFilter {
         return error;
     }
     
+    /**
+     * Arruma os nome que tem '-' como separador
+     * 
+     * @param name
+     * @return 
+     */
     private String arrangeName(String name) {
         String[] parts = name.split("-");
         String result = "";
@@ -74,11 +91,26 @@ public abstract class InputFilter {
         return result;
     }
     
+    /**
+     * Retorna o mapa de erros dos campos
+     * 
+     * @return 
+     */
     public Map<String, Object> getErrorValidation() {
         return errorValidation;
     }
     
+    /**
+     * Método que faz toda a validação do formulário
+     * 
+     * @return 
+     */
     public abstract boolean isValid();
     
+    /**
+     * Método que retorna a classe com os dados do atributo allMap
+     * 
+     * @return 
+     */
     public abstract Model createModel();
 }
