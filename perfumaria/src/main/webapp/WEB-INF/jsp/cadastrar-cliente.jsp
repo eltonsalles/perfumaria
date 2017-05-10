@@ -127,9 +127,11 @@
                 Excluir&nbsp;&nbsp;<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </a>
             </c:if>
+            <c:if test="${empty sessionScope.cliente.id}">
             <button type="reset" class="btn btn-default">
                 Cancelar&nbsp;&nbsp;<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </button>
+            </c:if>
             <button type="submit" class="btn btn-default">
             <c:out value="${sessionScope.cliente.id > 0 ? 'Alterar' : 'Salvar'}"></c:out>&nbsp;&nbsp;<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
             </button>
