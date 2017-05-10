@@ -47,6 +47,63 @@ public abstract class InputFilter {
     }
     
     /**
+     * Retorna o mapa de erros dos campos
+     * 
+     * @return 
+     */
+    public Map<String, Object> getErrorValidation() {
+        return errorValidation;
+    }
+    
+    /**
+     * Retorna um objeto com todos os dados preenchidos e válidos
+     * 
+     * @return 
+     */
+    public Model createModel() {
+        try {
+            // Se true tudo está certo
+            if (this.errorStatus()) {
+                return this.getModel();
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Método para retornar u objeto preenchido, mas sem validação
+     * 
+     * @return 
+     */
+    public Model getData() {
+        return this.getModel();
+    }
+    
+    /**
+     * Retorna o status dos erros. False se ainda existe campo inválido
+     * ou true se não existir mais
+     * 
+     * @return 
+     */
+    protected boolean errorStatus() {
+        // Pegar a lista de erros
+        Map<String, Object> error = this.errorValidation;
+        
+        for (String key : error.keySet()) {
+            // Verifica na lista de erros se existe um campo com true e
+            // se existir pelo menos um erro retorna false
+            if ((boolean) error.get(key)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
      * Inicia o atributo errorValidation com os campos do form e com valor
      * default true (Tem erro)
      * 
@@ -57,7 +114,8 @@ public abstract class InputFilter {
         Map<String, Object> error = new LinkedHashMap<>();
         
         for (String key : map.keySet()) {
-            if (!key.equalsIgnoreCase("controller") && !key.equalsIgnoreCase("action")) {
+            if (!key.equalsIgnoreCase("controller")
+                    && !key.equalsIgnoreCase("action")) {
                 if (key.contains("-")) {
                     key = arrangeName(key);
                 }
@@ -92,15 +150,6 @@ public abstract class InputFilter {
     }
     
     /**
-     * Retorna o mapa de erros dos campos
-     * 
-     * @return 
-     */
-    public Map<String, Object> getErrorValidation() {
-        return errorValidation;
-    }
-    
-    /**
      * Método que faz toda a validação do formulário
      * 
      * @return 
@@ -108,9 +157,9 @@ public abstract class InputFilter {
     public abstract boolean isValid();
     
     /**
-     * Método que retorna a classe com os dados do atributo allMap
+     * Retorna um objeto preenchido, mas sem validação
      * 
      * @return 
      */
-    public abstract Model createModel();
+    protected abstract Model getModel();
 }
