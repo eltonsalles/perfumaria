@@ -127,7 +127,7 @@
                 Excluir&nbsp;&nbsp;<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </a>
             </c:if>
-            <c:if test="${empty sessionScope.cliente.id}">
+            <c:if test="${empty sessionScope.cliente.id || sessionScope.cliente.id == 0}">
             <button type="reset" class="btn btn-default">
                 Cancelar&nbsp;&nbsp;<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </button>
