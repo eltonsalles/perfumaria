@@ -42,7 +42,7 @@ public abstract class InputFilter {
      * @param allMap 
      */
     public InputFilter(Map<String, String[]> allMap) {
-        this.allMap = allMap;
+        this.allMap = new LinkedHashMap<>(allMap);
         this.errorValidation = initErrorValidation(this.allMap);
     }
     
