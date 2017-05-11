@@ -14,6 +14,9 @@
         <!-- CSS -->
         <link rel="stylesheet" href="assets/css/style.css">
         
+        <!-- JavaScript -->
+        <script src="assets/js/programa.js"></script>
+        
         <!-- JQuery minified -->
         <script src="assets/lib/jquery/jquery-3.2.0.min.js"></script>
 
