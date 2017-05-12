@@ -22,6 +22,7 @@
     <table class="table table-striped">
         <tr>
             <th>Código</th>
+            <th>Status</th>
             <th>Nome</th>
             <th>Data de Nascimento</th>
             <th>CPF</th>
@@ -30,6 +31,7 @@
         <c:forEach items="${sessionScope.listaClientes}" var="cliente">
             <tr>
                 <td><c:out value="${cliente.id}"></c:out></td>
+                <td><c:out value="${cliente.status eq true ? 'Ativo' : 'Inativo'}"></c:out></td>
                 <td><c:out value="${cliente.nome}"></c:out></td>
                 <td><fmt:formatDate pattern="dd/MM/yyyy" value="${cliente.dataNascimento}" /></td>
                 <td><c:out value="${cliente.cpf}"></c:out></td>
