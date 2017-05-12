@@ -35,6 +35,16 @@ public class ControllerProduto implements Logica {
 
     @Override
     public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+       
+        try{
+            if(request.getMethod().equalsIgnoreCase("post")){
+                    
+            }
+        }catch(Exception e){
+            
+        }
+        
+        
         return "/WEB-INF/jsp/cadastrar-produto.jsp";
     }
 
