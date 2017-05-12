@@ -55,12 +55,15 @@ public class ControllerCliente implements Logica {
                 if (inputFilterCliente.isValid()) {
                     // Atualiza o objeto cliente com os dados validados
                     cliente = (Cliente) inputFilterCliente.createModel();
-                    
+                                        
                     DaoCliente dao = new DaoCliente(cliente);
                     
                     // Garante que o cpf não esteja cadastrado na base de dados
                     if (dao.findAll(cliente, "cpf", "=", cliente.getCpf())
                             .isEmpty()) {
+                        // Todo cliente deve ser cadastrado com status true
+                        cliente.setStatus(true);
+                        
                         // A dao retorna um id válido se fizer a inserção
                         if (dao.insert() != -1) {
                             session.setAttribute("alert", "alert-success");
