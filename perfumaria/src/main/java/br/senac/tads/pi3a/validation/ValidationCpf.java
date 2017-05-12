@@ -34,7 +34,7 @@ public class ValidationCpf extends ValidationAbstract {
         String digVerificador, digResultado, cpf = objeto.toString();
 
         // Deixa apenas os números
-        cpf = cpf.replaceAll("[^0-9]*", "");
+        cpf = cpf.replaceAll("\\D", "");
         if (cpf.trim().isEmpty()) {
             return false;
         }
@@ -82,13 +82,9 @@ public class ValidationCpf extends ValidationAbstract {
         // Compara os resultados das contas com os valores digitados
         digVerificador = cpf.substring(cpf.length() - 2, cpf.length());
         digResultado = String.valueOf(digito1) + String.valueOf(digito2);
-
         // Se o cpf for válido retorna apenas os números
-        if (digVerificador.equals(digResultado)) {
-            return true;
-        }
-
         // Se for inválido retorna false
-        return false;
+
+        return digVerificador.equals(digResultado);
     }
 }

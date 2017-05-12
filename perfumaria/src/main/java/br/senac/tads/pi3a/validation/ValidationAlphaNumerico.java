@@ -27,9 +27,9 @@ package br.senac.tads.pi3a.validation;
  *
  * @author Joao
  */
-public class ValidationAlfaNumerico extends ValidationAbstract {
+public class ValidationAlphaNumerico extends ValidationAbstract {
     @Override
     public boolean isValid(Object objeto) {
-        return objeto.toString().matches("[a-zA-Zà-úÀ-Ú0-9 .]{1,}");
+        return objeto.toString().matches("^\\w+$");
     }
 }
