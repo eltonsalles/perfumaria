@@ -34,7 +34,6 @@ public class DaoCliente extends AbstractDao {
     public DaoCliente() {
         
     }
-    
     public DaoCliente(Cliente model) {
         super(model);
     }
