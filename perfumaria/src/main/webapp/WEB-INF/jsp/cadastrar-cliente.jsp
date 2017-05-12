@@ -12,11 +12,11 @@
         </div>
         <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
             <label class="control-label" for="nome">Nome</label>
-            <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="[a-zA-Z ]{1,150}" value="<c:out value="${sessionScope.cliente.nome}"></c:out>">
+            <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú]|\.|\s)+$" value="<c:out value="${sessionScope.cliente.nome}"></c:out>">
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.dataNascimento eq true}">has-error</c:if>"> 
             <label class="control-label" for="data-nascimento">Data de Nascimento</label>
-            <input type="date" class="form-control" id="data-nascimento" name="data-nascimento" required pattern="[0-9]{2}\/[0-9]{2}\/[0-9]{4}$" min="1900-01-01" max="2100-12-31" value="<fmt:formatDate pattern="yyyy-MM-dd" value="${cliente.dataNascimento}" />">
+            <input type="date" class="form-control" id="data-nascimento" name="data-nascimento" required min="1900-01-01" max="2100-12-31" value="<fmt:formatDate pattern="yyyy-MM-dd" value="${cliente.dataNascimento}" />">
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.cpf eq true}">has-error</c:if>">
             <label class="control-label" for="cpf">CPF</label>
@@ -33,7 +33,7 @@
         </div>
         <div class="form-group col-md-5 <c:if test="${errorValidation.email eq true}">has-error</c:if>">
             <label class="control-label" for="email">E-mail</label>
-            <input type="email" class="form-control" id="email" placeholder="email@exemplo.com.br" name="email" maxlength="150" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" value="<c:out value="${sessionScope.cliente.email}"></c:out>">
+            <input type="email" class="form-control" id="email" placeholder="email@exemplo.com.br" name="email" maxlength="150" required value="<c:out value="${sessionScope.cliente.email}"></c:out>">
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.estadoCivil eq true}">has-error</c:if>">
             <label class="control-label" for="estado-civil">Estado civil</label>
@@ -57,31 +57,31 @@
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.celular eq true}">has-error</c:if>">
             <label class="control-label" for="celular">Celular</label>
-            <input type="tel" class="form-control" id="celular" placeholder="(xx) xxxxx-xxxx" name="celular" maxlength="15" required pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}$" value="<c:out value="${sessionScope.cliente.celular}"></c:out>">
+            <input type="tel" class="form-control" id="celular" placeholder="(xx) xxxxx-xxxx" name="celular" maxlength="15" required pattern="\(\d{2}\) \d{4,5}-\d{4}$" value="<c:out value="${sessionScope.cliente.celular}"></c:out>">
         </div>                                               
         <div class="form-group col-md-3 <c:if test="${errorValidation.telefone eq true}">has-error</c:if>">
             <label class="control-label" for="telefone">Telefone</label>
-            <input type="tel" class="form-control" id="telefone" placeholder="(xx) xxxx-xxxx" name="telefone" maxlength="14" required pattern="\([0-9]{2}\) [0-9]{4}-[0-9]{4}$" value="<c:out value="${sessionScope.cliente.telefone}"></c:out>">
+            <input type="tel" class="form-control" id="telefone" placeholder="(xx) xxxx-xxxx" name="telefone" maxlength="14" required pattern="\(\d{2}\) \d{4,5}-\d{4}$" value="<c:out value="${sessionScope.cliente.telefone}"></c:out>">
         </div>
         <div class="form-group col-md-6 <c:if test="${errorValidation.logradouro eq true}">has-error</c:if>">
             <label class="control-label" for="logradouro">Logradouro</label>
-            <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida..." name="logradouro" maxlength="150" required  pattern="[a-z\s][0-9]{1,150}+$" value="<c:out value="${sessionScope.cliente.logradouro}"></c:out>">
+            <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida..." name="logradouro" maxlength="150" required  pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.logradouro}"></c:out>">
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.numero eq true}">has-error</c:if>">
             <label class="control-label" for="numero">Número</label>
-            <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero" maxlength="10" required pattern="[0-9]{1,10}+$" value="<c:out value="${sessionScope.cliente.numero}"></c:out>">
+            <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero" maxlength="10" required pattern="^\d+$" value="<c:out value="${sessionScope.cliente.numero}"></c:out>">
         </div>
         <div class="form-group col-md-4">
             <label for="complemento">Complemento</label>
-            <input type="text" class="form-control" id="complemento" placeholder="Bloco, sala..." name="complemento" maxlength="50" pattern="[a-z\s][0-9]{1,50}+$" value="<c:out value="${sessionScope.cliente.complemento}"></c:out>">
+            <input type="text" class="form-control" id="complemento" placeholder="Bloco, sala..." name="complemento" maxlength="50" pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.complemento}"></c:out>">
         </div>
         <div class="form-group col-md-4 <c:if test="${errorValidation.bairro eq true}">has-error</c:if>">
             <label class="control-label" for="bairro">Bairro</label>
-            <input type="text" class="form-control" id="bairro" name="bairro" maxlength="50" required pattern="[a-z\s][0-9]{1,50}+$" value="<c:out value="${sessionScope.cliente.bairro}"></c:out>">
+            <input type="text" class="form-control" id="bairro" name="bairro" maxlength="50" required pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.bairro}"></c:out>">
         </div>
         <div class="form-group col-md-4 <c:if test="${errorValidation.cidade eq true}">has-error</c:if>">
             <label class="control-label" for="cidade">Cidade</label>
-            <input type="text" class="form-control" id="cidade" name="cidade" maxlength="50" required pattern="[a-z\s]{1,50}+$" value="<c:out value="${sessionScope.cliente.cidade}"></c:out>">
+            <input type="text" class="form-control" id="cidade" name="cidade" maxlength="50" required pattern="^([a-zA-Zà-úÀ-Ú]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.cidade}"></c:out>">
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.uf eq true}">has-error</c:if>">
             <label class="control-label" for="uf">UF</label>
@@ -119,7 +119,7 @@
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.cep eq true}">has-error</c:if>">
             <label class="control-label" for="cep">CEP</label>
-            <input type="text" class="form-control" id="cep" placeholder="xxxxx-xxx" name="cep" maxlength="9" required pattern="[0-9]{5}-[0-9]{3}$" value="<c:out value="${sessionScope.cliente.cep}"></c:out>">
+            <input type="text" class="form-control" id="cep" placeholder="xxxxx-xxx" name="cep" maxlength="9" required pattern="\d{5}-\d{3}$" value="<c:out value="${sessionScope.cliente.cep}"></c:out>">
         </div>
         <div class="form-group col-md-offset-8 col-md-4">
             <c:if test="${sessionScope.cliente.id > 0}">
