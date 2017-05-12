@@ -26,7 +26,7 @@ package br.senac.tads.pi3a.inputFilter;
 import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
-import br.senac.tads.pi3a.validation.ValidationAlfaNumerico;
+import br.senac.tads.pi3a.validation.ValidationAlpha;
 import br.senac.tads.pi3a.validation.ValidationBoolean;
 import br.senac.tads.pi3a.validation.ValidationCpf;
 import br.senac.tads.pi3a.validation.ValidationDate;
@@ -64,8 +64,7 @@ public class InputFilterCliente extends InputFilter {
     @Override
     public boolean isValid() {
         ValidationTamanho validationTamanho = new ValidationTamanho();
-        ValidationAlfaNumerico validationAlfaNumerico
-                = new ValidationAlfaNumerico();
+        ValidationString validationString = new ValidationString();
         
         // Garante que o id do formulário cliente está vazio ou que é um inteiro
         // maior que 0
@@ -86,12 +85,12 @@ public class InputFilterCliente extends InputFilter {
         // Verifica o nome do formulário cliente validando o tamanho e 
         // deixando apenas caracteres válidos na string
         if (this.allMap.containsKey("nome")) {
-            ValidationString validationString = new ValidationString();
+            ValidationAlpha validationAlpha = new ValidationAlpha();
             
             validationTamanho.setTamanho(150);
             
             if (validationTamanho.isValid(this.allMap.get("nome")[0]) &&
-                    validationString.isValid(this.allMap.get("nome")[0])) {
+                    validationAlpha.isValid(this.allMap.get("nome")[0])) {
                 this.errorValidation.replace("nome", false);
             }
         }
@@ -199,7 +198,7 @@ public class InputFilterCliente extends InputFilter {
             validationTamanho.setTamanho(150);
             
             if (validationTamanho.isValid(this.allMap.get("logradouro")[0]) &&
-                    validationAlfaNumerico.isValid(this.allMap
+                    validationString.isValid(this.allMap
                             .get("logradouro")[0])) {
                 this.errorValidation.replace("logradouro", false);
             }
@@ -208,11 +207,11 @@ public class InputFilterCliente extends InputFilter {
         // Verifica o número (endereço) do formulário cliente validando o 
         // tamanho e deixando apenas caracteres válidos na string
         if (this.allMap.containsKey("numero")) {
+            String numero = this.allMap.get("numero")[0].replaceAll("\\D", "");
+            
             validationTamanho.setTamanho(10);
             
-            if (validationTamanho.isValid(this.allMap.get("numero")[0]) &&
-                    validationAlfaNumerico.isValid(this.allMap
-                            .get("numero")[0])) {
+            if (validationTamanho.isValid(numero)) {
                 this.errorValidation.replace("numero", false);
             }
         }
@@ -224,7 +223,7 @@ public class InputFilterCliente extends InputFilter {
                 validationTamanho.setTamanho(50);
                 
                 if (validationTamanho.isValid(this.allMap.get("complemento")[0])
-                        && validationAlfaNumerico.isValid(this.allMap
+                        && validationString.isValid(this.allMap
                                 .get("complemento")[0])) {
                     this.errorValidation.replace("complemento", false);
                 }
@@ -239,7 +238,7 @@ public class InputFilterCliente extends InputFilter {
             validationTamanho.setTamanho(50);
             
             if (validationTamanho.isValid(this.allMap.get("bairro")[0]) &&
-                    validationAlfaNumerico.isValid(this.allMap
+                    validationString.isValid(this.allMap
                             .get("bairro")[0])) {
                 this.errorValidation.replace("bairro", false);
             }
@@ -248,10 +247,12 @@ public class InputFilterCliente extends InputFilter {
         // Verifica a cidade do formulário cliente validando o tamanho e 
         // deixando apenas caracteres válidos na string
         if (this.allMap.containsKey("cidade")) {
+            ValidationAlpha validationAlpha = new ValidationAlpha();
+            
             validationTamanho.setTamanho(50);
             
             if (validationTamanho.isValid(this.allMap.get("cidade")[0]) &&
-                    validationAlfaNumerico.isValid(this.allMap
+                    validationAlpha.isValid(this.allMap
                             .get("cidade")[0])) {
                 this.errorValidation.replace("cidade", false);
             }
