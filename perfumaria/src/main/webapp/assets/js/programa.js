@@ -34,7 +34,7 @@ function configurarForm() {
     var cep = document.querySelector("#cep");
     
     if (cpf !== null) {
-        cpf.addEventListener('load', function () {
+        cpf.addEventListener('focusout', function () {
             this.value = formatarCpf(this.value);
         });
     }
