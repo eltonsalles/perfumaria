@@ -24,6 +24,7 @@
 package br.senac.tads.pi3a.inputFilter;
 
 import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.validation.ValidationTamanho;
 import java.util.Map;
 
 /**
@@ -38,6 +39,11 @@ public class InputFilterProduto extends InputFilter {
 
     @Override
     public boolean isValid() {
+        
+        ValidationTamanho validaTamanho = new ValidationTamanho();
+        
+        
+        
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
