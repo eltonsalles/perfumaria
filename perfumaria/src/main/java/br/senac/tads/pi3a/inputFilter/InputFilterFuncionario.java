@@ -145,27 +145,30 @@ public class InputFilterFuncionario extends InputFilter {
             //Deixa apenas digítos
             String celular = this.allMap.get("celular")[0].replaceAll("\\D", "");
             validationTamanho.setTamanho(11);
-            if(validationTamanho.isValid(celular)){
+            if (validationTamanho.isValid(celular)) {
                 this.errorValidation.replace("celular", false);
                 this.allMap.replace("celular", new String[]{celular});
             }
         }
-        
+
         // Verifica o valor e o tamanho de telefone no formulário funcionário
-        if(this.allMap.containsKey("telefone")){
+        if (this.allMap.containsKey("telefone")) {
             //Deixa apenas digítos
             String telefone = this.allMap.get("telefone")[0].replaceAll("\\D", "");
             validationTamanho.setTamanho(11);
-            if(validationTamanho.isValid(telefone)){
+            if (validationTamanho.isValid(telefone)) {
                 this.errorValidation.replace("telefone", false);
-                this.allMap.replace("celular", new String[] {telefone});
+                this.allMap.replace("celular", new String[]{telefone});
             }
         }
-        
+
         // Verifica o logradouro do formulário funcionário validando o tamanho e 
         // deixando apenas caracteres válidos na string
-        
-        
+        if(this.allMap.containsKey("logradouro")){
+            validationTamanho.setTamanho(150);
+                      
+            
+        }
     }
 
     @Override
