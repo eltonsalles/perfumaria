@@ -9,21 +9,18 @@
             <input class="control-label" type="hidden" class="form-control" id="id" name="id">
         </div>
         <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
-            <label class="control-label" for="nome">Categoria</label>
-            <input type="text" class="form-control" id="categoria" placeholder="Categoria do produto" name="categoria" maxlength="100" required>
+            <label class="control-label" for="nome">Nome</label>
+            <input type="text" class="form-control" id="nome-produto" placeholder="Nome do produto" name="nome-produto" maxlength="150" required>
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="data-nascimento">Data do Registro</label>
             <input type="date" class="form-control" id="data-registro" name="data-registro" required>
         </div>
-        <div class="form-group col-md-1 <c:if test="${errorValidation eq true}">has-error</c:if>">
-            <label class="control-label" for="img">Select File</label>
-            <input type="file" id="img" class="file">
+               <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
+            <label class="control-label" for="nome">Categoria</label>
+            <input type="text" class="form-control" id="categoria" placeholder="Categoria do produto" name="categoria" maxlength="100" required>
         </div>
-        <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
-            <label class="control-label" for="nome">Nome</label>
-            <input type="text" class="form-control" id="nome-produto" placeholder="Nome do produto" name="nome-produto" maxlength="150" required>
-        </div>
+
         <div class="form-group col-md-3 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="marca">Marca</label>
             <input type="text" class="form-control" id="marca" placeholder="Marca" name="marca" maxlength="150" required>
