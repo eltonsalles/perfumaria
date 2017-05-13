@@ -23,14 +23,18 @@
  */
 package br.senac.tads.pi3a.inputFilter;
 
+import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
 import br.senac.tads.pi3a.validation.ValidationAlpha;
+import br.senac.tads.pi3a.validation.ValidationBoolean;
 import br.senac.tads.pi3a.validation.ValidationDate;
 import br.senac.tads.pi3a.validation.ValidationFloat;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -203,17 +207,53 @@ public class InputFilterProduto extends InputFilter {
                 this.errorValidation.replace("descricao", false);
             }
         }
+// validação status
 
+        if (this.allMap.containsKey("status")) {
+            ValidationBoolean validationBoolean = new ValidationBoolean();
+
+            if (validationBoolean.isValid(this.allMap.get("status")[0])) {
+                this.errorValidation.replace("status", false);
+            }
+        }
         return this.errorStatus();
     }
 
     @Override
     protected Model getModel() {
-       Produto produto = new Produto();
-       
-       
-       
-       return produto;
+        Produto produto = new Produto();
+        ItensLoja itensLoja = new ItensLoja();
+        try {
+            if (!this.allMap.get("id")[0].isEmpty()) {
+                produto.setId(Integer.valueOf(this.allMap.get("id")[0]));
+            }
+            produto.setNome(this.allMap.get("nome-produto")[0]);
+            produto.setCategoria(this.allMap.get("categoria")[0]);
+            produto.setGenero(this.allMap.get("genero")[0]);
+            produto.setMarca(this.allMap.get("marca")[0]);
+            produto.setValorUnidadeMedida(Integer.valueOf(this.allMap.get("qtd-medida")[0]));
+
+            if (!this.allMap.get("id")[0].isEmpty()) {
+                itensLoja.setId(Integer.valueOf(this.allMap.get("id")[0]));
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dataRegistro = new Date(sdf.parse(this.allMap
+                    .get("data-registro")[0]).getTime());
+            itensLoja.setDataCadastro(dataRegistro);
+
+            itensLoja.setEstoque(Integer.valueOf(this.allMap.get("quantidade")[0]));
+            itensLoja.setProduto(produto);
+            itensLoja.setStatus(Boolean.valueOf(this.allMap.get("status")[0]));
+            
+            itensLoja.setValorCompra(Float.valueOf(this.allMap.get("compra")[0]));
+            itensLoja.setValorVenda(Float.valueOf(this.allMap.get("venda")[0]));;
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            produto = null;
+        }
+        return itensLoja;
     }
 
 }
