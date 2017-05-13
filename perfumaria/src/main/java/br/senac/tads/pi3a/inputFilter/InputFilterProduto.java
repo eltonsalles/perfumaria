@@ -26,6 +26,7 @@ package br.senac.tads.pi3a.inputFilter;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.validation.ValidationAlpha;
 import br.senac.tads.pi3a.validation.ValidationDate;
+import br.senac.tads.pi3a.validation.ValidationFloat;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
@@ -47,12 +48,13 @@ public class InputFilterProduto extends InputFilter {
         ValidationTamanho validationTamanho = new ValidationTamanho();
         ValidationString validationString = new ValidationString();
         ValidationAlpha validationAlpha = new ValidationAlpha();
+        ValidationInt validationInt = new ValidationInt();
         
         // Garante que o id do formulário produto está vazio ou que é um inteiro
         // maior que 0
        if (this.allMap.containsKey("id")) {
             if (!this.allMap.get("id")[0].isEmpty()) {
-                ValidationInt validationInt = new ValidationInt();
+                
                 
                 if (validationInt.isValid(this.allMap.get("id")[0])) {
                     if (Integer.valueOf(this.allMap.get("id")[0]) > 0) {
@@ -110,8 +112,57 @@ public class InputFilterProduto extends InputFilter {
            }
        }
          
-         //
+         // validar quantidade
          
+         if(this.allMap.containsKey("quantidade")){
+             validationTamanho.setTamanho(10);
+             
+             if(validationInt.isValid(this.allMap.get("quantidade")[0]) &&
+                     validationTamanho.isValid(this.allMap.get("quantidade")[0])){
+                this.errorValidation.replace("marca", false);
+             }
+             
+         }
+         // validar qtd medida
+         
+         if(this.allMap.containsKey("qtd-medida")){
+             validationTamanho.setTamanho(10);
+             
+             if(validationInt.isValid(this.allMap.get("qtd-medida")[0]) &&
+                validationTamanho.isValid(this.allMap.get("qtd-medida")[0])){
+                 
+                 this.errorValidation.replace("qtd-medida", false);
+             }
+         }
+         
+         
+         // validar unidade de media
+         
+         if(this.allMap.containsKey("uni-medida")){
+             String uniMedida = this.allMap.get("uni-media")[0];
+             
+             validationTamanho.setTamanho(3);
+             
+             if(!uniMedida.isEmpty()){
+                 if(validationTamanho.isValid(this.allMap.get("uni-medida")[0])){
+                 if(uniMedida.equalsIgnoreCase("ml")||
+                         uniMedida.equalsIgnoreCase("g")){
+                     this.errorValidation.replace("uni-medida", false);
+                    }
+                 }
+             }          
+         }
+         
+         // validar compra
+         
+         if(this.allMap.containsKey("compra")){
+             
+             ValidationFloat validationFloat = new ValidationFloat();
+             
+             
+             
+             
+         }
         return this.errorStatus();
     }
 
