@@ -23,10 +23,19 @@
  */
 package br.senac.tads.pi3a.dao;
 
+import br.senac.tads.pi3a.model.Model;
+
 /**
  *
- * @author Elton
+ * @author Fillipe
  */
-public class DaoFuncionario {
+public class DaoFuncionario extends AbstractDao {
+
+    public DaoFuncionario() {
+    }
+
+    public DaoFuncionario(Model model) {
+        super(model);
+    }
 
 }
