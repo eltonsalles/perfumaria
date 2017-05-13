@@ -23,6 +23,8 @@
  */
 package br.senac.tads.pi3a.inputFilter;
 
+import br.senac.tads.pi3a.model.Funcionario;
+import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.validation.ValidationAlpha;
 import br.senac.tads.pi3a.validation.ValidationBoolean;
@@ -32,7 +34,12 @@ import br.senac.tads.pi3a.validation.ValidationEmail;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
-import com.sun.org.apache.xerces.internal.impl.validation.ValidationState;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,7 +55,10 @@ public class InputFilterFuncionario extends InputFilter {
     @Override
     public boolean isValid() {
         ValidationTamanho validationTamanho = new ValidationTamanho();
-        // Garante que o id do formulário cliente está vazio ou que é um inteiro
+        ValidationString validationString = new ValidationString();
+        ValidationAlpha validationAlpha = new ValidationAlpha();
+
+        // Garante que o id do formulário funcionário está vazio ou que é um inteiro
         // maior que 0
         if (this.allMap.containsKey("id")) {
             if (!this.allMap.get("id")[0].isEmpty()) {
@@ -66,10 +76,7 @@ public class InputFilterFuncionario extends InputFilter {
         // Verifica o nome do formulário funcionário validando o tamanho e 
         // deixando apenas caracteres válidos na string
         if (this.allMap.containsKey("nome")) {
-            ValidationAlpha validationAlpha = new ValidationAlpha();
-
             validationTamanho.setTamanho(150);
-
             if (validationTamanho.isValid(this.allMap.get("nome")[0])
                     && validationAlpha.isValid(this.allMap.get("nome")[0])) {
                 this.errorValidation.replace("nome", false);
@@ -164,15 +171,135 @@ public class InputFilterFuncionario extends InputFilter {
 
         // Verifica o logradouro do formulário funcionário validando o tamanho e 
         // deixando apenas caracteres válidos na string
-        if(this.allMap.containsKey("logradouro")){
+        if (this.allMap.containsKey("logradouro")) {
             validationTamanho.setTamanho(150);
-                      
-            
+            if (validationTamanho.isValid(this.allMap.get("logradouro")[0])
+                    && validationString.isValid(this.allMap.get("logradouro")[0])) {
+                this.errorValidation.replace("logradouro", false);
+            }
         }
+
+        // Verifica o número (endereço) do formulário funcionário validando o 
+        // tamanho e deixando apenas caracteres válidos na string
+        if (this.allMap.containsKey("numero")) {
+            String numero = this.allMap.get("numero")[0].replaceAll("\\D", "");
+            validationTamanho.setTamanho(10);
+            if (validationTamanho.isValid(numero)) {
+                this.errorValidation.replace("numero", false);
+            }
+        }
+
+        // O campo complemento do formulário de funcionário não é obrigatório
+        // então apenas verifica se houver algum valor diferente de ""
+        if (this.allMap.containsKey("complemento")) {
+            if (!this.allMap.get("complemento")[0].isEmpty()) {
+                validationTamanho.setTamanho(50);
+                if (validationTamanho.isValid(this.allMap.get("complemento")[0])
+                        && validationString.isValid(this.allMap.get("complemento")[0])) {
+                    this.errorValidation.replace("complemento", false);
+                }
+            } else {
+                this.errorValidation.replace("complemento", false);
+            }
+        }
+
+        // Verifica o bairro do formulário funcionário validando o tamanho e 
+        // deixando apenas caracteres válidos na string
+        if (this.allMap.containsKey("bairro")) {
+            if (!this.allMap.get("bairro")[0].isEmpty()) {
+                validationTamanho.setTamanho(50);
+                if (validationTamanho.isValid(this.allMap.get("bairro")[0])
+                        && validationString.isValid(this.allMap.get("bairro")[0])) {
+                    this.errorValidation.replace("bairro", false);
+                }
+            }
+        }
+
+        // Verifica a cidade do formulário funcionário validando o tamanho e 
+        // deixando apenas caracteres válidos na string
+        if (this.allMap.containsKey("cidade")) {
+            validationTamanho.setTamanho(50);
+            if (validationTamanho.isValid(this.allMap.get("cidade")[0])
+                    && validationAlpha.isValid(this.allMap
+                            .get("cidade")[0])) {
+                this.errorValidation.replace("cidade", false);
+            }
+        }
+
+        // Verifica se o valor do campo uf do formulário funcionário é igual
+        // a algum da lista
+        if (this.allMap.containsKey("uf")) {
+            List ufs = new ArrayList();
+            ufs.addAll(Arrays.asList(new String[]{"AC", "AL", "AP", "AM", "BA",
+                "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PR", "PB",
+                "PA", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SE",
+                "SP", "TO"}));
+
+            if (ufs.contains(this.allMap.get("uf")[0])) {
+                this.errorValidation.replace("uf", false);
+            }
+        }
+
+        // Verifica o valor e o tamanho de cep no formulário funcionário
+        if (this.allMap.containsKey("cep")) {
+            // Deixa apenas digitos
+            String cep = this.allMap.get("cep")[0].replaceAll("\\D", "");
+            validationTamanho.setTamanho(8);
+            if (validationTamanho.isValid(cep)) {
+                this.errorValidation.replace("cep", false);
+                this.allMap.replace("cep", new String[]{cep});
+            }
+        }
+
+        return this.errorStatus();
+
     }
 
     @Override
     protected Model getModel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Funcionario funcionario = new Funcionario();
+
+        try {
+            if (!this.allMap.get("id")[0].isEmpty()) {
+                funcionario.setId(Integer.valueOf(this.allMap.get("id")[0]));
+            }
+
+            funcionario.setNome(this.allMap.get("nome")[0]);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dataNascimento = new Date(sdf.parse(this.allMap
+                    .get("data-nascimento")[0]).getTime());
+            funcionario.setCpf(this.allMap.get("cpf")[0]);
+            funcionario.setStatus(Boolean.valueOf(this.allMap.get("status")[0]));
+            Date dataAdmissao = new Date(sdf.parse(this.allMap
+                    .get("data-admissao")[0]).getTime());
+            funcionario.setEstadoCivil(this.allMap.get("cargo")[0]);
+            funcionario.setEstadoCivil(this.allMap.get("estado-civil")[0]);
+            funcionario.setSexo(this.allMap.get("sexo")[0].charAt(0));
+            funcionario.setCelular(this.allMap.get("celular")[0]);
+            funcionario.setTelefone(this.allMap.get("telefone")[0]);
+            funcionario.setEmail(this.allMap.get("email")[0]);
+            funcionario.setLogradouro(this.allMap.get("logradouro")[0]);
+            funcionario.setNumero(this.allMap.get("numero")[0]);
+
+            if (!this.allMap.get("complemento")[0].isEmpty()) {
+                funcionario.setComplemento(this.allMap.get("complemento")[0]);
+            }
+
+            funcionario.setBairro(this.allMap.get("bairro")[0]);
+            funcionario.setCidade(this.allMap.get("cidade")[0]);
+            funcionario.setBairro(this.allMap.get("uf")[0]);
+            funcionario.setCep(this.allMap.get("cep")[0]);
+
+            // #MOCK
+            Loja loja = new Loja();
+            loja.setId(1);
+            funcionario.setLoja(loja);
+
+        } catch (NumberFormatException | ParseException e) {
+            e.printStackTrace(System.err);
+            funcionario = null;
+        }
+
+        return funcionario;
     }
 }
