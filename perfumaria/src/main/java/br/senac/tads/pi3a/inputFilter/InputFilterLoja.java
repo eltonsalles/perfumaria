@@ -24,6 +24,12 @@
 package br.senac.tads.pi3a.inputFilter;
 
 import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.validation.ValidationAlpha;
+import br.senac.tads.pi3a.validation.ValidationAlphaNumerico;
+import br.senac.tads.pi3a.validation.ValidationBoolean;
+import br.senac.tads.pi3a.validation.ValidationCnpj;
+import br.senac.tads.pi3a.validation.ValidationInt;
+import br.senac.tads.pi3a.validation.ValidationTamanho;
 import java.util.Map;
 
 /**
@@ -31,32 +37,111 @@ import java.util.Map;
  * @author glebson.lsilva1
  */
 public class InputFilterLoja extends InputFilter {
-    
-    
-    public InputFilterLoja(Map<String, String[]> allMap){
-    
+
+    public InputFilterLoja(Map<String, String[]> allMap) {
+
         super(allMap);
-    
+
     }
+
     /**
      * Faz a validação do formulário cadastrar loja
-     * 
-     * @return 
+     *
+     * @return
      */
-    
-   
     @Override
-    public boolean isValid(){
-    
-    return false;
+    public boolean isValid() {
+
+        ValidationAlphaNumerico validatioAlphaNumerico = new ValidationAlphaNumerico();
+        ValidationAlpha validationAlpha = new ValidationAlpha();
+        ValidationTamanho validationTamanho = new ValidationTamanho();
+        //ValidationString validationString = new ValidationString();
+
+        // Garante que o id do formulário Loja está vazio ou que é um inteiro
+        // maior que 0
+        if (this.allMap.containsKey("id")) {
+            if (!this.allMap.get("id")[0].isEmpty()) {
+                ValidationInt validationInt = new ValidationInt();
+
+                if (validationInt.isValid(this.allMap.get("id")[0])) {
+                    if (Integer.valueOf(this.allMap.get("id")[0]) > 0) {
+                        this.errorValidation.replace("id", false);
+                    }
+                }
+            } else {
+                this.errorValidation.replace("id", false);
+            }
+        }
+        //Valida o campo texto razao-social para que possa conter letras e
+        //numeros
+        if (this.allMap.containsKey("razao-social")) {
+
+            validationTamanho.setTamanho(150);
+
+            if (validationTamanho.isValid(this.allMap.get("razao-social")[0])
+                    && validatioAlphaNumerico.isValid(this.allMap.get("razao-social")[0])) {
+
+                this.errorValidation.replace("razao-social", false);
+
+            }
+
+        }
+        //Valida o campo CNPJ da Loja
+        if (this.allMap.containsKey("cnpj")) {
+
+            String cnpj = this.allMap.get("cnpj")[0].replaceAll("\\D", "");
+
+            ValidationCnpj validationCnpj = new ValidationCnpj();
+
+            if (validationCnpj.isValid(cnpj)) {
+
+                this.errorValidation.replace("cnpj", false);
+                this.allMap.replace("cnpj", new String[]{cnpj});
+
+            }
+
+        }
+        //Validando o status da loja
+        if (this.allMap.containsKey("status")) {
+
+            ValidationBoolean validationBoolean = new ValidationBoolean();
+
+            if (validationBoolean.isValid(this.allMap.get("status")[0])) {
+
+                this.errorValidation.replace("status", false);
+
+            }
+
+        }
+        //Validando o nome-fantasia
+        if (this.allMap.containsKey("nome-fantasia")) {
+
+            validationTamanho.setTamanho(150);
+
+            if (validationTamanho.isValid(this.allMap.get("nome-fantasia")[0])
+                    && validationAlpha.isValid(this.allMap.get("nome-fantasia")[0])) {
+
+                this.errorValidation.replace("nome-fantasia", false);
+
+            }
+
+        }
+        //Validando o campo celular
+        if(this.allMap.containsKey("celular")){
+        
+        
+        
+        }
+        
+        
+
+        return this.errorStatus();
     }
-    
+
     @Override
-    protected Model getModel(){
-    
-    return null;
+    protected Model getModel() {
+
+        return null;
     }
-    
-   
-    
+
 }
