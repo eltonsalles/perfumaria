@@ -35,18 +35,30 @@ function configurarForm() {
     
     if (cpf !== null) {
         cpf.value = formatarCpf(cpf.value);
+        cpf.addEventListener('focusout', function () {
+            this.value = formatarCpf(this.value);
+        });
     }
     
     if (celular !== null) {
         celular.value = formatarTelefone(celular.value);
+        celular.addEventListener('focusout', function () {
+           this.value = formatarTelefone(this.value);
+        });
     }
     
     if (telefone !== null) {
         telefone.value = formatarTelefone(telefone.value);
+        celular.addEventListener('focusout', function () {
+           this.value = formatarTelefone(this.value);
+        });
     }
     
     if (cep !== null) {
         cep.value = formatarCep(cep.value);
+        celular.addEventListener('focusout', function () {
+           this.value = formatarTelefone(this.value);
+        });
     }
 }
 
