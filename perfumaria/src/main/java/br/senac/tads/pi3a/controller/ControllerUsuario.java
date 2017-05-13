@@ -25,7 +25,9 @@ package br.senac.tads.pi3a.controller;
 
 import br.senac.tads.pi3a.dao.DaoUsuario;
 import br.senac.tads.pi3a.inputFilter.InputFilterUsuario;
+import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Usuario;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -81,7 +83,7 @@ public class ControllerUsuario implements Logica {
                             "Verifique os campo em vermelho.");
                 }
             }
-            
+
             return "/WEB-INF/jsp/cadastrar-usuario.jsp";
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -110,6 +112,52 @@ public class ControllerUsuario implements Logica {
     public String pesquisar(HttpServletRequest request,
             HttpServletResponse response,
             HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                Usuario usuario = new Usuario();
+                DaoUsuario dao = new DaoUsuario();
+                List<Model> lista;
+
+                // Se não houver valor para pesquisar então retorna tudo
+                if (request.getParameter("pesquisar") != null
+                        && !request.getParameter("pesquisar").isEmpty()) {
+                    String pesquisar = request.getParameter("pesquisar");
+
+                    // Verifica por onde a consulta será feita por código ou login
+                    boolean codigo = true;
+                    for (int i = 0; i < pesquisar.length(); i++) {
+                        if (!Character.isDigit(pesquisar.charAt(i))) {
+                            codigo = false;
+                            break;
+                        }
+                    }
+                    if (codigo && pesquisar.length() == 11) {
+                        lista = dao.findAll(usuario, "login", "=", pesquisar);
+                    } else {
+                        lista = dao.findAll(usuario, "funcionario", "LIKE",
+                                "%" + pesquisar + "%");
+                    }
+
+                } else {
+                    lista = dao.findAll(usuario);
+                }
+                if (lista != null && !lista.isEmpty()) {
+                    session.setAttribute("listaUsuarios", lista);
+                    return "pesquisar";
+                } else {
+                    session.setAttribute("alert", "alert-warning");
+                    session.setAttribute("alertMessage",
+                            "A consulta não retornou nenhum resultado.");
+                }
+            }
+            return "/WEB-INF/jsp/consultar-usuario.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a consulta.");
+            return "pesquisar";
+        }
     }
 }
