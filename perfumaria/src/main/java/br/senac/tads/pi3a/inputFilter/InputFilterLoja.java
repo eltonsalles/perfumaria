@@ -38,17 +38,23 @@ public class InputFilterLoja extends InputFilter {
         super(allMap);
     
     }
+    /**
+     * Faz a validação do formulário cadastrar loja
+     * 
+     * @return 
+     */
+    
    
     @Override
     public boolean isValid(){
     
-    
+    return false;
     }
     
     @Override
     protected Model getModel(){
     
-    
+    return null;
     }
     
    
