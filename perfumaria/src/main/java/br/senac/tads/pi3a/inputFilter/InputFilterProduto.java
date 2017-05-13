@@ -98,6 +98,20 @@ public class InputFilterProduto extends InputFilter {
            }
        }
        
+       // validar marca
+         if(this.allMap.containsKey("marca")){
+           
+           validationTamanho.setTamanho(50);
+           
+           if(validationTamanho.isValid(this.allMap.get("marca")[0]) &&
+                   validationAlpha.isValid(this.allMap.get("marca")[0])) {
+               
+                this.errorValidation.replace("marca", false);
+           }
+       }
+         
+         //
+         
         return this.errorStatus();
     }
 
