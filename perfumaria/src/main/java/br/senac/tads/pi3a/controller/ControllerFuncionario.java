@@ -23,33 +23,84 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoFuncionario;
+import br.senac.tads.pi3a.inputFilter.InputFilterFuncionario;
+import br.senac.tads.pi3a.model.Funcionario;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Elton
+ * @author Fillipe
  */
 public class ControllerFuncionario implements Logica {
 
     @Override
-    public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        return "/WEB-INF/jsp/cadastrar-funcionario.jsp";
+    public String novo(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session) throws Exception {
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                // Classe de validação do formulário funcionário
+                InputFilterFuncionario inputFilterFuncionario
+                        = new InputFilterFuncionario(request.getParameterMap());
+                // Cria um objeto funcionário com os dados do formulário,
+                // mas sem validação
+                Funcionario funcionario = (Funcionario) inputFilterFuncionario.getData();
+                // Faz a validação do formulário funcionário
+                if (inputFilterFuncionario.isValid()) {
+                    //Atualiza o objeto cliente com os dados validados
+                    funcionario = (Funcionario) inputFilterFuncionario.createModel();
+                    DaoFuncionario dao = new DaoFuncionario(funcionario);
+                    // Garante que o cpf não esteja cadastrado na base de dados
+                    if (dao.findAll(funcionario, "cpf", "=", funcionario.getCpf()).isEmpty()) {
+                        // Todo funcionário deve ser cadastrado com status true
+                        funcionario.setStatus(true);
+                        // A dao retorna um id válido se fizer a inserção
+                        if (dao.insert() != -1) {
+                            session.setAttribute("alert", "alert-sucess");
+                            session.setAttribute("alterMessage", "Cadastro realizado com sucesso.");
+                            return "novo";
+                        }
+                    } else {
+                        // Manda para a jsp os campos inválidos e uma mensagem   
+                        session.setAttribute("funcionario", funcionario);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage", "Este CPF já está cadastrado.");
+                    }
+                } else {
+                    // Manda para a jsp os campos inválidos e uma mensagem
+                    session.setAttribute("errorValidation", inputFilterFuncionario.getErrorValidation());
+                    session.setAttribute("funcionario", funcionario);
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alert", "Verifique os campos em vermelho.");
+                }
+
+            }
+
+            return "/WEB-INF/jsp/cadastrar-funcionario.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alterMessage", "Não foi possível realizar o cadastro.");
+            return "novo";
+        }
     }
 
     @Override
     public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
 
-    @Override
+            @Override
     public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        return "/WEB-INF/jsp/consultar-funcionario.jsp";
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
 }
