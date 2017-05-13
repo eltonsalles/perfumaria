@@ -23,12 +23,15 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoItensLoja;
 import br.senac.tads.pi3a.dao.DaoProduto;
 import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
 import br.senac.tads.pi3a.model.ItensLoja;
+import br.senac.tads.pi3a.model.Model;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  *
@@ -98,14 +101,80 @@ public class ControllerProduto implements Logica {
            if(request.getMethod().equalsIgnoreCase("post")) {
                InputFilterProduto inputFilterProduto = new InputFilterProduto(request.getParameterMap());
           
+           ItensLoja itensLoja = new ItensLoja();
            
+           if(inputFilterProduto.isValid()){
+               
+               itensLoja = (ItensLoja) inputFilterProduto.createModel();
+               
+               DaoProduto dao = new DaoProduto(itensLoja.getProduto());
+               DaoItensLoja daoLoja = new DaoItensLoja(itensLoja);
+               
+               List<Model> lista = dao.findAll(itensLoja,"nome","=",
+                       itensLoja.getProduto().getNome());
+              
+               if(lista.size() == 1){
+                   if(lista.get(0).getId() == itensLoja.getId()){
+                       if(dao.update()) {
+                           session.setAttribute("alert", "alert-success");
+                                session.setAttribute("alertMessage",
+                                        "Cadastro alterado com sucesso.");
+                                session.setAttribute("id", itensLoja.getId());
+                                return "editar";
+                        }
+                   }else{
+                        session.setAttribute("cliente", itensLoja);
+                            session.setAttribute("alert", "alert-danger");
+                            session.setAttribute("alertMessage",
+                                    "Este produto já está cadastrado.");
+                        
+                   }
+               }else{
+                   session.setAttribute("cliente", itensLoja);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage",
+                                "Não foi encontrado nenhum produto com o nome"
+                                        + " informado.");
+                   
+                   
+               }
+           }else{
+               session.setAttribute("errorValidation",
+                            inputFilterProduto.getErrorValidation());
+                    session.setAttribute("cliente", itensLoja);
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage",
+                            "Verifique os campo em vermelho.");
+           }
            
            
            }
+           
+          if (request.getParameter("id") != null) {
+                String id = request.getParameter("id");
+                boolean digito = true;
+
+                for (int i = 0; i < id.length(); i++) {
+                    if (!Character.isDigit(id.charAt(i))) {
+                        digito = false;
+                        break;
+                    }
+                }
+              if (digito) {
+                    Model itensLoja = new ItensLoja();
+                    DaoProduto dao = new DaoProduto();
+                    itensLoja = dao.findOne(itensLoja, Integer.valueOf(request
+                            .getParameter("id")));
+
+                    session.setAttribute("cliente", itensLoja);
+                }
+            }
+
+       
        }catch(Exception e){
            
        }
-       return "/WEB-INF/jsp/consultar-produto.jsp";
+       return "/WEB-INF/jsp/cadastrar-produto.jsp";
     }
 
     @Override
