@@ -23,6 +23,9 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoProduto;
+import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
+import br.senac.tads.pi3a.model.ItensLoja;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -39,18 +42,70 @@ public class ControllerProduto implements Logica {
         try{
             if(request.getMethod().equalsIgnoreCase("post")){
                     
+                InputFilterProduto inputFilterProduto = new InputFilterProduto(request.getParameterMap());
+                
+                // cria objeto itens de loja
+                
+                ItensLoja itensLoja =  (ItensLoja)inputFilterProduto.getData();
+                
+                if(inputFilterProduto.isValid()){
+                    
+                    itensLoja = (ItensLoja) inputFilterProduto.createModel();
+                    
+                    DaoProduto dao = new DaoProduto();
+                    
+                    if(dao.findAll(itensLoja,"nome","=",itensLoja.getProduto().getNome())
+                            .isEmpty()){
+                        
+                        itensLoja.setStatus(true);
+                        
+                        
+                        if(dao.insert() !=-1){
+                            session.setAttribute("alert", "alert-sucess");
+                            session.setAttribute("alertMessage","Cadastro realizado com sucesso" );
+                            return "novo";
+                        }
+                    }else{
+                        session.setAttribute("itensLoja", itensLoja);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage", "Produto já cadastrado.");
+                        
+                    }
+                }else{
+                    
+                     session.setAttribute("itensLoja", itensLoja);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage", "Verifique os campos em vermelho.");
+                    
+                }
             }
-        }catch(Exception e){
             
+            return "WEB-INF/jsp/cadastrar-produto.jsp";
+        }catch(Exception e){
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage", "Não foi possivel realizar o cadastro.");
+            return "novo";
         }
         
         
-        return "/WEB-INF/jsp/cadastrar-produto.jsp";
+        
     }
 
     @Override
     public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       try{
+           if(request.getMethod().equalsIgnoreCase("post")) {
+               InputFilterProduto inputFilterProduto = new InputFilterProduto(request.getParameterMap());
+          
+           
+           
+           
+           }
+       }catch(Exception e){
+           
+       }
+       return "/WEB-INF/jsp/consultar-produto.jsp";
     }
 
     @Override
