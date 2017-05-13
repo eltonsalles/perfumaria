@@ -34,27 +34,19 @@ function configurarForm() {
     var cep = document.querySelector("#cep");
     
     if (cpf !== null) {
-        cpf.addEventListener('focusout', function () {
-            this.value = formatarCpf(this.value);
-        });
+        cpf.value = formatarCpf(cpf.value);
     }
     
     if (celular !== null) {
-        celular.addEventListener('focusout', function () {
-           this.value = formatarTelefone(this.value);
-        });
+        celular.value = formatarTelefone(celular.value);
     }
     
     if (telefone !== null) {
-        telefone.addEventListener('focusout', function () {
-           this.value = formatarTelefone(this.value);
-        });
+        telefone.value = formatarTelefone(telefone.value);
     }
     
     if (cep !== null) {
-        cep.addEventListener('focusout', function () {
-           this.value = formatarCep(this.value);
-        });
+        cep.value = formatarCep(cep.value);
     }
 }
 
