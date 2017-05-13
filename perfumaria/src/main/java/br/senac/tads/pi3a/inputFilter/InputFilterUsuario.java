@@ -28,6 +28,7 @@ import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.NivelUsuario;
 import br.senac.tads.pi3a.model.Usuario;
 import br.senac.tads.pi3a.validation.ValidationAlpha;
+import br.senac.tads.pi3a.validation.ValidationAlphaNumerico;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
 import java.util.Map;
@@ -55,9 +56,9 @@ public class InputFilterUsuario extends InputFilter {
                     if (Integer.valueOf(this.allMap.get("id")[0]) > 0) {
                         this.errorValidation.replace("id", false);
                     }
-                } else {
-                    this.errorValidation.replace("id", false);
                 }
+            } else {
+                this.errorValidation.replace("id", false);
             }
         }
         // Garante que o id do formulário funcionario está vazio ou que é um inteiro
@@ -67,35 +68,40 @@ public class InputFilterUsuario extends InputFilter {
                 ValidationInt validationInt = new ValidationInt();
 
                 if (validationInt.isValid(this.allMap.get("funcionario")[0])) {
-                    if (Integer.valueOf(this.allMap.get("funcionario")[0]) > 0) {
-                        this.errorValidation.replace("funcionario", false);
-                    } else {
+                    if (Integer.valueOf(this.allMap
+                            .get("funcionario")[0]) > 0) {
                         this.errorValidation.replace("funcionario", false);
                     }
                 }
+            } else {
+                this.errorValidation.replace("funcionario", false);
             }
         }
         // Verifica o nome do formulário usuario(login) validando o tamanho e 
         // deixando apenas caracteres válidos na string
         if (this.allMap.containsKey("login")) {
-            ValidationAlpha validationAlpha = new ValidationAlpha();
+            ValidationAlphaNumerico validationAlphaNumerico
+                    = new ValidationAlphaNumerico();
 
             validationTamanho.setTamanho(50);
 
             if (validationTamanho.isValid(this.allMap.get("login")[0])
-                    && validationAlpha.isValid(this.allMap.get("login")[0])) {
+                    && validationAlphaNumerico
+                            .isValid(this.allMap.get("login")[0])) {
                 this.errorValidation.replace("login", false);
             }
         }
         // Verifica o nome do formulário usuario(senha) validando o tamanho e 
         // deixando apenas caracteres válidos na string
         if (this.allMap.containsKey("senha")) {
-            ValidationAlpha validationAlpha = new ValidationAlpha();
+            ValidationAlphaNumerico validationAlphaNumerico 
+                    = new ValidationAlphaNumerico();
 
             validationTamanho.setTamanho(8);
 
             if (validationTamanho.isValid(this.allMap.get("senha")[0])
-                    && validationAlpha.isValid(this.allMap.get("senha")[0])) {
+                    && validationAlphaNumerico
+                            .isValid(this.allMap.get("senha")[0])) {
                 this.errorValidation.replace("senha", false);
             }
         }
@@ -129,14 +135,16 @@ public class InputFilterUsuario extends InputFilter {
                 usuario.setId(Integer.valueOf(this.allMap.get("id")[0]));
             }
             Funcionario funcionario = new Funcionario();
-            funcionario.setId(Integer.valueOf(this.allMap.get("funcionario")[0]));
+            funcionario.setId(Integer.valueOf(this.allMap
+                    .get("funcionario")[0]));
             usuario.setFuncionario(funcionario);
 
             NivelUsuario nivelUsuario = new NivelUsuario();
-            nivelUsuario.setId(Integer.valueOf(this.allMap.get("nivel-usuario")[0]));
+            nivelUsuario.setId(Integer.valueOf(this.allMap
+                    .get("nivel-usuario")[0]));
             usuario.setNivelUsuario(nivelUsuario);
 
-            usuario.setNome(this.allMap.get("nome")[0]);
+            usuario.setLogin(this.allMap.get("login")[0]);
             usuario.setSenha(this.allMap.get("senha")[0]);
 
         } catch (NumberFormatException e) {

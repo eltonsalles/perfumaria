@@ -34,7 +34,7 @@ import br.senac.tads.pi3a.annotation.Table;
 @Table(name = "usuario")
 public class Usuario extends Model {
     @Columm(name = "login")
-    private String nome;
+    private String login;
 
     @Columm(name = "senha")
     private String senha;
@@ -45,12 +45,13 @@ public class Usuario extends Model {
     @ForeignKey(name = "nivel_usuario_id", referenced = "NivelUsuario", referencedName = "id")
     private NivelUsuario nivelUsuario;
 
-    public String getNome() {
-        return nome;
+   
+    public String getLogin() {
+        return login;
     }
-
-    public void setNome(String nome) {
-        this.nome = nome;
+    
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getSenha() {
