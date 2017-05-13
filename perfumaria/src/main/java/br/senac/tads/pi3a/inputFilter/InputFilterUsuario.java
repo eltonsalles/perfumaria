@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Elton.
+ * Copyright 2017 joao.mihamasaki.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,36 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package br.senac.tads.pi3a.controller;
+package br.senac.tads.pi3a.inputFilter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import br.senac.tads.pi3a.model.Model;
+import java.util.Map;
 
 /**
  *
- * @author Elton
+ * @author joao.mihamasaki
  */
-public class ControllerUsuario implements Logica {
+public class InputFilterUsuario extends InputFilter {
 
-    @Override
-    public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-       
-        return "/WEB-INF/jsp/cadastrar-usuario.jsp";
+    public InputFilterUsuario(Map<String, String[]> allMap) {
+        super(allMap);
     }
 
     @Override
-    public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public boolean isValid() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    protected Model getModel() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        return "/WEB-INF/jsp/consultar-usuario.jsp";
-    }
+    
 }
