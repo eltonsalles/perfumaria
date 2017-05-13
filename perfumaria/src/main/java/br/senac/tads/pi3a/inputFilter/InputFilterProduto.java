@@ -24,6 +24,7 @@
 package br.senac.tads.pi3a.inputFilter;
 
 import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.model.Produto;
 import br.senac.tads.pi3a.validation.ValidationAlpha;
 import br.senac.tads.pi3a.validation.ValidationDate;
 import br.senac.tads.pi3a.validation.ValidationFloat;
@@ -208,7 +209,11 @@ public class InputFilterProduto extends InputFilter {
 
     @Override
     protected Model getModel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       Produto produto = new Produto();
+       
+       
+       
+       return produto;
     }
 
 }
