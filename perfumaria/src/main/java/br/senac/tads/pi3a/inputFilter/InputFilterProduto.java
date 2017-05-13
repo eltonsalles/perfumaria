@@ -24,6 +24,10 @@
 package br.senac.tads.pi3a.inputFilter;
 
 import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.validation.ValidationAlpha;
+import br.senac.tads.pi3a.validation.ValidationDate;
+import br.senac.tads.pi3a.validation.ValidationInt;
+import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
 import java.util.Map;
 
@@ -40,11 +44,61 @@ public class InputFilterProduto extends InputFilter {
     @Override
     public boolean isValid() {
         
-        ValidationTamanho validaTamanho = new ValidationTamanho();
+        ValidationTamanho validationTamanho = new ValidationTamanho();
+        ValidationString validationString = new ValidationString();
+        ValidationAlpha validationAlpha = new ValidationAlpha();
         
-        
-        
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Garante que o id do formulário produto está vazio ou que é um inteiro
+        // maior que 0
+       if (this.allMap.containsKey("id")) {
+            if (!this.allMap.get("id")[0].isEmpty()) {
+                ValidationInt validationInt = new ValidationInt();
+                
+                if (validationInt.isValid(this.allMap.get("id")[0])) {
+                    if (Integer.valueOf(this.allMap.get("id")[0]) > 0) {
+                        this.errorValidation.replace("id", false);
+                    }
+                }
+            } else {
+                this.errorValidation.replace("id", false);
+            }
+        }
+       
+       // validar categoria
+       if(this.allMap.containsKey("categoria")){
+            validationTamanho.setTamanho(50);
+            
+             if (validationTamanho.isValid(this.allMap.get("categoria")[0]) &&
+                    validationAlpha.isValid(this.allMap.get("categoria")[0])) {
+                this.errorValidation.replace("categoria", false);
+            }
+       }
+       
+       // validar data registro
+       
+       if(this.allMap.containsKey("data-registro")){
+           
+           ValidationDate validationDate = new ValidationDate();
+           
+           if(validationDate.isValid(this.allMap.get("data-registro")[0])){
+               this.errorValidation.replace("data-registro", false);
+           }
+       }
+       
+       // validar nome produto
+       
+       if(this.allMap.containsKey("nome-produto")){
+           
+           validationTamanho.setTamanho(150);
+           
+           if(validationTamanho.isValid(this.allMap.get("nome-produto")[0]) &&
+                   validationAlpha.isValid(this.allMap.get("nome-produto")[0])) {
+               
+                this.errorValidation.replace("nome-produto", false);
+           }
+       }
+       
+        return this.errorStatus();
     }
 
     @Override
