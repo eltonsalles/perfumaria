@@ -33,6 +33,7 @@ import br.senac.tads.pi3a.validation.ValidationFloat;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -246,12 +247,12 @@ public class InputFilterProduto extends InputFilter {
             itensLoja.setStatus(Boolean.valueOf(this.allMap.get("status")[0]));
             
             itensLoja.setValorCompra(Float.valueOf(this.allMap.get("compra")[0]));
-            itensLoja.setValorVenda(Float.valueOf(this.allMap.get("venda")[0]));;
+            itensLoja.setValorVenda(Float.valueOf(this.allMap.get("venda")[0]));
             
             
-        } catch (Exception e) {
+        } catch (NumberFormatException | ParseException e) {
             e.printStackTrace(System.err);
-            produto = null;
+            itensLoja = null;
         }
         return itensLoja;
     }
