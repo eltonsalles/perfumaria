@@ -28,7 +28,9 @@ import br.senac.tads.pi3a.validation.ValidationAlpha;
 import br.senac.tads.pi3a.validation.ValidationAlphaNumerico;
 import br.senac.tads.pi3a.validation.ValidationBoolean;
 import br.senac.tads.pi3a.validation.ValidationCnpj;
+import br.senac.tads.pi3a.validation.ValidationEmail;
 import br.senac.tads.pi3a.validation.ValidationInt;
+import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
 import java.util.Map;
 
@@ -55,7 +57,7 @@ public class InputFilterLoja extends InputFilter {
         ValidationAlphaNumerico validatioAlphaNumerico = new ValidationAlphaNumerico();
         ValidationAlpha validationAlpha = new ValidationAlpha();
         ValidationTamanho validationTamanho = new ValidationTamanho();
-        //ValidationString validationString = new ValidationString();
+        ValidationString validationString = new ValidationString();
 
         // Garante que o id do formulário Loja está vazio ou que é um inteiro
         // maior que 0
@@ -126,14 +128,90 @@ public class InputFilterLoja extends InputFilter {
             }
 
         }
-        //Validando o campo celular
-        if(this.allMap.containsKey("celular")){
-        
-        
-        
+        //Validando o valor e o tamanho do campo celular no formulário Cadastrar 
+        //Loja 
+        if (this.allMap.containsKey("celular")) {
+
+            //Extrai apenas os digitos numéricos do campo
+            String celular = this.allMap.get("celular")[0].replaceAll("\\D", "");
+
+            validationTamanho.setTamanho(11);
+
+            if (validationTamanho.isValid(celular)) {
+                this.errorValidation.replace("celular", new String[]{celular});
+
+            }
+
         }
-        
-        
+        //Validando o valor e o tamanho do campo telefone no formulário Cadastrar
+        //Loja
+        if (this.allMap.containsKey("telefone")) {
+
+            //Extrai apenas os digitos numéricos do campo telefone
+            String telefone = this.allMap.get("telefone")[0].replaceAll("\\D", "");
+            validationTamanho.setTamanho(11);
+
+            if (validationTamanho.isValid(telefone)) {
+
+                this.errorValidation.replace("telefone", false);
+                this.allMap.replace("telefone", new String[]{telefone});
+
+            }
+
+        }
+        //Validando o campo enail do formulario cadastrar loja
+        if (this.allMap.containsKey("email")) {
+
+            ValidationEmail validationEmail = new ValidationEmail();
+
+            validationTamanho.setTamanho(150);
+
+            if (validationTamanho.isValid(this.allMap.get("email")[0])
+                    && validationEmail.isValid(this.allMap.get("email")[0])) {
+
+                this.errorValidation.replace("email", false);
+
+            }
+
+        }
+        //Validando o campo logradouro do formulario cadastrar loja com caractéres 
+        //válidos apenas
+        if (this.allMap.containsKey("logradouro")) {
+
+            validationTamanho.setTamanho(150);
+            if (validationTamanho.isValid(this.allMap.get("logradouro")[0])
+                    && validationString.isValid(this.allMap.get("logradouro")[0])) {
+                this.errorValidation.replace("logradouro", false);
+
+            }
+
+        }
+        //Validando o campo numero do formulario cadastrar loja com caractéres
+        //válidos
+        if (this.allMap.containsKey("numero")) {
+            String numero = this.allMap.get("numero")[0].replaceAll("\\D", "");
+
+            validationTamanho.setTamanho(10);
+
+            if (validationTamanho.isValid(numero)) {
+                this.errorValidation.replace("numero", false);
+
+            }
+
+        }
+        //Validando o campo complemento do formulário cadastrar loja verificando se
+        //ha algum valor diferente de ""
+        if (this.allMap.containsKey("complemento")) {
+            if (!this.allMap.get("complemento")[0].isEmpty()) {
+                validationTamanho.setTamanho(50);
+            }
+            if (validationTamanho.isValid(this.allMap.get("complemento")[0])
+                    && validationString.isValid(this.allMap.get("complemento")[0])) {
+                this.errorValidation.replace("complemento", false);
+
+            }
+
+        }
 
         return this.errorStatus();
     }
