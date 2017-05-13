@@ -166,7 +166,7 @@ public class ControllerProduto implements Logica {
                     itensLoja = dao.findOne(itensLoja, Integer.valueOf(request
                             .getParameter("id")));
 
-                    session.setAttribute("cliente", itensLoja);
+                    session.setAttribute("itensLoja", itensLoja);
                 }
             }
 
