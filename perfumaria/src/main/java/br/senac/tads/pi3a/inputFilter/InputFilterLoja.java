@@ -32,6 +32,9 @@ import br.senac.tads.pi3a.validation.ValidationEmail;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -115,7 +118,7 @@ public class InputFilterLoja extends InputFilter {
             }
 
         }
-        //Validando o nome-fantasia
+        //Validando o valor do campo nome-fantasia
         if (this.allMap.containsKey("nome-fantasia")) {
 
             validationTamanho.setTamanho(150);
@@ -159,7 +162,7 @@ public class InputFilterLoja extends InputFilter {
             }
 
         }
-        //Validando o campo enail do formulario cadastrar loja
+        //Validando o valor do campo enail do formulario cadastrar loja
         if (this.allMap.containsKey("email")) {
 
             ValidationEmail validationEmail = new ValidationEmail();
@@ -174,7 +177,7 @@ public class InputFilterLoja extends InputFilter {
             }
 
         }
-        //Validando o campo logradouro do formulario cadastrar loja com caractéres 
+        //Validando o valor do campo logradouro do formulario cadastrar loja com caractéres 
         //válidos apenas
         if (this.allMap.containsKey("logradouro")) {
 
@@ -186,7 +189,7 @@ public class InputFilterLoja extends InputFilter {
             }
 
         }
-        //Validando o campo numero do formulario cadastrar loja com caractéres
+        //Validando o valor do campo numero do formulario cadastrar loja com caractéres
         //válidos
         if (this.allMap.containsKey("numero")) {
             String numero = this.allMap.get("numero")[0].replaceAll("\\D", "");
@@ -199,7 +202,7 @@ public class InputFilterLoja extends InputFilter {
             }
 
         }
-        //Validando o campo complemento do formulário cadastrar loja verificando se
+        //Validando o valor do campo complemento do formulário cadastrar loja verificando se
         //ha algum valor diferente de ""
         if (this.allMap.containsKey("complemento")) {
             if (!this.allMap.get("complemento")[0].isEmpty()) {
@@ -211,6 +214,65 @@ public class InputFilterLoja extends InputFilter {
 
             }
 
+        }
+        //Validando o valor do campo Bairro do formulario cadastrar loja - tamanho e 
+        //caractperes válidos
+        if (this.allMap.containsKey("bairro")) {
+
+            validationTamanho.setTamanho(50);
+
+            if (validationTamanho.isValid(this.allMap.get("bairro")[0])
+                    && validationString.isValid(this.allMap.get("bairro")[0])) {
+
+                this.errorValidation.replace("bairro", false);
+
+            }
+
+        }
+        //Validando o valor do campo cidade do formulário cadastrar loja - tamanho e 
+        //campos válidos
+        if (this.allMap.containsKey("cidade")) {
+
+            validationTamanho.setTamanho(50);
+            if (validationTamanho.isValid(this.allMap.get("cidade")[0])
+                    && validationAlpha.isValid(this.allMap.get("cidade")[0])) {
+                this.errorValidation.replace("cidade", false);
+            }
+
+        }
+        //Validando o valor do campo UF(estado) do formulario cliente de acordo com 
+        //valor igual da lista
+        if (this.allMap.containsKey("uf")) {
+
+            List ufs = new ArrayList();
+            ufs.addAll(Arrays.asList(new String[]{"AC", "AL", "AP", "AM", "BA",
+                "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PR", "PB",
+                "PA", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SE",
+                "SP", "TO"}));
+
+            if (ufs.contains(this.allMap.get("uf")[0])) {
+
+                this.errorValidation.replace("uf", false);
+
+            }
+
+        }
+        // Validando o valor do campo CEP e o tamanho no formulário cadastrar loja
+        if(this.allMap.containsKey("cep")){
+        
+            //Extrai apenas os digitos
+            String cep = this.allMap.get("cep")[0].replaceAll("\\D", "");
+            
+            validationTamanho.setTamanho(8);
+            
+            if(validationTamanho.isValid(cep)){
+            
+                this.errorValidation.replace("cep", false);
+                this.allMap.replace("cep", new String[]{cep});
+                
+            }
+        
+        
         }
 
         return this.errorStatus();
