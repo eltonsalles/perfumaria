@@ -76,7 +76,7 @@ public class ControllerFuncionario implements Logica {
                     session.setAttribute("errorValidation", inputFilterFuncionario.getErrorValidation());
                     session.setAttribute("funcionario", funcionario);
                     session.setAttribute("alert", "alert-danger");
-                    session.setAttribute("alert", "Verifique os campos em vermelho.");
+                    session.setAttribute("alertMessage", "Verifique os campos em vermelho.");
                 }
 
             }
