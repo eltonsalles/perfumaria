@@ -58,8 +58,8 @@ public class InputFilterFuncionario extends InputFilter {
         ValidationString validationString = new ValidationString();
         ValidationAlpha validationAlpha = new ValidationAlpha();
 
-        // Garante que o id do formulário funcionário está vazio ou que é um inteiro
-        // maior que 0
+        // Garante que o id do formulário funcionário está vazio ou que é um 
+        // inteiro maior que 0
         if (this.allMap.containsKey("id")) {
             if (!this.allMap.get("id")[0].isEmpty()) {
                 ValidationInt validationInt = new ValidationInt();
@@ -120,7 +120,7 @@ public class InputFilterFuncionario extends InputFilter {
                 this.errorValidation.replace("dataAdmissao", false);
             }
         }
-        
+
         // Garante que algo esteja selecionado no campo cargo
         // do formulário funcionário
         if (this.allMap.containsKey("cargo")) {
@@ -132,12 +132,12 @@ public class InputFilterFuncionario extends InputFilter {
                         || cargo.equalsIgnoreCase("gerente de ti")
                         || cargo.equalsIgnoreCase("gerente de vendas")
                         || cargo.equalsIgnoreCase("retaguarda")
-                        || cargo.equalsIgnoreCase("vendedor")){
+                        || cargo.equalsIgnoreCase("vendedor")) {
                     this.errorValidation.replace("cargo", false);
                 }
             }
         }
-        
+
         // Verifica o email do formulário funcionário e garante que email seja
         // em um padrão válido
         if (this.allMap.containsKey("email")) {
@@ -176,7 +176,8 @@ public class InputFilterFuncionario extends InputFilter {
         // Verifica o valor e o tamanho de celular no formulário funcionário
         if (this.allMap.containsKey("celular")) {
             //Deixa apenas digítos
-            String celular = this.allMap.get("celular")[0].replaceAll("\\D", "");
+            String celular = this.allMap.get("celular")[0]
+                    .replaceAll("\\D", "");
             validationTamanho.setTamanho(11);
             if (validationTamanho.isValid(celular)) {
                 this.errorValidation.replace("celular", false);
@@ -187,11 +188,12 @@ public class InputFilterFuncionario extends InputFilter {
         // Verifica o valor e o tamanho de telefone no formulário funcionário
         if (this.allMap.containsKey("telefone")) {
             //Deixa apenas digítos
-            String telefone = this.allMap.get("telefone")[0].replaceAll("\\D", "");
+            String telefone = this.allMap.get("telefone")[0]
+                    .replaceAll("\\D", "");
             validationTamanho.setTamanho(11);
             if (validationTamanho.isValid(telefone)) {
                 this.errorValidation.replace("telefone", false);
-                this.allMap.replace("celular", new String[]{telefone});
+                this.allMap.replace("telefone", new String[]{telefone});
             }
         }
 
@@ -200,7 +202,8 @@ public class InputFilterFuncionario extends InputFilter {
         if (this.allMap.containsKey("logradouro")) {
             validationTamanho.setTamanho(150);
             if (validationTamanho.isValid(this.allMap.get("logradouro")[0])
-                    && validationString.isValid(this.allMap.get("logradouro")[0])) {
+                    && validationString.isValid(this.allMap
+                            .get("logradouro")[0])) {
                 this.errorValidation.replace("logradouro", false);
             }
         }
@@ -221,7 +224,8 @@ public class InputFilterFuncionario extends InputFilter {
             if (!this.allMap.get("complemento")[0].isEmpty()) {
                 validationTamanho.setTamanho(50);
                 if (validationTamanho.isValid(this.allMap.get("complemento")[0])
-                        && validationString.isValid(this.allMap.get("complemento")[0])) {
+                        && validationString.isValid(this.allMap
+                                .get("complemento")[0])) {
                     this.errorValidation.replace("complemento", false);
                 }
             } else {
@@ -235,7 +239,8 @@ public class InputFilterFuncionario extends InputFilter {
             if (!this.allMap.get("bairro")[0].isEmpty()) {
                 validationTamanho.setTamanho(50);
                 if (validationTamanho.isValid(this.allMap.get("bairro")[0])
-                        && validationString.isValid(this.allMap.get("bairro")[0])) {
+                        && validationString.isValid(this.allMap
+                                .get("bairro")[0])) {
                     this.errorValidation.replace("bairro", false);
                 }
             }
@@ -296,7 +301,8 @@ public class InputFilterFuncionario extends InputFilter {
                     .get("data-nascimento")[0]).getTime());
             funcionario.setDataNascimento(dataNascimento);
             funcionario.setCpf(this.allMap.get("cpf")[0]);
-            funcionario.setStatus(Boolean.valueOf(this.allMap.get("status")[0]));
+            funcionario.setStatus(Boolean.valueOf(this.allMap
+                    .get("status")[0]));
             Date dataAdmissao = new Date(sdf.parse(this.allMap
                     .get("data-admissao")[0]).getTime());
             funcionario.setDataAdmissao(dataAdmissao);
