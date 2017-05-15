@@ -44,6 +44,9 @@ public class Produto extends Model {
     @Columm(name = "vlr_unidade_medida")
     private int valorUnidadeMedida;
     
+    @Columm(name = "unidade_medida")
+    private String unidadeMedida;
+    
     @Columm(name = "genero")
     private String genero;
     
@@ -80,6 +83,14 @@ public class Produto extends Model {
 
     public void setValorUnidadeMedida(int valorUnidadeMedida) {
         this.valorUnidadeMedida = valorUnidadeMedida;
+    }
+    
+    public String getUnidadeMedida() {
+        return unidadeMedida;
+    }
+
+    public void setUnidadeMedida(String unidadeMedida) {
+        this.unidadeMedida = unidadeMedida;
     }
 
     public String getGenero() {
