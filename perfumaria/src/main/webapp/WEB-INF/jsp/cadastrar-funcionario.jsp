@@ -33,7 +33,7 @@
             </div>
             <div class="form-group col-md-3 <c:if test="${errorValidation.dataAdmissao eq true}">has-error</c:if>">
                 <label class="control-label" for="data-admissao">Data de Admissão</label>
-                <input type="date" class="form-control" id="data-admissao" name="data-admissao" required min="1900-01-01" max="2100-12-31" value="<fmt:formatDate pattern="yyyy-MM-dd" value="${funcionario.dataNascimento}"/>">
+                <input type="date" class="form-control" id="data-admissao" name="data-admissao" required min="1900-01-01" max="2100-12-31" value="<fmt:formatDate pattern="yyyy-MM-dd" value="${funcionario.dataAdmissao}"/>">
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.cargo eq true}">has-error</c:if>">
                 <label class="control-label" for="cargo">Cargo</label>
@@ -41,11 +41,11 @@
                 <c:set var="cargo" value="${sessionScope.funcionario.cargo}"></c:set>
                     <option value="">---</option>
                     <option value="diretor"<c:if test="${fn:containsIgnoreCase(cargo, 'diretor')}">selected</c:if>>Diretor</option>
-                <option value="gerente-de-backoffice"<c:if test="${fn:containsIgnoreCase(cargo, 'gerente-de-backoffice')}">selected</c:if>>Gerente de Backoffice</option>
-                <option value="gerente-de-ti"<c:if test="${fn:containsIgnoreCase(cargo, 'gerente-de-ti')}">selected</c:if>>Gerente de TI</option>
-                <option value="gerente-de-vendas"<c:if test="${fn:containsIgnoreCase(cargo, 'gerente-de-vendas')}">selected</c:if>>Gerente de Vendas</option>
-                <option value="retaguarda"<c:if test="${fn:containsIgnoreCase(cargo, 'retaguarda')}">selected</c:if>>Retaguarda</option>
-                <option value="vendedor"<c:if test="${fn:containsIgnoreCase(cargo, 'vendedor')}">selected</c:if>>Vendedor</option>
+                    <option value="gerente-de-backoffice"<c:if test="${fn:containsIgnoreCase(cargo, 'gerente-de-backoffice')}">selected</c:if>>Gerente de Backoffice</option>
+                    <option value="gerente-de-ti"<c:if test="${fn:containsIgnoreCase(cargo, 'gerente-de-ti')}">selected</c:if>>Gerente de TI</option>
+                    <option value="gerente-de-vendas"<c:if test="${fn:containsIgnoreCase(cargo, 'gerente-de-vendas')}">selected</c:if>>Gerente de Vendas</option>
+                    <option value="retaguarda"<c:if test="${fn:containsIgnoreCase(cargo, 'retaguarda')}">selected</c:if>>Retaguarda</option>
+                    <option value="vendedor"<c:if test="${fn:containsIgnoreCase(cargo, 'vendedor')}">selected</c:if>>Vendedor</option>
                 </select>
             </div>
             <div class="form-group col-md-3 <c:if test="${errorValidation.estadoCivil eq true}">has-error</c:if>">
@@ -56,7 +56,7 @@
                     <option value="solteiro" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'solteiro')}">selected</c:if>>Solteiro</option>
                 <option value="casado" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'casado')}">selected</c:if>>Casado</option>
                 <option value="divorciado" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'divorciado')}">selected</c:if>>Divorciado</option>
-                <option value="viuvo" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'viuvo')}">selected</c:if>>Viúvo</option>
+                <option value="viuvo" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'viÃºvo')}">selected</c:if>>ViÃºvo</option>
                 </select>
             </div>
             <div class="form-group col-md-3 sexo <c:if test="${errorValidation.sexo eq true}">has-error</c:if>">
@@ -68,7 +68,7 @@
                     <input type="radio" id="masculino" value="M" name="sexo" required <c:if test="${sessionScope.funcionario.sexo == 'M'.charAt(0)}">checked</c:if>>Masculino
                 </label>
             </div>
-                <div class="form-group col-md-5 <c:if test="${errorValidation.email eq true}">has-error</c:if>">
+            <div class="form-group col-md-5 <c:if test="${errorValidation.email eq true}">has-error</c:if>">
                 <label class="control-label" for="email">E-mail</label>
                 <input type="email" class="form-control" id="email" placeholder="email@exemplo.com.br" name="email" maxlength="150" required value="<c:out value="${sessionScope.funcionario.email}"></c:out>">
             </div>
@@ -134,6 +134,10 @@
                 <option value="TO" <c:if test="${fn:containsIgnoreCase(uf, 'to')}">selected</c:if>>TO</option>
                 </select>
             </div>
+            <div class="form-group col-md-2 <c:if test="${errorValidation.cep eq true}">has-error</c:if>">
+                <label class="control-label" for="cep">CEP</label>
+                <input type="text" class="form-control" id="cep" placeholder="xxxxx-xxx" name="cep" maxlength="9" required pattern="\d{5}-\d{3}$" value="<c:out value="${sessionScope.funcionario.cep}"></c:out>">
+            </div>    
             <div class="form-group col-md-offset-8 col-md-4">
             <c:if test="${sessionScope.funcionario.id > 0}">
                 <a href="sistema?controller=Funcionario&action=excluir&id=<c:out value="${sessionScope.funcionario.id}"></c:out>" class="btn btn-default">
