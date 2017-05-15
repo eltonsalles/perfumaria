@@ -49,34 +49,41 @@ public class ControllerFuncionario implements Logica {
                         = new InputFilterFuncionario(request.getParameterMap());
                 // Cria um objeto funcionário com os dados do formulário,
                 // mas sem validação
-                Funcionario funcionario = (Funcionario) inputFilterFuncionario.getData();
+                Funcionario funcionario = (Funcionario) inputFilterFuncionario
+                        .getData();
                 // Faz a validação do formulário funcionário
                 if (inputFilterFuncionario.isValid()) {
                     //Atualiza o objeto funcionário com os dados validados
-                    funcionario = (Funcionario) inputFilterFuncionario.createModel();
+                    funcionario = (Funcionario) inputFilterFuncionario
+                            .createModel();
                     DaoFuncionario dao = new DaoFuncionario(funcionario);
                     // Garante que o cpf não esteja cadastrado na base de dados
-                    if (dao.findAll(funcionario, "cpf", "=", funcionario.getCpf()).isEmpty()) {
+                    if (dao.findAll(funcionario, "cpf", "=",
+                            funcionario.getCpf()).isEmpty()) {
                         // Todo funcionário deve ser cadastrado com status true
                         funcionario.setStatus(true);
                         // A dao retorna um id válido se fizer a inserção
                         if (dao.insert() != -1) {
-                            session.setAttribute("alert", "alert-sucess");
-                            session.setAttribute("alterMessage", "Cadastro realizado com sucesso.");
+                            session.setAttribute("alert", "alert-success");
+                            session.setAttribute("alertMessage",
+                                    "Cadastro realizado com sucesso.");
                             return "novo";
                         }
                     } else {
                         // Manda para a jsp os campos inválidos e uma mensagem   
                         session.setAttribute("funcionario", funcionario);
                         session.setAttribute("alert", "alert-danger");
-                        session.setAttribute("alertMessage", "Este CPF já está cadastrado.");
+                        session.setAttribute("alertMessage",
+                                "Este CPF já está cadastrado.");
                     }
                 } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
-                    session.setAttribute("errorValidation", inputFilterFuncionario.getErrorValidation());
+                    session.setAttribute("errorValidation",
+                            inputFilterFuncionario.getErrorValidation());
                     session.setAttribute("funcionario", funcionario);
                     session.setAttribute("alert", "alert-danger");
-                    session.setAttribute("alertMessage", "Verifique os campos em vermelho.");
+                    session.setAttribute("alertMessage",
+                            "Verifique os campos em vermelho.");
                 }
 
             }
@@ -85,7 +92,8 @@ public class ControllerFuncionario implements Logica {
         } catch (Exception e) {
             e.printStackTrace(System.err);
             session.setAttribute("alert", "alert-danger");
-            session.setAttribute("alterMessage", "Não foi possível realizar o cadastro.");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar o cadastro.");
             return "novo";
         }
     }
@@ -103,12 +111,14 @@ public class ControllerFuncionario implements Logica {
 
                 // Cria um objeto funcionário com os dados do formulário,
                 // mas sem validação
-                Funcionario funcionario = (Funcionario) inputFilterFuncionario.getData();
+                Funcionario funcionario = (Funcionario) inputFilterFuncionario
+                        .getData();
 
                 // Faz a validação do formulário funcionário
                 if (inputFilterFuncionario.isValid()) {
                     // Atualiza o objeto funcionário com os dados validados
-                    funcionario = (Funcionario) inputFilterFuncionario.createModel();
+                    funcionario = (Funcionario) inputFilterFuncionario
+                            .createModel();
 
                     DaoFuncionario dao = new DaoFuncionario(funcionario);
 
@@ -165,8 +175,8 @@ public class ControllerFuncionario implements Logica {
                 if (digito) {
                     Model funcionario = new Funcionario();
                     DaoFuncionario dao = new DaoFuncionario();
-                    funcionario = dao.findOne(funcionario, Integer.valueOf(request
-                            .getParameter("id")));
+                    funcionario = dao.findOne(funcionario,
+                            Integer.valueOf(request.getParameter("id")));
 
                     session.setAttribute("funcionario", funcionario);
                 }
