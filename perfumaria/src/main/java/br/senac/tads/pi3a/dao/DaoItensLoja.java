@@ -32,9 +32,10 @@ import br.senac.tads.pi3a.model.ItensLoja;
 public class DaoItensLoja extends AbstractDao{
 
     public DaoItensLoja() {
+        
     }
     
     public DaoItensLoja(ItensLoja model){
-        
+        super(model);
     }
 }

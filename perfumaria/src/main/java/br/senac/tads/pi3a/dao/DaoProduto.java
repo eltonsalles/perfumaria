@@ -32,8 +32,8 @@ import br.senac.tads.pi3a.model.Produto;
 public class DaoProduto extends AbstractDao{
 
     public DaoProduto() {
-    }
-    
+        
+    }    
     
     public DaoProduto(Produto model){
         super(model);
