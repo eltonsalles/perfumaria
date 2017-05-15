@@ -41,7 +41,7 @@
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.valorUnidadeMedida eq true}">has-error</c:if>">
             <label class="control-label" for="valor-unidade-medida">Valor Unid. Medida</label>
-            <input type="text" class="form-control" id="valor-unidade-medida" placeholder="Vlr. Unid. de Med." name="valor-unidade-medida" maxlength="7" required pattern="^\d+$" value="<c:out value="${sessionScope.itensLoja.produto.valorUnidadeMedida}"></c:out>">
+            <input type="text" class="form-control" id="valor-unidade-medida" placeholder="Valor Unid. Medida" name="valor-unidade-medida" maxlength="7" required pattern="^\d+$" value="<c:out value="${sessionScope.itensLoja.produto.valorUnidadeMedida}"></c:out>">
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.unidadeMedida eq true}">has-error</c:if>">
             <label class="control-label" for="unidade-medida">Unid. Medida</label>
@@ -55,11 +55,11 @@
         <fmt:setLocale value="pt_BR"></fmt:setLocale>
         <div class="form-group col-md-2 <c:if test="${errorValidation.valorCompra eq true}">has-error</c:if>">
             <label class="control-label" for="valor-compra">Preço de compra</label>
-            <input type="text" class="form-control" id="valor-compra" placeholder="R$" name="valor-compra" maxlength="7" required value="<fmt:formatNumber value="${sessionScope.itensLoja.valorCompra}" type="currency" />">
+            <input type="text" class="form-control" id="valor-compra" placeholder="R$ x.xxx,xx" name="valor-compra" maxlength="15" required value="<fmt:formatNumber value="${sessionScope.itensLoja.valorCompra}" type="currency" />">
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.valorVenda eq true}">has-error</c:if>">
             <label class="control-label" for="valor-venda">Preço de venda</label>
-            <input type="text" class="form-control" id="valor-venda" placeholder="R$" name="valor-venda" maxlength="7" required value="<fmt:formatNumber value="${sessionScope.itensLoja.valorVenda}" type="currency" />">
+            <input type="text" class="form-control" id="valor-venda" placeholder="R$ x.xxx,xx" name="valor-venda" maxlength="15" required value="<fmt:formatNumber value="${sessionScope.itensLoja.valorVenda}" type="currency" />">
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.genero eq true}">has-error</c:if>">
             <label class="control-label" for="genero">Gênero</label>
