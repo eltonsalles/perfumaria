@@ -89,7 +89,7 @@ public class InputFilterFuncionario extends InputFilter {
         if (this.allMap.containsKey("data-nascimento")) {
             ValidationDate validationDate = new ValidationDate();
             if (validationDate.isValid(this.allMap.get("data-nascimento")[0])) {
-                this.errorValidation.replace("data-nascimento", false);
+                this.errorValidation.replace("dataNascimento", false);
             }
         }
 
@@ -112,6 +112,32 @@ public class InputFilterFuncionario extends InputFilter {
             }
         }
 
+        // Verifica se a data de admissão informada no formulário funcionário
+        // é uma data válida
+        if (this.allMap.containsKey("data-admissao")) {
+            ValidationDate validationDate = new ValidationDate();
+            if (validationDate.isValid(this.allMap.get("data-admissao")[0])) {
+                this.errorValidation.replace("dataAdmissao", false);
+            }
+        }
+        
+        // Garante que algo esteja selecionado no campo cargo
+        // do formulário funcionário
+        if (this.allMap.containsKey("cargo")) {
+            String cargo = this.allMap.get("cargo")[0];
+
+            if (!cargo.isEmpty()) {
+                if (cargo.equalsIgnoreCase("diretor")
+                        || cargo.equalsIgnoreCase("gerente de backoffice")
+                        || cargo.equalsIgnoreCase("gerente de ti")
+                        || cargo.equalsIgnoreCase("gerente de vendas")
+                        || cargo.equalsIgnoreCase("retaguarda")
+                        || cargo.equalsIgnoreCase("vendedor")){
+                    this.errorValidation.replace("cargo", false);
+                }
+            }
+        }
+        
         // Verifica o email do formulário funcionário e garante que email seja
         // em um padrão válido
         if (this.allMap.containsKey("email")) {
@@ -133,7 +159,7 @@ public class InputFilterFuncionario extends InputFilter {
                         || estadoCivil.equalsIgnoreCase("casado")
                         || estadoCivil.equalsIgnoreCase("divorciado")
                         || estadoCivil.equalsIgnoreCase("viuvo")) {
-                    this.errorValidation.replace("estado-civil", false);
+                    this.errorValidation.replace("estadoCivil", false);
                 }
             }
         }
@@ -268,11 +294,13 @@ public class InputFilterFuncionario extends InputFilter {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dataNascimento = new Date(sdf.parse(this.allMap
                     .get("data-nascimento")[0]).getTime());
+            funcionario.setDataNascimento(dataNascimento);
             funcionario.setCpf(this.allMap.get("cpf")[0]);
             funcionario.setStatus(Boolean.valueOf(this.allMap.get("status")[0]));
             Date dataAdmissao = new Date(sdf.parse(this.allMap
                     .get("data-admissao")[0]).getTime());
-            funcionario.setEstadoCivil(this.allMap.get("cargo")[0]);
+            funcionario.setDataAdmissao(dataAdmissao);
+            funcionario.setCargo(this.allMap.get("cargo")[0]);
             funcionario.setEstadoCivil(this.allMap.get("estado-civil")[0]);
             funcionario.setSexo(this.allMap.get("sexo")[0].charAt(0));
             funcionario.setCelular(this.allMap.get("celular")[0]);
@@ -287,7 +315,7 @@ public class InputFilterFuncionario extends InputFilter {
 
             funcionario.setBairro(this.allMap.get("bairro")[0]);
             funcionario.setCidade(this.allMap.get("cidade")[0]);
-            funcionario.setBairro(this.allMap.get("uf")[0]);
+            funcionario.setUf(this.allMap.get("uf")[0]);
             funcionario.setCep(this.allMap.get("cep")[0]);
 
             // #MOCK
