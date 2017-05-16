@@ -277,7 +277,8 @@ public class DaoItensLoja extends AbstractDao{
                 sql2.setCriteria(criteria2);
      
                 Criteria c1 = new Criteria();
-                c1.add(new Filter("produto_id", "=",resultSet.getInt("id")), Criteria.AND_OPERATOR);
+                c1.add(new Filter("produto_id", "=",
+                        resultSet.getInt("id")), Criteria.AND_OPERATOR);
                 c1.add(new Filter("loja_id","=",1),Criteria.AND_OPERATOR); //#MOCK
                 
                 SqlSelect sql3 = new SqlSelect();
