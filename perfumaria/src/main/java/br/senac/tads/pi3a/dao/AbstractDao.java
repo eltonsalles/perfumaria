@@ -39,6 +39,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -488,7 +489,9 @@ public abstract class AbstractDao implements GenericDao<Model>{
             throws Exception {
         Model newObj = obj.getClass().newInstance();
         
-        newObj.setId(resultSet.getInt("id"));
+        if (this.confirmPrimaryKey(resultSet, "id")) {
+            newObj.setId(resultSet.getInt("id"));
+        }
 
         // Se o objeto for igual ao atributo model, então não é
         // necessário fazer o mapa do objeto porque já foi feito no construtor
@@ -529,5 +532,29 @@ public abstract class AbstractDao implements GenericDao<Model>{
         }
         
         return newObj;
+    }
+    
+    /**
+     * Confirma se na tabela existe o primary key informado
+     * 
+     * @param resultSet
+     * @param primaryKey
+     * @return 
+     */
+    private boolean confirmPrimaryKey(ResultSet resultSet, String primaryKey) {
+        try {
+            ResultSetMetaData rsmd = resultSet.getMetaData();
+            int numColumns = rsmd.getColumnCount();
+            
+            for (int i = 1; i < numColumns + 1; i++) {
+                if (primaryKey.equalsIgnoreCase(rsmd.getColumnName(i))) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return false;
     }
 }
