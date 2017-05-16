@@ -28,7 +28,6 @@ import br.senac.tads.pi3a.dao.DaoProduto;
 import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
 import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Model;
-import br.senac.tads.pi3a.model.Produto;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -113,57 +112,59 @@ public class ControllerProduto implements Logica {
     }
 
     @Override
-    public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        try{
-           // Se o formulário for submetido por post então entra aqui
+    public String editar(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
+        try {
+            // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 // Classe de validação do formulário itensLoja
-            InputFilterProduto inputFilterProduto = new InputFilterProduto(request.getParameterMap());
-            
+                InputFilterProduto inputFilterProduto
+                        = new InputFilterProduto(request.getParameterMap());
+
                 // Cria um objeto itensLoja com os dados do formulário,
-                // mas sem validação
-            
+                // mas sem validação            
                 ItensLoja itensLoja = (ItensLoja) inputFilterProduto.getData();
-                
+
                 // faz validação do formulario itensLoja
-                if(inputFilterProduto.isValid()){
-                    
+                if (inputFilterProduto.isValid()) {
+                    // Atualiza os dados com as informações validadas
                     itensLoja = (ItensLoja) inputFilterProduto.createModel();
-                    
-                    //atualiza o objeto itensLoja com os dados validados
+
                     DaoProduto dao = new DaoProduto(itensLoja.getProduto());
-                    
+
                     //garante que o nome não se repita na base
-                    List<Model> lista = dao.findAll(itensLoja.getProduto(),"nome","=",
-                            itensLoja.getProduto().getNome());
-                    
-                    if(lista.size() == 1){
-                        if(lista.get(0).getId() == itensLoja.getProduto().getId()) {
-                            if(dao.update()) {
-                               session.setAttribute("alert", "alert-success");
+                    List<Model> lista = dao.findAll(itensLoja.getProduto(),
+                            "nome", "=", itensLoja.getProduto().getNome());
+
+                    if (lista.size() == 1) {
+                        if (lista.get(0).getId() == itensLoja.getProduto()
+                                .getId()) {
+                            if (dao.update()) {
+                                session.setAttribute("alert", "alert-success");
                                 session.setAttribute("alertMessage",
                                         "Produto alterado com sucesso.");
-                                session.setAttribute("id", itensLoja.getProduto().getId());
+                                session.setAttribute("id", itensLoja
+                                        .getProduto().getId());
                                 return "editar";
                             }
-                        }else{
+                        } else {
                             // Manda para jsp os campos inválidos e uma mensagem
                             session.setAttribute("itensLoja", itensLoja);
                             session.setAttribute("alert", "alert-danger");
                             session.setAttribute("alertMessage",
                                     "Este nome já está cadastrado.");
-                        
+
                         }
-                    }else {
-                         // Manda para jsp os campos inválidos e uma mensagem
+                    } else {
+                        // Manda para jsp os campos inválidos e uma mensagem
                         session.setAttribute("itensLoja", itensLoja);
                         session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
                                 "Não foi encontrado nenhum cadastro com o CPF"
-                                        + " informado.");
+                                + " informado.");
                     }
-                   
-                }else{
+                } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
                     session.setAttribute("errorValidation",
                             inputFilterProduto.getErrorValidation());
@@ -171,7 +172,6 @@ public class ControllerProduto implements Logica {
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
                             "Verifique os campo em vermelho.");
-                
                 }
             }
             if (request.getParameter("id") != null) {
@@ -188,16 +188,21 @@ public class ControllerProduto implements Logica {
                 if (digito) {
                     Model itensLoja = new ItensLoja();
                     DaoItensLoja dao = new DaoItensLoja();
-                    
-                    itensLoja = dao.findOne(itensLoja, Integer.valueOf(request
-                            .getParameter("id")));
 
-                    session.setAttribute("itensLoja", itensLoja);
+                    List lista = dao.findAll(itensLoja,
+                            new String[]{"produto_id", "loja_id"},
+                            new String[]{"=", "="},
+                            new String[]{id, "1"}, // #MOCK
+                            new String[]{"and", "and"});
+
+                    if (lista.size() == 1) {
+                        session.setAttribute("itensLoja", itensLoja);
+                    }
                 }
             }
-            
-            return "/WEB-INF/jsp/cadastrar-produto.jsp";   
-        }catch(Exception e){
+
+            return "/WEB-INF/jsp/cadastrar-produto.jsp";
+        } catch (Exception e) {
             e.printStackTrace(System.err);
             session.setAttribute("alert", "alert-danger");
             session.setAttribute("alertMessage",
