@@ -49,14 +49,14 @@ function configurarForm() {
     
     if (telefone !== null) {
         telefone.value = formatarTelefone(telefone.value);
-        celular.addEventListener('focusout', function () {
+        telefone.addEventListener('focusout', function () {
            this.value = formatarTelefone(this.value);
         });
     }
     
     if (cep !== null) {
         cep.value = formatarCep(cep.value);
-        celular.addEventListener('focusout', function () {
+        cep.addEventListener('focusout', function () {
            this.value = formatarTelefone(this.value);
         });
     }
