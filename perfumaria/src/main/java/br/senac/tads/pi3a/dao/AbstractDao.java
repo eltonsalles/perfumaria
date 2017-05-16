@@ -363,7 +363,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
             Table table = obj.getClass().getAnnotation(Table.class);
             
             Criteria c = new Criteria();
-            c.add(new Filter(field, criteria, value));
+            c.add(new Filter(field, criteria, "?"));
             
             SqlSelect sql = new SqlSelect();
             sql.setEntity(table.name());
@@ -377,6 +377,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
             }
             
             stmt = conn.prepareStatement(sql.getInstruction());
+            stmt.setObject(1, value);
             
             resultSet = stmt.executeQuery();
             
@@ -406,9 +407,9 @@ public abstract class AbstractDao implements GenericDao<Model>{
      */
     private String readEntity(Model model) {
         if (model.getClass().isAnnotationPresent(Table.class)) {
-            Table entity = model.getClass().getAnnotation(Table.class);
+            Table table = model.getClass().getAnnotation(Table.class);
             
-            return entity.name();
+            return table.name();
         }
         
         return null;
