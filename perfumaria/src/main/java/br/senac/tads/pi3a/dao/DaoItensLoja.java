@@ -235,4 +235,13 @@ public class DaoItensLoja extends AbstractDao{
         
         return list;
     }
+
+    @Override
+    public List<Model> findAll(Model obj, String field, String criteria, String value) throws Exception {
+       
+        
+        
+        return super.findAll(obj, field, criteria, value); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }

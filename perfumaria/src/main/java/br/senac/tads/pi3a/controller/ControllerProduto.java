@@ -234,7 +234,7 @@ public class ControllerProduto implements Logica {
                             break;
                         }
                     }
-                    if (digito && pesquisar.length() == 11) {
+                    if (digito) {
                         lista = dao.findAll(itensLoja, "produto_id", "=", pesquisar);
                     } else {
                         lista = dao.findAll(itensLoja, "nome", "LIKE",
