@@ -30,7 +30,7 @@
             <tr>
                 <td><c:out value="${usuario.id}"></c:out></td>
                 <td><c:out value="${usuario.login}"></c:out></td>
-                <td><c:out value="${usuario.nivelUsuario}"></c:out></td>
+                <td><c:out value="${usuario.nivelUsuario.tipo}"></c:out></td>
                     <td>
                         <a href="sistema?controller=Usuario&action=editar&id=<c:out value="${usuario.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>

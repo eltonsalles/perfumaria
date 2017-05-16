@@ -105,11 +105,11 @@ public class ControllerUsuario implements Logica {
                 InputFilterUsuario inputFilterUsuario
                         = new InputFilterUsuario(request.getParameterMap());
                 
-                // Cria um objeto cliente com os dados do formulário,
+                // Cria um objeto usuario com os dados do formulário,
                 // mas sem validação
                 Usuario usuario = (Usuario) inputFilterUsuario.getData();
                 
-                // Faz a validação do formulário cliente
+                // Faz a validação do formulário usuario
                 if (inputFilterUsuario.isValid()) {
                     // Atualiza o objeto cliente com os dados validados
                     usuario = (Usuario) inputFilterUsuario.createModel();
@@ -169,10 +169,12 @@ public class ControllerUsuario implements Logica {
                 if (digito) {
                     Model usuario = new Usuario();
                     DaoUsuario dao = new DaoUsuario();
-                    usuario = dao.findOne(usuario, Integer.valueOf(request
-                            .getParameter("id")));
-
-                    session.setAttribute("usuario", usuario);
+                    
+                    List lista = dao.findAll(usuario, "id", "=", id);
+                    
+                    if (lista.size() == 1) {
+                        session.setAttribute("usuario", lista.get(0));
+                    }
                 }
             }
 
@@ -192,6 +194,7 @@ public class ControllerUsuario implements Logica {
             HttpServletResponse response,
             HttpSession session) throws Exception {
         try {
+            //Procura o id que o usuário deseja excluir.
             if (request.getParameter("id") != null) {
                 String id = request.getParameter("id");
                 boolean digito = true;
@@ -216,7 +219,7 @@ public class ControllerUsuario implements Logica {
                 }
             }
 
-            return "/WEB-INF/jsp/cadastrar-cliente.jsp";
+            return "/WEB-INF/jsp/cadastrar-usuario.jsp";
         } catch (Exception e) {
             e.printStackTrace(System.err);
             session.setAttribute("alert", "alert-danger");
@@ -242,7 +245,7 @@ public class ControllerUsuario implements Logica {
                         && !request.getParameter("pesquisar").isEmpty()) {
                     String pesquisar = request.getParameter("pesquisar");
 
-                    // Verifica por onde a consulta será feita por código ou login
+                    // Verifica por onde a consulta será feita por id ou login
                     boolean codigo = true;
                     for (int i = 0; i < pesquisar.length(); i++) {
                         if (!Character.isDigit(pesquisar.charAt(i))) {
