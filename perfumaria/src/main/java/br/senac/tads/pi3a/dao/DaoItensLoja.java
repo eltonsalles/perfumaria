@@ -238,10 +238,104 @@ public class DaoItensLoja extends AbstractDao{
 
     @Override
     public List<Model> findAll(Model obj, String field, String criteria, String value) throws Exception {
-       
+       ResultSet resultSet;
+        ResultSet resultSet2;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        List<Model> list = new ArrayList<>();
+        
+        try {
+            if (!obj.getClass().isAnnotationPresent(Table.class)) {
+                return null;
+            }
+            
+            Table table = obj.getClass().getAnnotation(Table.class);
+            
+            SqlSelect sql = new SqlSelect();
+            sql.setEntity(table.name());
+            sql.addColumn("*");
+            
+            if (conn == null) {
+                Transaction.open();
+            
+                conn = Transaction.get();
+            }
+           
+            stmt = conn.prepareStatement(sql.getInstruction());
+            
+            resultSet = stmt.executeQuery();
+            
+            while(resultSet.next()) {
+                ItensLoja itensLoja = new ItensLoja();
+                
+                Criteria criteria2 = new Criteria();
+                criteria2.add(new Filter(field,criteria,value));
+                               
+                SqlSelect sql2 = new SqlSelect();
+                sql2.setEntity("produto");
+                sql2.addColumn("*");
+                sql2.setCriteria(criteria2);
+     
+                Criteria c1 = new Criteria();
+                c1.add(new Filter("produto_id", "=",resultSet.getInt("id")), Criteria.AND_OPERATOR);
+                c1.add(new Filter("loja_id","=",1),Criteria.AND_OPERATOR); //#MOCK
+                
+                SqlSelect sql3 = new SqlSelect();
+                sql3.setEntity("produto");
+                sql3.addColumn("*");
+                sql3.setCriteria(c1);
+                
+                
+                String s = sql3.getInstruction();
+                if (conn == null) {
+                    Transaction.open();
+
+                    conn = Transaction.get();
+                }
+
+                stmt = conn.prepareStatement(sql2.getInstruction());
+             
+
+                resultSet2 = stmt.executeQuery();
+
+                if (resultSet2.next()) {
+                    Produto produto = new Produto();
+                    produto.setId(resultSet2.getInt("id"));
+                    produto.setNome(resultSet2.getString("nome"));
+                    produto.setMarca(resultSet2.getString("marca"));
+                    produto.setCategoria(resultSet2.getString("categoria"));
+                    produto.setValorUnidadeMedida(resultSet2.getInt("vlr_unidade_medida"));
+                    produto.setUnidadeMedida(resultSet2.getString("unidade_medida"));
+                    produto.setGenero(resultSet2.getString("genero"));
+                    produto.setDescricao(resultSet2.getString("descricao"));
+                    
+                    itensLoja.setProduto(produto);
+                }
+                
+                itensLoja.setStatus(resultSet.getBoolean("status"));
+                itensLoja.setDataCadastro(new Date(resultSet.getDate("data_cadastro").getTime()));
+                itensLoja.setEstoque(resultSet.getInt("estoque"));
+                itensLoja.setValorCompra(resultSet.getFloat("vlr_compra"));
+                itensLoja.setValorVenda(resultSet.getFloat("vlr_venda"));
+                
+                list.add(itensLoja);
+            }
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } finally {
+            if (stmt != null && !stmt.isClosed()) {
+                stmt.close();
+            }
+            
+            if (conn != null && !conn.isClosed()) {
+                Transaction.close();
+            }
+        }
+        
+        return list;
         
         
-        return super.findAll(obj, field, criteria, value); //To change body of generated methods, choose Tools | Templates.
+        
     }
     
 }

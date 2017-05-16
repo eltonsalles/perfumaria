@@ -226,7 +226,7 @@ public class ControllerProduto implements Logica {
                         && !request.getParameter("pesquisar").isEmpty()) {
                     String pesquisar = request.getParameter("pesquisar");
 
-                    // Verifica por onde a consulta será feita por cpf ou nome
+                    // Verifica por onde a consulta é feita por id ou nome
                     boolean digito = true;
                     for (int i = 0; i < pesquisar.length(); i++) {
                         if (!Character.isDigit(pesquisar.charAt(i))) {

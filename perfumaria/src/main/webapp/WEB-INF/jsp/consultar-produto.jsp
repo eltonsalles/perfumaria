@@ -21,13 +21,16 @@
         <tr>
             <th>Código</th>
             <th>Nome</th>
-            <th>Data de Nascimento</th>
-            <th>CPF</th>
-            <th>Ações</th>
+            <th>Categoria</th>
+            <th>Quantidade</th>
+            <th>Editar</th>
         </tr>
         <c:forEach items="${sessionScope.listaItensLoja}" var="itemLoja">
             <tr>
                 <td><c:out value="${itemLoja.produto.id}"></c:out></td>
+                <td><c:out value="${itemLoja.produto.nome}"></c:out></td>
+                <td><c:out value="${itemLoja.produto.categoria}"></c:out></td>
+                <td><c:out value="${itemLoja.estoque}"></c:out></td>
                 <td>
                     <a href="sistema?controller=Produto&action=editar&id=<c:out value="${itemLoja.produto.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
