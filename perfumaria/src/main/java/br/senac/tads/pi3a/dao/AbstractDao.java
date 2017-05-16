@@ -399,6 +399,75 @@ public abstract class AbstractDao implements GenericDao<Model>{
         
         return list;
     }
+
+    @Override
+    public List<Model> findAll(Model obj, String[] field, String[] criteria,
+            String[] value, String[] operator) throws Exception {
+        // Para evitar que a conexão feche antes de finalizar o resultSet
+        this.all = true;
+        
+        ResultSet resultSet;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        List<Model> list = new ArrayList<>();
+        
+        try {
+            if (!obj.getClass().isAnnotationPresent(Table.class)) {
+                return null;
+            }
+            
+            Table table = obj.getClass().getAnnotation(Table.class);
+            
+            Criteria c = new Criteria();
+            for (int i = 0; i < criteria.length; i++) {
+                // Operator AND ou OR
+                String o;
+                if (operator[i].equalsIgnoreCase("or")) {
+                    o = Criteria.OR_OPERATOR;
+                } else {
+                    o = Criteria.AND_OPERATOR;
+                }
+                
+                c.add(new Filter(field[i], criteria[i], "?"), o);
+            }
+            
+            SqlSelect sql = new SqlSelect();
+            sql.setEntity(table.name());
+            sql.addColumn("*");
+            sql.setCriteria(c);
+            
+            if (conn == null) {
+                Transaction.open();
+            
+                conn = Transaction.get();
+            }
+            
+            String s = sql.getInstruction();
+            stmt = conn.prepareStatement(sql.getInstruction());
+            
+            for (int i = 0; i < value.length; i++) {
+                stmt.setObject(i + 1, value[i]);
+            }
+            
+            resultSet = stmt.executeQuery();
+            
+            while(resultSet.next()) {
+                list.add(prepareModel(obj, resultSet));
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        } finally {
+            if (stmt != null && !stmt.isClosed()) {
+                stmt.close();
+            }
+            
+            if (conn != null && !conn.isClosed()) {
+                Transaction.close();
+            }
+        }
+        
+        return list;
+    }
     
     /**
      * Pega o nome da tabela no banco de dados
@@ -526,6 +595,8 @@ public abstract class AbstractDao implements GenericDao<Model>{
 
                 method.invoke(newObj, foreignKey);
                 
+            } else if (field.getType().getName().equalsIgnoreCase("float")) {
+                method.invoke(newObj, resultSet.getFloat(objMap.get(key)));
             } else {
                 method.invoke(newObj, resultSet.getObject(objMap.get(key)));
             }
