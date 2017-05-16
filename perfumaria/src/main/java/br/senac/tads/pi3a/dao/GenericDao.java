@@ -43,4 +43,7 @@ public interface GenericDao<T> {
     
     List<T> findAll(T obj, String field, String criteria, String value)
             throws Exception;
+    
+    List<T> findAll(T obj, String[] field, String[] criteria, String[] value,
+            String[] operator) throws Exception;
 }

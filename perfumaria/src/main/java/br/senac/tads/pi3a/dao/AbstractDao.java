@@ -39,6 +39,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -363,7 +364,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
             Table table = obj.getClass().getAnnotation(Table.class);
             
             Criteria c = new Criteria();
-            c.add(new Filter(field, criteria, value));
+            c.add(new Filter(field, criteria, "?"));
             
             SqlSelect sql = new SqlSelect();
             sql.setEntity(table.name());
@@ -377,6 +378,76 @@ public abstract class AbstractDao implements GenericDao<Model>{
             }
             
             stmt = conn.prepareStatement(sql.getInstruction());
+            stmt.setObject(1, value);
+            
+            resultSet = stmt.executeQuery();
+            
+            while(resultSet.next()) {
+                list.add(prepareModel(obj, resultSet));
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        } finally {
+            if (stmt != null && !stmt.isClosed()) {
+                stmt.close();
+            }
+            
+            if (conn != null && !conn.isClosed()) {
+                Transaction.close();
+            }
+        }
+        
+        return list;
+    }
+
+    @Override
+    public List<Model> findAll(Model obj, String[] field, String[] criteria,
+            String[] value, String[] operator) throws Exception {
+        // Para evitar que a conexão feche antes de finalizar o resultSet
+        this.all = true;
+        
+        ResultSet resultSet;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        List<Model> list = new ArrayList<>();
+        
+        try {
+            if (!obj.getClass().isAnnotationPresent(Table.class)) {
+                return null;
+            }
+            
+            Table table = obj.getClass().getAnnotation(Table.class);
+            
+            Criteria c = new Criteria();
+            for (int i = 0; i < criteria.length; i++) {
+                // Operator AND ou OR
+                String o;
+                if (operator[i].equalsIgnoreCase("or")) {
+                    o = Criteria.OR_OPERATOR;
+                } else {
+                    o = Criteria.AND_OPERATOR;
+                }
+                
+                c.add(new Filter(field[i], criteria[i], "?"), o);
+            }
+            
+            SqlSelect sql = new SqlSelect();
+            sql.setEntity(table.name());
+            sql.addColumn("*");
+            sql.setCriteria(c);
+            
+            if (conn == null) {
+                Transaction.open();
+            
+                conn = Transaction.get();
+            }
+            
+            String s = sql.getInstruction();
+            stmt = conn.prepareStatement(sql.getInstruction());
+            
+            for (int i = 0; i < value.length; i++) {
+                stmt.setObject(i + 1, value[i]);
+            }
             
             resultSet = stmt.executeQuery();
             
@@ -406,9 +477,9 @@ public abstract class AbstractDao implements GenericDao<Model>{
      */
     private String readEntity(Model model) {
         if (model.getClass().isAnnotationPresent(Table.class)) {
-            Table entity = model.getClass().getAnnotation(Table.class);
+            Table table = model.getClass().getAnnotation(Table.class);
             
-            return entity.name();
+            return table.name();
         }
         
         return null;
@@ -487,7 +558,9 @@ public abstract class AbstractDao implements GenericDao<Model>{
             throws Exception {
         Model newObj = obj.getClass().newInstance();
         
-        newObj.setId(resultSet.getInt("id"));
+        if (this.confirmPrimaryKey(resultSet, "id")) {
+            newObj.setId(resultSet.getInt("id"));
+        }
 
         // Se o objeto for igual ao atributo model, então não é
         // necessário fazer o mapa do objeto porque já foi feito no construtor
@@ -522,11 +595,37 @@ public abstract class AbstractDao implements GenericDao<Model>{
 
                 method.invoke(newObj, foreignKey);
                 
+            } else if (field.getType().getName().equalsIgnoreCase("float")) {
+                method.invoke(newObj, resultSet.getFloat(objMap.get(key)));
             } else {
                 method.invoke(newObj, resultSet.getObject(objMap.get(key)));
             }
         }
         
         return newObj;
+    }
+    
+    /**
+     * Confirma se na tabela existe o primary key informado
+     * 
+     * @param resultSet
+     * @param primaryKey
+     * @return 
+     */
+    private boolean confirmPrimaryKey(ResultSet resultSet, String primaryKey) {
+        try {
+            ResultSetMetaData rsmd = resultSet.getMetaData();
+            int numColumns = rsmd.getColumnCount();
+            
+            for (int i = 1; i < numColumns + 1; i++) {
+                if (primaryKey.equalsIgnoreCase(rsmd.getColumnName(i))) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return false;
     }
 }
