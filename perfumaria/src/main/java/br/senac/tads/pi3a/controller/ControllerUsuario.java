@@ -98,14 +98,132 @@ public class ControllerUsuario implements Logica {
     public String editar(HttpServletRequest request,
             HttpServletResponse response,
             HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                // Classe de validação do formulário cliente
+                InputFilterUsuario inputFilterUsuario
+                        = new InputFilterUsuario(request.getParameterMap());
+                
+                // Cria um objeto cliente com os dados do formulário,
+                // mas sem validação
+                Usuario usuario = (Usuario) inputFilterUsuario.getData();
+                
+                // Faz a validação do formulário cliente
+                if (inputFilterUsuario.isValid()) {
+                    // Atualiza o objeto cliente com os dados validados
+                    usuario = (Usuario) inputFilterUsuario.createModel();
+                    
+                    DaoUsuario dao = new DaoUsuario(usuario);
+                    
+                    // Garante que não exista login repetido na base de dados
+                    List<Model> lista = dao.findAll(usuario, "login", "=",
+                            usuario.getLogin());
+                    
+                    if (lista.size() == 1) {
+                        if (lista.get(0).getId() == usuario.getId()) {
+                            if (dao.update()) {
+                                session.setAttribute("alert", "alert-success");
+                                session.setAttribute("alertMessage",
+                                        "Cadastro alterado com sucesso.");
+                                session.setAttribute("id", usuario.getId());
+                                return "editar";
+                            }
+                        } else {
+                            // Manda para jsp os campos inválidos e uma mensagem
+                            session.setAttribute("usuario", usuario);
+                            session.setAttribute("alert", "alert-danger");
+                            session.setAttribute("alertMessage",
+                                    "Este login já está cadastrado.");
+                        }
+                    } else {
+                        // Manda para jsp os campos inválidos e uma mensagem
+                        session.setAttribute("usuario", usuario);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage",
+                                "Não foi encontrado nenhum cadastro com o login"
+                                        + " informado.");
+                    }
+                } else {
+                    // Manda para a jsp os campos inválidos e uma mensagem
+                    session.setAttribute("errorValidation",
+                            inputFilterUsuario.getErrorValidation());
+                    session.setAttribute("usuario", usuario);
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage",
+                            "Verifique os campo em vermelho.");
+                }
+            }
+
+            if (request.getParameter("id") != null) {
+                String id = request.getParameter("id");
+                boolean digito = true;
+
+                for (int i = 0; i < id.length(); i++) {
+                    if (!Character.isDigit(id.charAt(i))) {
+                        digito = false;
+                        break;
+                    }
+                }
+
+                if (digito) {
+                    Model usuario = new Usuario();
+                    DaoUsuario dao = new DaoUsuario();
+                    usuario = dao.findOne(usuario, Integer.valueOf(request
+                            .getParameter("id")));
+
+                    session.setAttribute("usuario", usuario);
+                }
+            }
+
+            return "/WEB-INF/jsp/cadastrar-usuario.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a alteração.");
+            session.setAttribute("id", 0);
+            return "editar";
+        }
     }
 
     @Override
     public String excluir(HttpServletRequest request,
             HttpServletResponse response,
             HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (request.getParameter("id") != null) {
+                String id = request.getParameter("id");
+                boolean digito = true;
+
+                for (int i = 0; i < id.length(); i++) {
+                    if (!Character.isDigit(id.charAt(i))) {
+                        digito = false;
+                        break;
+                    }
+                }
+
+                if (digito) {
+                    Usuario usuario = new Usuario();
+                    DaoUsuario dao = new DaoUsuario(usuario);
+
+                    if (dao.delete(Integer.valueOf(id))) {
+                        session.setAttribute("alert", "alert-warning");
+                        session.setAttribute("alertMessage",
+                                "Cadastro excluído com sucesso.");
+                        return "excluir";
+                    }
+                }
+            }
+
+            return "/WEB-INF/jsp/cadastrar-cliente.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a exclusão.");
+            return "excluir";
+        }
     }
 
     @Override
@@ -132,10 +250,10 @@ public class ControllerUsuario implements Logica {
                             break;
                         }
                     }
-                    if (codigo && pesquisar.length() == 11) {
-                        lista = dao.findAll(usuario, "login", "=", pesquisar);
+                    if (codigo) {
+                        lista = dao.findAll(usuario, "id", "=", pesquisar);
                     } else {
-                        lista = dao.findAll(usuario, "funcionario", "LIKE",
+                        lista = dao.findAll(usuario, "login", "LIKE",
                                 "%" + pesquisar + "%");
                     }
 
