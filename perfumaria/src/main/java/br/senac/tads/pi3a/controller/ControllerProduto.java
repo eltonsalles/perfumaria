@@ -27,6 +27,9 @@ import br.senac.tads.pi3a.dao.DaoItensLoja;
 import br.senac.tads.pi3a.dao.DaoProduto;
 import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
 import br.senac.tads.pi3a.model.ItensLoja;
+import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.model.Produto;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -111,7 +114,97 @@ public class ControllerProduto implements Logica {
 
     @Override
     public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        return "/WEB-INF/jsp/cadastrar-produto.jsp";
+        try{
+           // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                // Classe de validação do formulário itensLoja
+            InputFilterProduto inputFilterProduto = new InputFilterProduto(request.getParameterMap());
+            
+                // Cria um objeto itensLoja com os dados do formulário,
+                // mas sem validação
+            
+                ItensLoja itensLoja = (ItensLoja) inputFilterProduto.getData();
+                
+                // faz validação do formulario itensLoja
+                if(inputFilterProduto.isValid()){
+                    
+                    itensLoja = (ItensLoja) inputFilterProduto.createModel();
+                    
+                    //atualiza o objeto itensLoja com os dados validados
+                    DaoProduto dao = new DaoProduto(itensLoja.getProduto());
+                    
+                    //garante que o nome não se repita na base
+                    List<Model> lista = dao.findAll(itensLoja.getProduto(),"nome","=",
+                            itensLoja.getProduto().getNome());
+                    
+                    if(lista.size() == 1){
+                        if(lista.get(0).getId() == itensLoja.getProduto().getId()) {
+                            if(dao.update()) {
+                               session.setAttribute("alert", "alert-success");
+                                session.setAttribute("alertMessage",
+                                        "Produto alterado com sucesso.");
+                                session.setAttribute("id", itensLoja.getProduto().getId());
+                                return "editar";
+                            }
+                        }else{
+                            // Manda para jsp os campos inválidos e uma mensagem
+                            session.setAttribute("itensLoja", itensLoja);
+                            session.setAttribute("alert", "alert-danger");
+                            session.setAttribute("alertMessage",
+                                    "Este nome já está cadastrado.");
+                        
+                        }
+                    }else {
+                         // Manda para jsp os campos inválidos e uma mensagem
+                        session.setAttribute("itensLoja", itensLoja);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage",
+                                "Não foi encontrado nenhum cadastro com o CPF"
+                                        + " informado.");
+                    }
+                   
+                }else{
+                    // Manda para a jsp os campos inválidos e uma mensagem
+                    session.setAttribute("errorValidation",
+                            inputFilterProduto.getErrorValidation());
+                    session.setAttribute("itensLoja", itensLoja);
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage",
+                            "Verifique os campo em vermelho.");
+                
+                }
+            }
+            if (request.getParameter("id") != null) {
+                String id = request.getParameter("id");
+                boolean digito = true;
+
+                for (int i = 0; i < id.length(); i++) {
+                    if (!Character.isDigit(id.charAt(i))) {
+                        digito = false;
+                        break;
+                    }
+                }
+
+                if (digito) {
+                    Model itensLoja = new ItensLoja();
+                    DaoItensLoja dao = new DaoItensLoja();
+                    
+                    itensLoja = dao.findOne(itensLoja, Integer.valueOf(request
+                            .getParameter("id")));
+
+                    session.setAttribute("itensLoja", itensLoja);
+                }
+            }
+            
+            return "/WEB-INF/jsp/cadastrar-produto.jsp";   
+        }catch(Exception e){
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a alteração.");
+            session.setAttribute("id", 0);
+            return "editar";
+        }
     }
 
     @Override
@@ -121,7 +214,55 @@ public class ControllerProduto implements Logica {
 
     @Override
     public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        return "/WEB-INF/jsp/consultar-produto.jsp";
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                ItensLoja itensLoja = new ItensLoja();
+                DaoItensLoja dao = new DaoItensLoja();
+                List<Model> lista;
+
+                // Se não houver valor para pesquisar então retorna tudo
+                if (request.getParameter("pesquisar") != null
+                        && !request.getParameter("pesquisar").isEmpty()) {
+                    String pesquisar = request.getParameter("pesquisar");
+
+                    // Verifica por onde a consulta será feita por cpf ou nome
+                    boolean digito = true;
+                    for (int i = 0; i < pesquisar.length(); i++) {
+                        if (!Character.isDigit(pesquisar.charAt(i))) {
+                            digito = false;
+                            break;
+                        }
+                    }
+                    if (digito && pesquisar.length() == 11) {
+                        lista = dao.findAll(itensLoja, "produto_id", "=", pesquisar);
+                    } else {
+                        lista = dao.findAll(itensLoja, "nome", "LIKE",
+                                "%" + pesquisar + "%");
+                    }
+
+                } else {
+                    lista = dao.findAll(itensLoja);
+                }
+
+                if (lista != null && !lista.isEmpty()) {
+                    session.setAttribute("listaItensLoja", lista);
+                    return "pesquisar";
+                } else {
+                    session.setAttribute("alert", "alert-warning");
+                    session.setAttribute("alertMessage",
+                            "A consulta não retornou nenhum resultado.");
+                }
+            }
+
+            return "/WEB-INF/jsp/consultar-produto.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a consulta.");
+            return "pesquisar";
+        }
     }
 
     public String movimentar(HttpServletRequest request, HttpServletResponse response, HttpSession session) {

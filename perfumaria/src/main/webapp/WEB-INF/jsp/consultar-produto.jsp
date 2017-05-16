@@ -4,7 +4,7 @@
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Consultar Produto</h2>
-    <form>
+    <form action="sistema?controller=Produto&action=pesquisar" method="post">
         <div class="form-group col-md-6 <c:if test="${errorValidation.pesquisar eq true}">has-error</c:if>">
             <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
@@ -25,17 +25,17 @@
             <th>CPF</th>
             <th>Ações</th>
         </tr>
-        <tr>
-            <td>1</td>
-            <td>teste</td>
-            <td>00/00/0000</td>
-            <td>000.000.000-00</td>
-            <td>
-                <a href="#" class="btn btn-default" role="button" title="Editar">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                </a>
-            </td>
-        </tr>
+        <c:forEach items="${sessionScope.listaItensLoja}" var="itemLoja">
+            <tr>
+                <td><c:out value="${itemLoja.produto.id}"></c:out></td>
+                <td>
+                    <a href="sistema?controller=Produto&action=editar&id=<c:out value="${itemLoja.produto.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                </td>
+            </tr>
+        </c:forEach>
+        <c:remove scope="session" var="listaItensLoja"></c:remove>
     </table>
 </div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>
