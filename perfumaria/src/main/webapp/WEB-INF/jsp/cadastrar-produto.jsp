@@ -24,7 +24,7 @@
                 <input type="radio" id="ativo" value="true" name="status" checked required>Ativo
             </label>
             <label class="radio-inline">
-                <input type="radio" id="inativo" value="false" name="status" required <c:if test="${sessionScope.produto.status eq false}">checked</c:if>>Inativo
+                <input type="radio" id="inativo" value="false" name="status" required <c:if test="${sessionScope.itensLoja.status eq false}">checked</c:if>>Inativo
             </label>
         </div>
         <div class="form-group col-md-6 <c:if test="${errorValidation.categoria eq true}">has-error</c:if>">
