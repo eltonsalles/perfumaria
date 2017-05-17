@@ -44,9 +44,6 @@ public class Loja extends Model {
     @Columm(name = "nome_fantasia")
     private String nomeFantasia;
     
-    @Columm(name = "celular")
-    private String celular;
-
     @Columm(name = "telefone")
     private String telefone;
 
@@ -105,16 +102,6 @@ public class Loja extends Model {
     public void setNomeFantasia(String nomeFantasia) {
         this.nomeFantasia = nomeFantasia;
     }
-    
-    public String getCelular(){
-    
-        return celular;
-    }
-    public void setCelular(String celular){
-    
-        this.celular = celular;
-    }
-
     public String getTelefone() {
         return telefone;
     }
