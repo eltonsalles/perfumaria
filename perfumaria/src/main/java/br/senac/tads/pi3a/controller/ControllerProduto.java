@@ -28,6 +28,7 @@ import br.senac.tads.pi3a.dao.DaoProduto;
 import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
 import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.model.Produto;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -228,8 +229,8 @@ public class ControllerProduto implements Logica {
                 }
 
                 if (digito) {
-                    ItensLoja itensLoja = new ItensLoja();
-                    DaoItensLoja dao = new DaoItensLoja(itensLoja);
+                    Produto produto = new Produto();
+                    DaoProduto dao = new DaoProduto(produto);
 
                     if (dao.delete(Integer.valueOf(id))) {
                         session.setAttribute("alert", "alert-warning");
