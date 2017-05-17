@@ -173,6 +173,55 @@ public abstract class AbstractDao implements GenericDao<Model>{
             }
         }
     }
+    
+    /**
+     * Faz alteração no banco de dados conforme o primary key informado
+     * 
+     * @param primaryKey
+     * @return
+     * @throws Exception 
+     */
+    public boolean update(String primaryKey) throws Exception {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            Criteria criteria = new Criteria();
+            criteria.add(new Filter(primaryKey, "=", "?"));
+            
+            SqlUpdate sql = new SqlUpdate();
+            sql.setEntity(this.entity);
+            sql.setCriteria(criteria);
+
+            for (String key : this.modelMap.keySet()) {
+                sql.setRowData(this.modelMap.get(key), "?");
+            }
+
+            Transaction.open();
+
+            conn = Transaction.get();
+
+            stmt = conn.prepareStatement(sql.getInstruction());
+
+            this.setStmt(stmt);
+            stmt.setInt(this.modelMap.size() + 1, this.model.getId());
+
+            stmt.execute();
+            
+            return true;
+        } catch (Exception e) {
+            Transaction.rollback();
+            throw new Exception(e.getMessage());
+        } finally {
+            if (stmt != null && !stmt.isClosed()) {
+                stmt.close();
+            }
+            
+            if (conn != null && !conn.isClosed()) {
+                Transaction.close();
+            }
+        }
+    }
 
     /**
      * Faz a exclusão no banco de dados
