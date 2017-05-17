@@ -141,13 +141,23 @@ public class ControllerProduto implements Logica {
                     if (lista.size() == 1) {
                         if (lista.get(0).getId() == itensLoja.getProduto()
                                 .getId()) {
+
+                            // Atualiza os detalhes do produto
                             if (dao.update()) {
-                                session.setAttribute("alert", "alert-success");
-                                session.setAttribute("alertMessage",
-                                        "Produto alterado com sucesso.");
-                                session.setAttribute("id", itensLoja
-                                        .getProduto().getId());
-                                return "editar";
+                                DaoItensLoja daoItensLoja
+                                        = new DaoItensLoja(itensLoja);
+
+                                // Atualiza as informações do produto
+                                // relacionadas a loja
+                                if (daoItensLoja.update("produto_id")) {
+                                    session.setAttribute("alert",
+                                            "alert-success");
+                                    session.setAttribute("alertMessage",
+                                            "Produto alterado com sucesso.");
+                                    session.setAttribute("id", itensLoja
+                                            .getProduto().getId());
+                                    return "editar";
+                                }
                             }
                         } else {
                             // Manda para jsp os campos inválidos e uma mensagem
@@ -162,8 +172,8 @@ public class ControllerProduto implements Logica {
                         session.setAttribute("itensLoja", itensLoja);
                         session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
-                                "Não foi encontrado nenhum produto com esse nome"
-                                + " informado.");
+                                "Não foi encontrado nenhum produto com esse"
+                                        + " nome informado.");
                     }
                 } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
@@ -214,8 +224,10 @@ public class ControllerProduto implements Logica {
     }
 
     @Override
-    public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-       
+    public String excluir(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
+
         try {
             if (request.getParameter("id") != null) {
                 String id = request.getParameter("id");
@@ -252,7 +264,9 @@ public class ControllerProduto implements Logica {
     }
 
     @Override
-    public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String pesquisar(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
         try {
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
@@ -274,10 +288,13 @@ public class ControllerProduto implements Logica {
                         }
                     }
                     if (digito) {
-                        lista = dao.findAll(itensLoja, new String[]{"produto_id","loja_id"}, new String[]{"=","="},
-                                new String[]{pesquisar,"1"}, new String[]{"and","and"});
+                        lista = dao.findAll(itensLoja,
+                                new String[]{"produto_id", "loja_id"},
+                                new String[]{"=", "="},
+                                new String[]{pesquisar, "1"},
+                                new String[]{"and", "and"});
                     } else {
-                        lista = dao.findAllNome(itensLoja, "nome", "LIKE",
+                        lista = dao.findAllField(itensLoja, "nome", "LIKE",
                                 "%" + pesquisar + "%");
                     }
 
