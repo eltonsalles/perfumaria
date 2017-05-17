@@ -161,7 +161,7 @@ public class ControllerProduto implements Logica {
                         session.setAttribute("itensLoja", itensLoja);
                         session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
-                                "Não foi encontrado nenhum cadastro com o CPF"
+                                "Não foi encontrado nenhum produto com esse nome"
                                 + " informado.");
                     }
                 } else {
@@ -196,7 +196,7 @@ public class ControllerProduto implements Logica {
                             new String[]{"and", "and"});
 
                     if (lista.size() == 1) {
-                        session.setAttribute("itensLoja", itensLoja);
+                        session.setAttribute("itensLoja", lista.get(0));
                     }
                 }
             }
@@ -214,7 +214,40 @@ public class ControllerProduto implements Logica {
 
     @Override
     public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        return "/WEB-INF/jsp/cadastrar-produto.jsp";
+       
+        try {
+            if (request.getParameter("id") != null) {
+                String id = request.getParameter("id");
+                boolean digito = true;
+
+                for (int i = 0; i < id.length(); i++) {
+                    if (!Character.isDigit(id.charAt(i))) {
+                        digito = false;
+                        break;
+                    }
+                }
+
+                if (digito) {
+                    ItensLoja itensLoja = new ItensLoja();
+                    DaoItensLoja dao = new DaoItensLoja(itensLoja);
+
+                    if (dao.delete(Integer.valueOf(id))) {
+                        session.setAttribute("alert", "alert-warning");
+                        session.setAttribute("alertMessage",
+                                "Produto excluído com sucesso.");
+                        return "excluir";
+                    }
+                }
+            }
+
+            return "/WEB-INF/jsp/consultar-produto.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a exclusão.");
+            return "excluir";
+        }
     }
 
     @Override
@@ -240,9 +273,10 @@ public class ControllerProduto implements Logica {
                         }
                     }
                     if (digito) {
-                        lista = dao.findAll(itensLoja, "produto_id", "=", pesquisar);
+                        lista = dao.findAll(itensLoja, new String[]{"produto_id","loja_id"}, new String[]{"=","="},
+                                new String[]{pesquisar,"1"}, new String[]{"and","and"});
                     } else {
-                        lista = dao.findAll(itensLoja, "nome", "LIKE",
+                        lista = dao.findAllNome(itensLoja, "nome", "LIKE",
                                 "%" + pesquisar + "%");
                     }
 

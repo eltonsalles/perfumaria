@@ -4,6 +4,7 @@
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Consultar Produto</h2>
+    <jsp:include page="/WEB-INF/layout/message.jsp"/>
     <form action="sistema?controller=Produto&action=pesquisar" method="post">
         <div class="form-group col-md-6 <c:if test="${errorValidation.pesquisar eq true}">has-error</c:if>">
             <label class="control-label" for="pesquisar">Pesquisar</label>
