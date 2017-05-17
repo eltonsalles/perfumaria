@@ -44,75 +44,76 @@ import java.util.List;
  *
  * @author fabiano.bfcarvalho
  */
-public class DaoItensLoja extends AbstractDao{
+public class DaoItensLoja extends AbstractDao {
 
     public DaoItensLoja() {
-        
+
     }
-    
-    public DaoItensLoja(ItensLoja model){
+
+    public DaoItensLoja(ItensLoja model) {
         super(model);
     }
 
-   
-
-    public List<Model> findAllNome(Model obj, String field, String criteria, String value) throws Exception {
-       ResultSet resultSet;
+    /**
+     * Faz uma consulta pelo campo informado
+     * 
+     * @param obj
+     * @param field
+     * @param criteria
+     * @param value
+     * @return
+     * @throws Exception 
+     */
+    public List<Model> findAllField(Model obj, String field, String criteria,
+            String value) throws Exception {
+        ResultSet resultSet;
         ResultSet resultSet2;
         PreparedStatement stmt = null;
         Connection conn = null;
         List<Model> list = new ArrayList<>();
-        
+
         try {
             if (!obj.getClass().isAnnotationPresent(Table.class)) {
                 return null;
             }
             
-            Table table = obj.getClass().getAnnotation(Table.class);
-            
+            Criteria criteria2 = new Criteria();
+            criteria2.add(new Filter(field, criteria, "?"));
+
             SqlSelect sql = new SqlSelect();
             sql.setEntity("produto");
             sql.addColumn("*");
+            sql.setCriteria(criteria2);
             
-            Criteria criteria2 = new Criteria();
-                criteria2.add(new Filter(field,criteria,value));
-                
-                sql.setCriteria(criteria2);  
             if (conn == null) {
                 Transaction.open();
-            
+
                 conn = Transaction.get();
             }
-           
+
             stmt = conn.prepareStatement(sql.getInstruction());
-            
+            stmt.setObject(1, value);
+
             resultSet = stmt.executeQuery();
-            
-            while(resultSet.next()) {
+
+            while (resultSet.next()) {
                 ItensLoja itensLoja = new ItensLoja();
-                
+
                 SqlSelect sql2 = new SqlSelect();
-                
+
                 Criteria criteria3 = new Criteria();
-                criteria3.add(new Filter("produto_id","=","?"), Expression.AND_OPERATOR );
-                criteria3.add(new Filter("loja_id","=","?"), Expression.AND_OPERATOR );// Mock
-                
-                
-                
+                criteria3.add(new Filter("produto_id", "=", "?"),
+                        Expression.AND_OPERATOR);
+                criteria3.add(new Filter("loja_id", "=", "?"),
+                        Expression.AND_OPERATOR); // #Mock
+
                 sql2.setEntity("itens_loja");
                 sql2.addColumn("*");
                 sql2.setCriteria(criteria3);
-     String s = sql2.getInstruction();
-                if (conn == null) {
-                    Transaction.open();
 
-                    conn = Transaction.get();
-                }
-               
                 stmt = conn.prepareStatement(sql2.getInstruction());
                 stmt.setInt(1, resultSet.getInt("id"));
                 stmt.setInt(2, 1);
-             
 
                 resultSet2 = stmt.executeQuery();
 
@@ -122,23 +123,24 @@ public class DaoItensLoja extends AbstractDao{
                     produto.setNome(resultSet.getString("nome"));
                     produto.setMarca(resultSet.getString("marca"));
                     produto.setCategoria(resultSet.getString("categoria"));
-                    produto.setValorUnidadeMedida(resultSet.getInt("vlr_unidade_medida"));
-                    produto.setUnidadeMedida(resultSet.getString("unidade_medida"));
+                    produto.setValorUnidadeMedida(resultSet
+                            .getInt("vlr_unidade_medida"));
+                    produto.setUnidadeMedida(resultSet
+                            .getString("unidade_medida"));
                     produto.setGenero(resultSet.getString("genero"));
                     produto.setDescricao(resultSet.getString("descricao"));
-                    
+
                     itensLoja.setProduto(produto);
                 }
-                
+
                 itensLoja.setStatus(resultSet2.getBoolean("status"));
-                itensLoja.setDataCadastro(new Date(resultSet2.getDate("data_cadastro").getTime()));
+                itensLoja.setDataCadastro(new Date(resultSet2
+                        .getDate("data_cadastro").getTime()));
                 itensLoja.setEstoque(resultSet2.getInt("estoque"));
                 itensLoja.setValorCompra(resultSet2.getFloat("vlr_compra"));
                 itensLoja.setValorVenda(resultSet2.getFloat("vlr_venda"));
-                
+
                 list.add(itensLoja);
-                
-                
             }
         } catch (SQLException e) {
             throw new Exception(e.getMessage());
@@ -146,16 +148,12 @@ public class DaoItensLoja extends AbstractDao{
             if (stmt != null && !stmt.isClosed()) {
                 stmt.close();
             }
-            
+
             if (conn != null && !conn.isClosed()) {
                 Transaction.close();
             }
         }
-        
+
         return list;
-        
-        
-        
     }
-    
 }
