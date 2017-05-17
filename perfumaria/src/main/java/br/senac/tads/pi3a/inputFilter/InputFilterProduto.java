@@ -239,10 +239,18 @@ public class InputFilterProduto extends InputFilter {
 
             itensLoja.setEstoque(Integer.valueOf(this.allMap
                     .get("estoque")[0]));
-            itensLoja.setValorCompra(Float.valueOf(this.allMap
-                    .get("valor-compra")[0]));
-            itensLoja.setValorVenda(Float.valueOf(this.allMap
-                    .get("valor-venda")[0]));
+
+            String valorCompra = this.allMap.get("valor-compra")[0]
+                    .replaceAll("R\\$\\s", "").replaceAll("\\.", "")
+                    .replaceAll(",", ".");
+
+            itensLoja.setValorCompra(Float.valueOf(valorCompra));
+
+            String valorVenda = this.allMap.get("valor-venda")[0]
+                    .replaceAll("R\\$\\s", "").replaceAll("\\.", "")
+                    .replaceAll(",", ".");
+
+            itensLoja.setValorVenda(Float.valueOf(valorVenda));
 
             itensLoja.setProduto(produto);
 
