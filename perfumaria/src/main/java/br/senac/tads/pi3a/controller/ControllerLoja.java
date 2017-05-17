@@ -23,6 +23,11 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoLoja;
+import br.senac.tads.pi3a.inputFilter.InputFilterLoja;
+import br.senac.tads.pi3a.model.Loja;
+import br.senac.tads.pi3a.model.Model;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -35,21 +40,260 @@ public class ControllerLoja implements Logica {
 
     @Override
     public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        return "/WEB-INF/jsp/cadastrar-loja.jsp";
+
+        try {
+
+            //Valida se o formulário que está sendo submetido é do tipo post
+            if (request.getMethod().equalsIgnoreCase("post")) {
+
+                //Instancia a classe de Validação do formulário Loja
+                InputFilterLoja inputFilterLoja
+                        = new InputFilterLoja(request.getParameterMap());
+
+                //Cria um obejto Lojacom dos dados do fomulário, sem validação
+                Loja loja = (Loja) inputFilterLoja.getData();
+
+                // Faz a validação do formulário Loja
+                if (inputFilterLoja.isValid()) {
+                    // Atualiza o objeto Loja com os dados validados
+                    loja = (Loja) inputFilterLoja.createModel();
+
+                    DaoLoja dao = new DaoLoja(loja);
+
+                    // Garante que o cnpj não esteja cadastrado na base de dados
+                    if (dao.findAll(loja, "cpf", "=", loja.getCnpj())
+                            .isEmpty()) {
+                        // Toda Loja deve ser cadastrado com status true
+                        loja.setStatus(true);
+
+                        // A dao retorna um id válido se fizer a inserção
+                        if (dao.insert() != -1) {
+                            session.setAttribute("alert", "alert-success");
+                            session.setAttribute("alertMessage",
+                                    "Cadastro realizado com sucesso.");
+                            return "novo";
+                        }
+                    } else {
+                        // Manda para a jsp os campos inválidos e uma mensagem
+                        session.setAttribute("cliente", loja);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage",
+                                "Este CNPJ já está cadastrado.");
+                    }
+                } else {
+                    // Manda para a jsp os campos inválidos e uma mensagem
+                    session.setAttribute("errorValidation",
+                            inputFilterLoja.getErrorValidation());
+                    session.setAttribute("cliente", loja);
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage",
+                            "Verifique os campo em vermelho.");
+                }
+            }
+
+            return "/WEB-INF/jsp/cadastrar-loja.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar o cadastro.");
+            return "novo";
+        }
     }
 
     @Override
     public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        try {
+            //Valida se o formulário que está sendo submetido é do tipo post
+            if (request.getMethod().equalsIgnoreCase("post")) {
+
+                //Instancia a classe de Validação do formulário Loja
+                InputFilterLoja inputFilterLoja
+                        = new InputFilterLoja(request.getParameterMap());
+
+                //Cria um obejto Lojacom dos dados do fomulário, sem validação
+                Loja loja = (Loja) inputFilterLoja.getData();
+
+                // Faz a validação do formulário Loja
+                if (inputFilterLoja.isValid()) {
+
+                    // Atualiza o objeto Loja com os dados validados
+                    loja = (Loja) inputFilterLoja.createModel();
+
+                    DaoLoja dao = new DaoLoja(loja);
+
+                    // Garante que não exista cpf repetido na base de dados
+                    List<Model> lista = dao.findAll(loja, "cpf", "=",
+                            loja.getCnpj());
+
+                    if (lista.size() == 1) {
+                        if (lista.get(0).getId() == loja.getId()) {
+                            if (dao.update()) {
+                                session.setAttribute("alert", "alert-success");
+                                session.setAttribute("alertMessage",
+                                        "Cadastro alterado com sucesso.");
+                                session.setAttribute("id", loja.getId());
+                                return "editar";
+                            }
+                        } else {
+                            // Manda para jsp os campos inválidos e uma mensagem
+                            session.setAttribute("loja", loja);
+                            session.setAttribute("alert", "alert-danger");
+                            session.setAttribute("alertMessage",
+                                    "Este CNPJ já está cadastrado.");
+                        }
+                    } else {
+                        // Manda para jsp os campos inválidos e uma mensagem
+                        session.setAttribute("loja", loja);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage",
+                                "Não foi encontrado nenhum cadastro com o CNPJ"
+                                + " informado.");
+                    }
+
+                } else {
+                    // Manda para a jsp os campos inválidos e uma mensagem
+                    session.setAttribute("errorValidation",
+                            inputFilterLoja.getErrorValidation());
+                    session.setAttribute("loja", loja);
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage",
+                            "Verifique os campo em vermelho.");
+                }
+
+            }
+            if (request.getParameter("id") != null) {
+                String id = request.getParameter("id");
+                boolean digito = true;
+
+                for (int i = 0; i < id.length(); i++) {
+                    if (!Character.isDigit(id.charAt(i))) {
+                        digito = false;
+                        break;
+                    }
+                }
+
+                if (digito) {
+                    Model loja = new Loja();
+                    DaoLoja dao = new DaoLoja();
+                    loja = dao.findOne(loja, Integer.valueOf(request
+                            .getParameter("id")));
+
+                    session.setAttribute("loja", loja);
+                }
+            }
+
+            return "/WEB-INF/jsp/cadastrar-loja.jsp";
+
+        } catch (Exception e) {
+
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a alteração.");
+            session.setAttribute("id", 0);
+            return "editar";
+
+        }
+
     }
 
     @Override
     public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        try {
+            
+            if (request.getParameter("id") != null) {
+                String id = request.getParameter("id");
+                boolean digito = true;
+
+                for (int i = 0; i < id.length(); i++) {
+                    if (!Character.isDigit(id.charAt(i))) {
+                        digito = false;
+                        break;
+                    }
+                }
+
+                if (digito) {
+                    Loja cliente = new Loja();
+                    DaoLoja dao = new DaoLoja(cliente);
+
+                    if (dao.delete(Integer.valueOf(id))) {
+                        session.setAttribute("alert", "alert-warning");
+                        session.setAttribute("alertMessage",
+                                "Cadastro excluído com sucesso.");
+                        return "excluir";
+                    }
+                }
+            }
+            
+            return "/WEB-INF/jsp/cadastrar-loja.jsp";
+
+        } catch (Exception e) {
+
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a exclusão.");
+            return "excluir";
+        }
+
+        
     }
 
     @Override
     public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        return "/WEB-INF/jsp/consultar-loja.jsp";
+
+        try {
+            
+           // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                Loja loja = new Loja();
+                DaoLoja dao = new DaoLoja();
+                List<Model> lista;
+
+                // Se não houver valor para pesquisar então retorna tudo
+                if (request.getParameter("pesquisar") != null
+                        && !request.getParameter("pesquisar").isEmpty()) {
+                    String pesquisar = request.getParameter("pesquisar");
+
+                    // Verifica por onde a consulta será feita por CNPJ ou nome
+                    boolean digito = true;
+                    for (int i = 0; i < pesquisar.length(); i++) {
+                        if (!Character.isDigit(pesquisar.charAt(i))) {
+                            digito = false;
+                            break;
+                        }
+                    }
+                    if (digito && pesquisar.length() == 14) {
+                        lista = dao.findAll(loja, "cnpj", "=", pesquisar);
+                    } else {
+                        lista = dao.findAll(loja, "nome", "LIKE",
+                                "%" + pesquisar + "%");
+                    }
+
+                } else {
+                    lista = dao.findAll(loja);
+                }
+
+                if (lista != null && !lista.isEmpty()) {
+                    session.setAttribute("listaLojas", lista);
+                    return "pesquisar";
+                } else {
+                    session.setAttribute("alert", "alert-warning");
+                    session.setAttribute("alertMessage",
+                            "A consulta não retornou nenhum resultado.");
+                }
+            }
+
+            return "/WEB-INF/jsp/consultar-loja.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a consulta.");
+            return "pesquisar";
+        }
     }
 }
