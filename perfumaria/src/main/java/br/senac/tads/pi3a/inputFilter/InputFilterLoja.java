@@ -33,7 +33,6 @@ import br.senac.tads.pi3a.validation.ValidationEmail;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -133,22 +132,8 @@ public class InputFilterLoja extends InputFilter {
             }
 
         }
-        //Validando o valor e o tamanho do campo celular no formulário Cadastrar 
-        //Loja 
-        if (this.allMap.containsKey("celular")) {
-
-            //Extrai apenas os digitos numéricos do campo
-            String celular = this.allMap.get("celular")[0].replaceAll("\\D", "");
-
-            validationTamanho.setTamanho(11);
-
-            if (validationTamanho.isValid(celular)) {
-                this.errorValidation.replace("celular", false);
-                this.allMap.replace("celular", new String[]{celular});
-
-            }
-
-        }
+        
+        
         //Validando o valor e o tamanho do campo telefone no formulário Cadastrar
         //Loja
         if (this.allMap.containsKey("telefone")) {
@@ -295,7 +280,6 @@ public class InputFilterLoja extends InputFilter {
             loja.setCnpj(this.allMap.get("cnpj")[0]);
             loja.setStatus(Boolean.valueOf(this.allMap.get("status")[0]));
             loja.setNomeFantasia(this.allMap.get("razaoSocial")[0]);
-            loja.setCelular(this.allMap.get("celular")[0]);
             loja.setTelefone(this.allMap.get("telefone")[0]);
             loja.setEmail(this.allMap.get("email")[0]);
             loja.setLogradouro(this.allMap.get("logradouro")[0]);
