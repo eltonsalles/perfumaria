@@ -24,6 +24,7 @@
 package br.senac.tads.pi3a.dao;
 
 import br.senac.tads.pi3a.model.Cliente;
+import java.sql.Connection;
 
 /**
  *
@@ -31,10 +32,10 @@ import br.senac.tads.pi3a.model.Cliente;
  */
 public class DaoCliente extends AbstractDao {
 
-    public DaoCliente() {
-        
+    public DaoCliente(Connection conn) {
+        super(conn);
     }
-    public DaoCliente(Cliente model) {
-        super(model);
+    public DaoCliente(Connection conn, Cliente model) {
+        super(conn, model);
     }
 }

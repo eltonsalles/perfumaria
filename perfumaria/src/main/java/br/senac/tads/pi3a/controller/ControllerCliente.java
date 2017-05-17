@@ -27,6 +27,7 @@ import br.senac.tads.pi3a.dao.DaoCliente;
 import br.senac.tads.pi3a.inputFilter.InputFilterCliente;
 import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Model;
+import java.sql.Connection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,7 +57,9 @@ public class ControllerCliente implements Logica {
                     // Atualiza o objeto cliente com os dados validados
                     cliente = (Cliente) inputFilterCliente.createModel();
                                         
-                    DaoCliente dao = new DaoCliente(cliente);
+                    DaoCliente dao = new DaoCliente(
+                            (Connection) request.getAttribute("connection"),
+                            cliente);
                     
                     // Garante que o cpf não esteja cadastrado na base de dados
                     if (dao.findAll(cliente, "cpf", "=", cliente.getCpf())
@@ -119,7 +122,9 @@ public class ControllerCliente implements Logica {
                     // Atualiza o objeto cliente com os dados validados
                     cliente = (Cliente) inputFilterCliente.createModel();
                     
-                    DaoCliente dao = new DaoCliente(cliente);
+                    DaoCliente dao = new DaoCliente(
+                            (Connection) request.getAttribute("connection"),
+                            cliente);
                     
                     // Garante que não exista cpf repetido na base de dados
                     List<Model> lista = dao.findAll(cliente, "cpf", "=",
@@ -173,7 +178,8 @@ public class ControllerCliente implements Logica {
 
                 if (digito) {
                     Model cliente = new Cliente();
-                    DaoCliente dao = new DaoCliente();
+                    DaoCliente dao = new DaoCliente(
+                            (Connection) request.getAttribute("connection"));
                     cliente = dao.findOne(cliente, Integer.valueOf(request
                             .getParameter("id")));
 
@@ -210,7 +216,9 @@ public class ControllerCliente implements Logica {
 
                 if (digito) {
                     Cliente cliente = new Cliente();
-                    DaoCliente dao = new DaoCliente(cliente);
+                    DaoCliente dao = new DaoCliente(
+                            (Connection) request.getAttribute("connection"),
+                            cliente);
 
                     if (dao.delete(Integer.valueOf(id))) {
                         session.setAttribute("alert", "alert-warning");
@@ -239,7 +247,8 @@ public class ControllerCliente implements Logica {
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 Cliente cliente = new Cliente();
-                DaoCliente dao = new DaoCliente();
+                DaoCliente dao = new DaoCliente(
+                        (Connection) request.getAttribute("connection"));
                 List<Model> lista;
 
                 // Se não houver valor para pesquisar então retorna tudo

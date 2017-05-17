@@ -24,16 +24,17 @@
 package br.senac.tads.pi3a.dao;
 
 import br.senac.tads.pi3a.model.Usuario;
+import java.sql.Connection;
 
 /**
  *
  * @author joao.mihamasaki
  */
 public class DaoUsuario extends AbstractDao{
-    public DaoUsuario(){
-        
+    public DaoUsuario(Connection conn){
+        super(conn);
     }
-    public DaoUsuario(Usuario model){
-        super(model);
+    public DaoUsuario(Connection conn, Usuario model){
+        super(conn, model);
     }
 }

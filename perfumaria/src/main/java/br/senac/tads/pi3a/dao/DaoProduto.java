@@ -24,6 +24,7 @@
 package br.senac.tads.pi3a.dao;
 
 import br.senac.tads.pi3a.model.Produto;
+import java.sql.Connection;
 
 /**
  *
@@ -31,11 +32,11 @@ import br.senac.tads.pi3a.model.Produto;
  */
 public class DaoProduto extends AbstractDao{
 
-    public DaoProduto() {
-        
+    public DaoProduto(Connection conn) {
+        super(conn);
     }    
     
-    public DaoProduto(Produto model){
-        super(model);
+    public DaoProduto(Connection conn, Produto model){
+        super(conn, model);
     }
 }

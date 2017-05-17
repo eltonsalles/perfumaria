@@ -27,6 +27,7 @@ import br.senac.tads.pi3a.dao.DaoFuncionario;
 import br.senac.tads.pi3a.inputFilter.InputFilterFuncionario;
 import br.senac.tads.pi3a.model.Funcionario;
 import br.senac.tads.pi3a.model.Model;
+import java.sql.Connection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,7 +57,9 @@ public class ControllerFuncionario implements Logica {
                     //Atualiza o objeto funcionário com os dados validados
                     funcionario = (Funcionario) inputFilterFuncionario
                             .createModel();
-                    DaoFuncionario dao = new DaoFuncionario(funcionario);
+                    DaoFuncionario dao = new DaoFuncionario(
+                            (Connection) request.getAttribute("connection"),
+                            funcionario);
                     // Garante que o cpf não esteja cadastrado na base de dados
                     if (dao.findAll(funcionario, "cpf", "=",
                             funcionario.getCpf()).isEmpty()) {
@@ -120,7 +123,9 @@ public class ControllerFuncionario implements Logica {
                     funcionario = (Funcionario) inputFilterFuncionario
                             .createModel();
 
-                    DaoFuncionario dao = new DaoFuncionario(funcionario);
+                    DaoFuncionario dao = new DaoFuncionario(
+                            (Connection) request.getAttribute("connection"),
+                            funcionario);
 
                     // Garante que não exista cpf repetido na base de dados
                     List<Model> lista = dao.findAll(funcionario, "cpf", "=",
@@ -174,7 +179,8 @@ public class ControllerFuncionario implements Logica {
 
                 if (digito) {
                     Model funcionario = new Funcionario();
-                    DaoFuncionario dao = new DaoFuncionario();
+                    DaoFuncionario dao = new DaoFuncionario(
+                            (Connection) request.getAttribute("connection"));
                     funcionario = dao.findOne(funcionario,
                             Integer.valueOf(request.getParameter("id")));
 
@@ -211,7 +217,9 @@ public class ControllerFuncionario implements Logica {
 
                 if (digito) {
                     Funcionario funcionario = new Funcionario();
-                    DaoFuncionario dao = new DaoFuncionario(funcionario);
+                    DaoFuncionario dao = new DaoFuncionario(
+                            (Connection) request.getAttribute("connection"),
+                            funcionario);
 
                     if (dao.delete(Integer.valueOf(id))) {
                         session.setAttribute("alert", "alert-warning");
@@ -240,7 +248,8 @@ public class ControllerFuncionario implements Logica {
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 Funcionario funcionario = new Funcionario();
-                DaoFuncionario dao = new DaoFuncionario();
+                DaoFuncionario dao = new DaoFuncionario(
+                        (Connection) request.getAttribute("connection"));
                 List<Model> lista;
 
                 // Se não houver valor para pesquisar então retorna tudo

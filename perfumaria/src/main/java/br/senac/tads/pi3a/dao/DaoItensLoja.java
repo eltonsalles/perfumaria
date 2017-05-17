@@ -27,7 +27,6 @@ import br.senac.tads.pi3a.ado.Criteria;
 import br.senac.tads.pi3a.ado.Expression;
 import br.senac.tads.pi3a.ado.Filter;
 import br.senac.tads.pi3a.ado.SqlSelect;
-import br.senac.tads.pi3a.ado.Transaction;
 import br.senac.tads.pi3a.annotation.Table;
 import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Model;
@@ -46,12 +45,12 @@ import java.util.List;
  */
 public class DaoItensLoja extends AbstractDao {
 
-    public DaoItensLoja() {
-
+    public DaoItensLoja(Connection conn) {
+        super(conn);
     }
 
-    public DaoItensLoja(ItensLoja model) {
-        super(model);
+    public DaoItensLoja(Connection conn, ItensLoja model) {
+        super(conn, model);
     }
 
     /**
@@ -68,8 +67,8 @@ public class DaoItensLoja extends AbstractDao {
             String value) throws Exception {
         ResultSet resultSet;
         ResultSet resultSet2;
-        PreparedStatement stmt = null;
-        Connection conn = null;
+        PreparedStatement stmt;
+        Connection connection;
         List<Model> list = new ArrayList<>();
 
         try {
@@ -85,13 +84,9 @@ public class DaoItensLoja extends AbstractDao {
             sql.addColumn("*");
             sql.setCriteria(criteria2);
             
-            if (conn == null) {
-                Transaction.open();
+            connection = this.getConnection();
 
-                conn = Transaction.get();
-            }
-
-            stmt = conn.prepareStatement(sql.getInstruction());
+            stmt = connection.prepareStatement(sql.getInstruction());
             stmt.setObject(1, value);
 
             resultSet = stmt.executeQuery();
@@ -111,7 +106,7 @@ public class DaoItensLoja extends AbstractDao {
                 sql2.addColumn("*");
                 sql2.setCriteria(criteria3);
 
-                stmt = conn.prepareStatement(sql2.getInstruction());
+                stmt = connection.prepareStatement(sql2.getInstruction());
                 stmt.setInt(1, resultSet.getInt("id"));
                 stmt.setInt(2, 1);
 
@@ -144,14 +139,6 @@ public class DaoItensLoja extends AbstractDao {
             }
         } catch (SQLException e) {
             throw new Exception(e.getMessage());
-        } finally {
-            if (stmt != null && !stmt.isClosed()) {
-                stmt.close();
-            }
-
-            if (conn != null && !conn.isClosed()) {
-                Transaction.close();
-            }
         }
 
         return list;

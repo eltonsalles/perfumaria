@@ -24,6 +24,7 @@
 package br.senac.tads.pi3a.dao;
 
 import br.senac.tads.pi3a.model.Model;
+import java.sql.Connection;
 
 /**
  *
@@ -31,11 +32,11 @@ import br.senac.tads.pi3a.model.Model;
  */
 public class DaoFuncionario extends AbstractDao {
 
-    public DaoFuncionario() {
+    public DaoFuncionario(Connection conn) {
+        super(conn);
     }
 
-    public DaoFuncionario(Model model) {
-        super(model);
+    public DaoFuncionario(Connection conn, Model model) {
+        super(conn, model);
     }
-
 }

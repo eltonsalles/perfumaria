@@ -29,6 +29,7 @@ import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
 import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
+import java.sql.Connection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,8 +60,9 @@ public class ControllerProduto implements Logica {
                     // Atualiza o objeto itens loja com os dados validados
                     itensLoja = (ItensLoja) inputFilterProduto.createModel();
 
-                    DaoProduto daoProduto = new DaoProduto(itensLoja
-                            .getProduto());
+                    DaoProduto daoProduto = new DaoProduto(
+                            (Connection) request.getAttribute("connection"),
+                            itensLoja.getProduto());
 
                     // Garante que o nome não esteja cadastrado na base de dados
                     if (daoProduto.findAll(itensLoja.getProduto(), "nome", "=",
@@ -76,7 +78,10 @@ public class ControllerProduto implements Logica {
                             itensLoja.setStatus(true);
 
                             DaoItensLoja daoItensLoja
-                                    = new DaoItensLoja(itensLoja);
+                                    = new DaoItensLoja(
+                                            (Connection) request
+                                                    .getAttribute("connection"),
+                                            itensLoja);
 
                             if (daoItensLoja.insert() != -1) {
                                 session.setAttribute("alert", "alert-success");
@@ -132,7 +137,9 @@ public class ControllerProduto implements Logica {
                     // Atualiza os dados com as informações validadas
                     itensLoja = (ItensLoja) inputFilterProduto.createModel();
 
-                    DaoProduto dao = new DaoProduto(itensLoja.getProduto());
+                    DaoProduto dao = new DaoProduto(
+                            (Connection) request.getAttribute("connection"),
+                            itensLoja.getProduto());
 
                     //garante que o nome não se repita na base
                     List<Model> lista = dao.findAll(itensLoja.getProduto(),
@@ -145,7 +152,10 @@ public class ControllerProduto implements Logica {
                             // Atualiza os detalhes do produto
                             if (dao.update()) {
                                 DaoItensLoja daoItensLoja
-                                        = new DaoItensLoja(itensLoja);
+                                        = new DaoItensLoja(
+                                                (Connection) request
+                                                        .getAttribute("connection"),
+                                                itensLoja);
 
                                 // Atualiza as informações do produto
                                 // relacionadas a loja
@@ -198,7 +208,8 @@ public class ControllerProduto implements Logica {
 
                 if (digito) {
                     Model itensLoja = new ItensLoja();
-                    DaoItensLoja dao = new DaoItensLoja();
+                    DaoItensLoja dao = new DaoItensLoja(
+                            (Connection) request.getAttribute("connection"));
 
                     List lista = dao.findAll(itensLoja,
                             new String[]{"produto_id", "loja_id"},
@@ -242,7 +253,9 @@ public class ControllerProduto implements Logica {
 
                 if (digito) {
                     Produto produto = new Produto();
-                    DaoProduto dao = new DaoProduto(produto);
+                    DaoProduto dao = new DaoProduto(
+                            (Connection) request.getAttribute("connection"),
+                            produto);
 
                     if (dao.delete(Integer.valueOf(id))) {
                         session.setAttribute("alert", "alert-warning");
@@ -271,7 +284,8 @@ public class ControllerProduto implements Logica {
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 ItensLoja itensLoja = new ItensLoja();
-                DaoItensLoja dao = new DaoItensLoja();
+                DaoItensLoja dao = new DaoItensLoja(
+                        (Connection) request.getAttribute("connection"));
                 List<Model> lista;
 
                 // Se não houver valor para pesquisar então retorna tudo

@@ -27,6 +27,7 @@ import br.senac.tads.pi3a.dao.DaoUsuario;
 import br.senac.tads.pi3a.inputFilter.InputFilterUsuario;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Usuario;
+import java.sql.Connection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +55,9 @@ public class ControllerUsuario implements Logica {
                 if (inputFilterUsuario.isValid()) {
                     // Atualiza o objeto cliente com os dados validados
                     usuario = (Usuario) inputFilterUsuario.createModel();
-                    DaoUsuario dao = new DaoUsuario(usuario);
+                    DaoUsuario dao = new DaoUsuario(
+                            (Connection) request.getAttribute("connection"),
+                            usuario);
 
                     // Garante que o login não esteja cadastrado na base de dados
                     if (dao.findAll(usuario, "login", "=", usuario.getLogin())
@@ -114,7 +117,9 @@ public class ControllerUsuario implements Logica {
                     // Atualiza o objeto cliente com os dados validados
                     usuario = (Usuario) inputFilterUsuario.createModel();
                     
-                    DaoUsuario dao = new DaoUsuario(usuario);
+                    DaoUsuario dao = new DaoUsuario(
+                            (Connection) request.getAttribute("connection"),
+                            usuario);
                     
                     // Garante que não exista login repetido na base de dados
                     List<Model> lista = dao.findAll(usuario, "login", "=",
@@ -168,13 +173,11 @@ public class ControllerUsuario implements Logica {
 
                 if (digito) {
                     Model usuario = new Usuario();
-                    DaoUsuario dao = new DaoUsuario();
-                    
-                    List lista = dao.findAll(usuario, "id", "=", id);
-                    
-                    if (lista.size() == 1) {
-                        session.setAttribute("usuario", lista.get(0));
-                    }
+                    DaoUsuario dao = new DaoUsuario(
+                            (Connection) request.getAttribute("connection"));
+
+                    usuario = dao.findOne(usuario, Integer.valueOf(id));
+                    session.setAttribute("usuario", usuario);
                 }
             }
 
@@ -208,7 +211,9 @@ public class ControllerUsuario implements Logica {
 
                 if (digito) {
                     Usuario usuario = new Usuario();
-                    DaoUsuario dao = new DaoUsuario(usuario);
+                    DaoUsuario dao = new DaoUsuario(
+                            (Connection) request.getAttribute("connection"),
+                            usuario);
 
                     if (dao.delete(Integer.valueOf(id))) {
                         session.setAttribute("alert", "alert-warning");
@@ -237,7 +242,8 @@ public class ControllerUsuario implements Logica {
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 Usuario usuario = new Usuario();
-                DaoUsuario dao = new DaoUsuario();
+                DaoUsuario dao = new DaoUsuario(
+                        (Connection) request.getAttribute("connection"));
                 List<Model> lista;
 
                 // Se não houver valor para pesquisar então retorna tudo
