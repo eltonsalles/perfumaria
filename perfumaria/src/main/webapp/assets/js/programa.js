@@ -57,7 +57,7 @@ function configurarForm() {
     if (cep !== null) {
         cep.value = formatarCep(cep.value);
         cep.addEventListener('focusout', function () {
-           this.value = formatarTelefone(this.value);
+           this.value = formatarCep(this.value);
         });
     }
 }
