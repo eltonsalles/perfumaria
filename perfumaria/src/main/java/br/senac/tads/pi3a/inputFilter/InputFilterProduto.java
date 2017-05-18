@@ -157,30 +157,27 @@ public class InputFilterProduto extends InputFilter {
         // Validar compra
         if (this.allMap.containsKey("valor-compra")) {
             String valorCompra = this.allMap.get("valor-compra")[0]
-                    .replaceAll("R\\$\\s", "").replaceAll("\\.", "")
+                    .replaceAll("\\.", "")
                     .replaceAll(",", ".");
 
             ValidationFloat validationFloat = new ValidationFloat();
 
             if (validationFloat.isValid(valorCompra)) {
                 this.errorValidation.replace("valorCompra", false);
-                this.allMap.replace("valor-compra", new String[]{valorCompra});
             }
         }
 
         // Validar venda
         if (this.allMap.containsKey("valor-venda")) {
             String valorVenda = this.allMap.get("valor-venda")[0]
-                    .replaceAll("R\\$\\s", "").replaceAll("\\.", "")
+                    .replaceAll("\\.", "")
                     .replaceAll(",", ".");
 
             ValidationFloat validationFloat = new ValidationFloat();
 
             if (validationFloat.isValid(valorVenda)) {
                 this.errorValidation.replace("valorVenda", false);
-                this.allMap.replace("valor-venda", new String[]{valorVenda});
             }
-
         }
 
         // Validar gênero
@@ -241,13 +238,13 @@ public class InputFilterProduto extends InputFilter {
                     .get("estoque")[0]));
 
             String valorCompra = this.allMap.get("valor-compra")[0]
-                    .replaceAll("R\\$\\s", "").replaceAll("\\.", "")
+                    .replaceAll("\\.", "")
                     .replaceAll(",", ".");
 
             itensLoja.setValorCompra(Float.valueOf(valorCompra));
 
             String valorVenda = this.allMap.get("valor-venda")[0]
-                    .replaceAll("R\\$\\s", "").replaceAll("\\.", "")
+                    .replaceAll("\\.", "")
                     .replaceAll(",", ".");
 
             itensLoja.setValorVenda(Float.valueOf(valorVenda));
