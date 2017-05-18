@@ -25,6 +25,7 @@ window.addEventListener('load', init);
 
 function init() {
     configurarForm();
+    carregaProdutos();
 }
 
 function configurarForm() {
@@ -84,4 +85,75 @@ function formatarCep(value) {
     value = value.replace(pattern, '$1-$2');
     
     return value;
+}
+
+/**
+ * Carrega as informações que serão comuns nos produtos para qualquer loja
+ * 
+ * @returns
+ */
+function carregaProdutos() {
+//    console.log(location.origin);
+//    
+//    var xhr = new XMLHttpRequest();
+//    xhr.open('get', location.origin + '/perfumaria/sistema?controller=Produto&action=produtos');
+//    xhr.addEventListener('load', function (e) {
+//        var result = e.target.response;
+//        lista = JSON.parse(result);
+//    });
+//    xhr.send();
+//    
+//    console.log(lista);
+    
+    var produtos = document.querySelector("#form-produtos");
+    
+    if (produtos !== null) {
+        var nome = document.querySelector("#nome");
+
+        nome.addEventListener('keyup', function () {
+            var pattern = /[a-zA-Z\u00C0-\u00FF0-9]|\.|-|\s+$/i; // ^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$
+            
+            if (this.value.length > 2 && pattern.test(this.value)) {
+                $.ajax({
+                    url : location.origin + '/perfumaria/sistema?controller=Produto&action=produtos&nome=' + this.value,
+                    dataType : 'json',
+                    contentType:"application/json",
+                    error : function() {
+                        alert("Error");
+                    },
+                    success : function(data) {
+                        var categoria = document.querySelector("#categoria");
+                        var marca = document.querySelector("#marca");
+                        var valorUnidadeMedida = document.querySelector("#valor-unidade-medida");
+                        var unidadeMedida = document.querySelector("#unidade-medida");
+                        var genero = document.querySelector("#genero");
+                        var descricao = document.querySelector("#descricao");
+                            
+                        var lista = data.filter(filtrarNome);
+                        if (lista.length === 1) {
+                            categoria.value = lista[0].categoria;
+                            marca.value = lista[0].marca;
+                            valorUnidadeMedida.value = lista[0].valorUnidadeMedida;
+                            unidadeMedida.value = lista[0].unidadeMedida;
+                            genero.value = lista[0].genero;
+                            descricao.value = lista[0].descricao;
+                        } else {
+                            categoria.value = "";
+                            marca.value = "";
+                            valorUnidadeMedida.value = "";
+                            unidadeMedida.value = "";
+                            genero.value = "";
+                            descricao.value = "";
+                        }
+                    }
+                });
+            }
+        });
+    }
+}
+
+function filtrarNome(obj) {
+    var value = document.querySelector("#nome").value;
+    
+    return obj.nome.toUpperCase() === value.toUpperCase();
 }
