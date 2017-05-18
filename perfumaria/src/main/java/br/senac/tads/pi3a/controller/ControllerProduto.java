@@ -349,4 +349,35 @@ public class ControllerProduto implements Logica {
     public String historico(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         return "/WEB-INF/jsp/historico-produto.jsp";
     }
+    
+    /**
+     * Método que gera um json com as informações comuns dos produtos
+     * 
+     * @param request
+     * @param response
+     * @param session
+     * @return 
+     */
+    public String produtos(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        try {
+            if (request.getParameter("nome") != null 
+                    && !request.getParameter("nome").isEmpty()) {
+                String nome = request.getParameter("nome");
+                
+                Produto produto = new Produto();
+                DaoProduto dao = new DaoProduto((Connection) request
+                        .getAttribute("connection"));
+
+                List lista = dao.findAll(produto, "nome", "LIKE", "%" + nome + "%");
+                
+                if (!lista.isEmpty()) {
+                    request.setAttribute("produtos", lista);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return "/WEB-INF/api/produtos.jsp";
+    }
 }
