@@ -86,7 +86,7 @@ public class ControllerFuncionario implements Logica {
                     session.setAttribute("funcionario", funcionario);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
-                            "Verifique os campos em vermelho.");
+                            "Verifique o(s) campo(s) em vermelho.");
                 }
 
             }
@@ -162,29 +162,30 @@ public class ControllerFuncionario implements Logica {
                     session.setAttribute("funcionario", funcionario);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
-                            "Verifique os campo em vermelho.");
+                            "Verifique o(s) campo(s) em vermelho.");
                 }
-            }
+            } else {
+                if (request.getParameter("id") != null) {
+                    String id = request.getParameter("id");
+                    boolean digito = true;
 
-            if (request.getParameter("id") != null) {
-                String id = request.getParameter("id");
-                boolean digito = true;
-
-                for (int i = 0; i < id.length(); i++) {
-                    if (!Character.isDigit(id.charAt(i))) {
-                        digito = false;
-                        break;
+                    for (int i = 0; i < id.length(); i++) {
+                        if (!Character.isDigit(id.charAt(i))) {
+                            digito = false;
+                            break;
+                        }
                     }
-                }
 
-                if (digito) {
-                    Model funcionario = new Funcionario();
-                    DaoFuncionario dao = new DaoFuncionario(
-                            (Connection) request.getAttribute("connection"));
-                    funcionario = dao.findOne(funcionario,
-                            Integer.valueOf(request.getParameter("id")));
+                    if (digito) {
+                        Model funcionario = new Funcionario();
+                        DaoFuncionario dao 
+                                = new DaoFuncionario((Connection) request
+                                        .getAttribute("connection"));
+                        funcionario = dao.findOne(funcionario,
+                                Integer.valueOf(request.getParameter("id")));
 
-                    session.setAttribute("funcionario", funcionario);
+                        session.setAttribute("funcionario", funcionario);
+                    }
                 }
             }
 
@@ -295,5 +296,4 @@ public class ControllerFuncionario implements Logica {
             return "pesquisar";
         }
     }
-
 }

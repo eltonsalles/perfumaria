@@ -66,7 +66,7 @@ public class ControllerUsuario implements Logica {
                         if (dao.insert() != -1) {
                             session.setAttribute("alert", "alert-success");
                             session.setAttribute("alertMessage",
-                                    "Usuario cadastrado com sucesso.");
+                                    "Usuário cadastrado com sucesso.");
                             return "novo";
                         }
                     } else {
@@ -74,7 +74,7 @@ public class ControllerUsuario implements Logica {
                         session.setAttribute("usuario", usuario);
                         session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
-                                "Este Login já está cadastrado.");
+                                "Este login já está cadastrado.");
                     }
                 } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
@@ -83,7 +83,7 @@ public class ControllerUsuario implements Logica {
                     session.setAttribute("usuario", usuario);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
-                            "Verifique os campo em vermelho.");
+                            "Verifique o(s) campo(s) em vermelho.");
                 }
             }
 
@@ -156,28 +156,29 @@ public class ControllerUsuario implements Logica {
                     session.setAttribute("usuario", usuario);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
-                            "Verifique os campo em vermelho.");
+                            "Verifique o(s) campo(s) em vermelho.");
                 }
-            }
+            } else {
+                if (request.getParameter("id") != null) {
+                    String id = request.getParameter("id");
+                    boolean digito = true;
 
-            if (request.getParameter("id") != null) {
-                String id = request.getParameter("id");
-                boolean digito = true;
-
-                for (int i = 0; i < id.length(); i++) {
-                    if (!Character.isDigit(id.charAt(i))) {
-                        digito = false;
-                        break;
+                    for (int i = 0; i < id.length(); i++) {
+                        if (!Character.isDigit(id.charAt(i))) {
+                            digito = false;
+                            break;
+                        }
                     }
-                }
 
-                if (digito) {
-                    Model usuario = new Usuario();
-                    DaoUsuario dao = new DaoUsuario(
-                            (Connection) request.getAttribute("connection"));
+                    if (digito) {
+                        Model usuario = new Usuario();
+                        DaoUsuario dao
+                                = new DaoUsuario((Connection) request
+                                        .getAttribute("connection"));
 
-                    usuario = dao.findOne(usuario, Integer.valueOf(id));
-                    session.setAttribute("usuario", usuario);
+                        usuario = dao.findOne(usuario, Integer.valueOf(id));
+                        session.setAttribute("usuario", usuario);
+                    }
                 }
             }
 

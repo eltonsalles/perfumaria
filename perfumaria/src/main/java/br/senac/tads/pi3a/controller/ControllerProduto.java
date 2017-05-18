@@ -103,7 +103,7 @@ public class ControllerProduto implements Logica {
                     session.setAttribute("itensLoja", itensLoja);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
-                            "Verifique os campos em vermelho.");
+                            "Verifique o(s) campo(s) em vermelho.");
                 }
             }
 
@@ -192,33 +192,35 @@ public class ControllerProduto implements Logica {
                     session.setAttribute("itensLoja", itensLoja);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
-                            "Verifique os campo em vermelho.");
+                            "Verifique o(s) campo(s) em vermelho.");
                 }
-            }
-            if (request.getParameter("id") != null) {
-                String id = request.getParameter("id");
-                boolean digito = true;
+            } else {
+                if (request.getParameter("id") != null) {
+                    String id = request.getParameter("id");
+                    boolean digito = true;
 
-                for (int i = 0; i < id.length(); i++) {
-                    if (!Character.isDigit(id.charAt(i))) {
-                        digito = false;
-                        break;
+                    for (int i = 0; i < id.length(); i++) {
+                        if (!Character.isDigit(id.charAt(i))) {
+                            digito = false;
+                            break;
+                        }
                     }
-                }
 
-                if (digito) {
-                    Model itensLoja = new ItensLoja();
-                    DaoItensLoja dao = new DaoItensLoja(
-                            (Connection) request.getAttribute("connection"));
+                    if (digito) {
+                        Model itensLoja = new ItensLoja();
+                        DaoItensLoja dao
+                                = new DaoItensLoja((Connection) request
+                                        .getAttribute("connection"));
 
-                    List lista = dao.findAll(itensLoja,
-                            new String[]{"produto_id", "loja_id"},
-                            new String[]{"=", "="},
-                            new String[]{id, "1"}, // #MOCK
-                            new String[]{"and", "and"});
+                        List lista = dao.findAll(itensLoja,
+                                new String[]{"produto_id", "loja_id"},
+                                new String[]{"=", "="},
+                                new String[]{id, "1"}, // #MOCK
+                                new String[]{"and", "and"});
 
-                    if (lista.size() == 1) {
-                        session.setAttribute("itensLoja", lista.get(0));
+                        if (lista.size() == 1) {
+                            session.setAttribute("itensLoja", lista.get(0));
+                        }
                     }
                 }
             }

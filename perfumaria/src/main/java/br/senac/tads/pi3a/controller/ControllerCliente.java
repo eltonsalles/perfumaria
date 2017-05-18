@@ -88,7 +88,7 @@ public class ControllerCliente implements Logica {
                     session.setAttribute("cliente", cliente);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
-                            "Verifique os campo em vermelho.");
+                            "Verifique o(s) campo(s) em vermelho.");
                 }
             }
             
@@ -161,29 +161,29 @@ public class ControllerCliente implements Logica {
                     session.setAttribute("cliente", cliente);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
-                            "Verifique os campo em vermelho.");
+                            "Verifique o(s) campo(s) em vermelho.");
                 }
-            }
+            } else {
+                if (request.getParameter("id") != null) {
+                    String id = request.getParameter("id");
+                    boolean digito = true;
 
-            if (request.getParameter("id") != null) {
-                String id = request.getParameter("id");
-                boolean digito = true;
-
-                for (int i = 0; i < id.length(); i++) {
-                    if (!Character.isDigit(id.charAt(i))) {
-                        digito = false;
-                        break;
+                    for (int i = 0; i < id.length(); i++) {
+                        if (!Character.isDigit(id.charAt(i))) {
+                            digito = false;
+                            break;
+                        }
                     }
-                }
 
-                if (digito) {
-                    Model cliente = new Cliente();
-                    DaoCliente dao = new DaoCliente(
-                            (Connection) request.getAttribute("connection"));
-                    cliente = dao.findOne(cliente, Integer.valueOf(request
-                            .getParameter("id")));
+                    if (digito) {
+                        Model cliente = new Cliente();
+                        DaoCliente dao = new DaoCliente(
+                                (Connection) request.getAttribute("connection"));
+                        cliente = dao.findOne(cliente, Integer.valueOf(request
+                                .getParameter("id")));
 
-                    session.setAttribute("cliente", cliente);
+                        session.setAttribute("cliente", cliente);
+                    }
                 }
             }
 
