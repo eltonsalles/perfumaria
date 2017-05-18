@@ -6,7 +6,7 @@
 <div class="col-md-10 content">
     <h2><c:out value="${sessionScope.itensLoja.produto.id > 0 ? 'Alterar' : 'Cadastrar'}"></c:out> Produtos</h2>
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
-    <form action="sistema?controller=Produto&action=<c:out value="${sessionScope.itensLoja.produto.id > 0 ? 'editar' : 'novo'}"></c:out>" method="post">
+    <form id="form-produtos" action="sistema?controller=Produto&action=<c:out value="${sessionScope.itensLoja.produto.id > 0 ? 'editar' : 'novo'}"></c:out>" method="post">
         <div class="form-group col-md-12">
             <input class="control-label" type="hidden" id="id" name="id" value="<c:out value="${sessionScope.itensLoja.produto.id > 0 ? sessionScope.itensLoja.produto.id : ''}"></c:out>">
         </div>
@@ -78,7 +78,7 @@
         </div>
         <div class="form-group col-md-12 <c:if test="${errorValidation.descricao eq true}">has-error</c:if>">
             <label class="control-label" for="descricao">Descrição</label>
-            <textarea class="form-control" rows="3" name="descricao" pattern="^([a-zA-Zà-úÀ-Ú0-9]|,|\.|-|\s)+$"><c:out value="${sessionScope.itensLoja.produto.descricao}"></c:out></textarea>
+            <textarea id="descricao" class="form-control" rows="3" name="descricao" pattern="^([a-zA-Zà-úÀ-Ú0-9]|,|\.|-|\s)+$"><c:out value="${sessionScope.itensLoja.produto.descricao}"></c:out></textarea>
         </div>
         <div class="form-group col-md-offset-8 col-md-4">
             <c:if test="${sessionScope.itensLoja.produto.id > 0}">
