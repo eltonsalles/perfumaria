@@ -12,7 +12,7 @@
         </div>
         <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
             <label class="control-label" for="nome">Nome</label>
-            <input type="text" class="form-control" id="nome" placeholder="Nome do produto" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.itensLoja.produto.nome}"></c:out>">
+            <input type="text" class="form-control" id="nome" placeholder="Nome do produto" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.itensLoja.produto.nome}"></c:out>" <c:if test="${sessionScope.itensLoja.produto.id > 0}">readonly</c:if>>
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.dataCadastro eq true}">has-error</c:if>">
             <label class="control-label" for="data-cadastro">Data do Cadastro</label>
@@ -55,11 +55,17 @@
         <fmt:setLocale value="pt_BR"></fmt:setLocale>
         <div class="form-group col-md-2 <c:if test="${errorValidation.valorCompra eq true}">has-error</c:if>">
             <label class="control-label" for="valor-compra">Preço de compra</label>
-            <input type="text" class="form-control" id="valor-compra" placeholder="R$ x.xxx,xx" name="valor-compra" maxlength="15" required value="<fmt:formatNumber value="${sessionScope.itensLoja.valorCompra}" type="currency" />">
+            <div class="input-group">
+                <div class="input-group-addon">R$</div>
+                <input type="text" class="form-control" id="valor-compra" placeholder="x.xxx,xx" name="valor-compra" maxlength="12" required pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" value="<fmt:formatNumber value="${sessionScope.itensLoja.valorCompra}" type="number" pattern="#,##0.00" />">
+            </div>
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.valorVenda eq true}">has-error</c:if>">
             <label class="control-label" for="valor-venda">Preço de venda</label>
-            <input type="text" class="form-control" id="valor-venda" placeholder="R$ x.xxx,xx" name="valor-venda" maxlength="15" required value="<fmt:formatNumber value="${sessionScope.itensLoja.valorVenda}" type="currency" />">
+            <div class="input-group">
+                <div class="input-group-addon">R$</div>
+                <input type="text" class="form-control" id="valor-venda" placeholder="x.xxx,xx" name="valor-venda" maxLength="12" required pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" value="<fmt:formatNumber value="${sessionScope.itensLoja.valorVenda}" type="number" pattern="#,##0.00" />">
+            </div>
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.genero eq true}">has-error</c:if>">
             <label class="control-label" for="genero">Gênero</label>
@@ -72,7 +78,7 @@
         </div>
         <div class="form-group col-md-12 <c:if test="${errorValidation.descricao eq true}">has-error</c:if>">
             <label class="control-label" for="descricao">Descrição</label>
-            <textarea class="form-control" rows="3" name="descricao" pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$"><c:out value="${sessionScope.itensLoja.produto.descricao}"></c:out></textarea>
+            <textarea class="form-control" rows="3" name="descricao" pattern="^([a-zA-Zà-úÀ-Ú0-9]|,|\.|-|\s)+$"><c:out value="${sessionScope.itensLoja.produto.descricao}"></c:out></textarea>
         </div>
         <div class="form-group col-md-offset-8 col-md-4">
             <c:if test="${sessionScope.itensLoja.produto.id > 0}">

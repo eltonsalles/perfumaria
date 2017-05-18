@@ -12,11 +12,11 @@
             </div>
             <div class="form-group col-md-12 <c:if test="${errorValidation.funcionario eq true}">has-error</c:if>">
                 <label class="control-label" for="funcionario">Código do Funcionário</label>
-                <input type="text" class="form-control" id="funcionario" placeholder="Código do Funcionário" name="funcionario" maxlength="10" required pattern="^\d+$" value="<c:out value="${sessionScope.usuario.funcionario.id}"></c:out>">
+                <input type="text" class="form-control" id="funcionario" placeholder="Código do Funcionário" name="funcionario" maxlength="10" required pattern="^\d+$" value="<c:out value="${sessionScope.usuario.funcionario.id}"></c:out>" <c:if test="${sessionScope.usuario.funcionario.id > 0}">readonly</c:if>>
             </div>
             <div class="form-group col-md-12 <c:if test="${errorValidation.login eq true}">has-error</c:if>">
                 <label class="control-label" for="login">Login</label>
-                <input type="text" class="form-control" id="login" placeholder="Login" name="login" maxlength="50" required pattern="^\w+$" value="<c:out value="${sessionScope.usuario.login}"></c:out>">
+                <input type="text" class="form-control" id="login" placeholder="Login" name="login" maxlength="50" required pattern="^\w+$" value="<c:out value="${sessionScope.usuario.login}"></c:out>" <c:if test="${sessionScope.usuario.funcionario.id > 0}">readonly</c:if>>
             </div>
             <div class="form-group col-md-12 <c:if test="${errorValidation.senha eq true}">has-error</c:if>">
                 <label class="control-label" for="senha">Senha</label>

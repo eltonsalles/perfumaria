@@ -20,7 +20,7 @@
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.cpf eq true}">has-error</c:if>">
             <label class="control-label" for="cpf">CPF</label>
-            <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required pattern="^\d{3}.\d{3}.\d{3}-\d{2}$" value="<c:out value="${sessionScope.funcionario.cpf}"></c:out>">
+            <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required pattern="^\d{3}.\d{3}.\d{3}-\d{2}$" value="<c:out value="${sessionScope.funcionario.cpf}"></c:out>" <c:if test="${sessionScope.funcionario.id > 0}">readonly</c:if>>
         </div>
         <div class="form-group col-md-2 status">
             <label>Status</label><br>
