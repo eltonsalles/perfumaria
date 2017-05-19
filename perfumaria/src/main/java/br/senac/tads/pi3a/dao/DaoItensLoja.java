@@ -26,18 +26,20 @@ package br.senac.tads.pi3a.dao;
 import br.senac.tads.pi3a.ado.Criteria;
 import br.senac.tads.pi3a.ado.Expression;
 import br.senac.tads.pi3a.ado.Filter;
+import br.senac.tads.pi3a.ado.SqlDelete;
 import br.senac.tads.pi3a.ado.SqlSelect;
-import br.senac.tads.pi3a.annotation.Table;
+import br.senac.tads.pi3a.ado.SqlUpdate;
+import br.senac.tads.pi3a.ado.Transaction;
 import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -52,95 +54,176 @@ public class DaoItensLoja extends AbstractDao {
     public DaoItensLoja(Connection conn, ItensLoja model) {
         super(conn, model);
     }
-
+    
     /**
-     * Faz uma consulta pelo campo informado
+     * Traz todos os produtos pesquisando pelo nome e id da loja
      * 
-     * @param obj
-     * @param field
-     * @param criteria
-     * @param value
+     * @param nomeProduto
+     * @param idLoja
      * @return
      * @throws Exception 
      */
-    public List<Model> findAllField(Model obj, String field, String criteria,
-            String value) throws Exception {
-        ResultSet resultSet;
-        ResultSet resultSet2;
-        PreparedStatement stmt;
-        Connection connection;
-        List<Model> list = new ArrayList<>();
-
+    public List findAllPorNome(String nomeProduto, int idLoja)
+            throws Exception {
+        List<Model> lista = new ArrayList<>();
+        
         try {
-            if (!obj.getClass().isAnnotationPresent(Table.class)) {
-                return null;
-            }
+            PreparedStatement stmt;
+            ResultSet resultSetProduto, resultSetItensLoja;
             
-            Criteria criteria2 = new Criteria();
-            criteria2.add(new Filter(field, criteria, "?"));
-
-            SqlSelect sql = new SqlSelect();
-            sql.setEntity("produto");
-            sql.addColumn("*");
-            sql.setCriteria(criteria2);
+            Criteria criteriaProduto = new Criteria();
+            criteriaProduto.add(new Filter("produto.nome", "LIKE", "?"),
+                    Expression.AND_OPERATOR);
+            criteriaProduto.add(new Filter("itens_loja.loja_id", "=", "?"),
+                    Expression.AND_OPERATOR);
             
-            connection = this.getConnection();
-
-            stmt = connection.prepareStatement(sql.getInstruction());
-            stmt.setObject(1, value);
-
-            resultSet = stmt.executeQuery();
-
-            while (resultSet.next()) {
+            SqlSelect sqlProduto = new SqlSelect();
+            sqlProduto.setEntity("produto INNER JOIN itens_loja on"
+                    + " itens_loja.produto_id = produto.id");
+            sqlProduto.addColumn("produto.*");
+            sqlProduto.setCriteria(criteriaProduto);
+            
+            stmt = this.getConnection().prepareStatement(sqlProduto
+                    .getInstruction());
+            stmt.setString(1, nomeProduto);
+            stmt.setInt(2, idLoja);
+            
+            resultSetProduto = stmt.executeQuery();
+            
+            while (resultSetProduto.next()) {
                 ItensLoja itensLoja = new ItensLoja();
 
-                SqlSelect sql2 = new SqlSelect();
+                SqlSelect sqlItensLoja = new SqlSelect();
 
-                Criteria criteria3 = new Criteria();
-                criteria3.add(new Filter("produto_id", "=", "?"),
+                Criteria criteriaItensLoja = new Criteria();
+                criteriaItensLoja.add(new Filter("produto_id", "=", "?"),
                         Expression.AND_OPERATOR);
-                criteria3.add(new Filter("loja_id", "=", "?"),
-                        Expression.AND_OPERATOR); // #Mock
+                criteriaItensLoja.add(new Filter("loja_id", "=", "?"),
+                        Expression.AND_OPERATOR);
 
-                sql2.setEntity("itens_loja");
-                sql2.addColumn("*");
-                sql2.setCriteria(criteria3);
+                sqlItensLoja.setEntity("itens_loja");
+                sqlItensLoja.addColumn("*");
+                sqlItensLoja.setCriteria(criteriaItensLoja);
 
-                stmt = connection.prepareStatement(sql2.getInstruction());
-                stmt.setInt(1, resultSet.getInt("id"));
-                stmt.setInt(2, 1);
+                stmt = getConnection().prepareStatement(sqlItensLoja
+                        .getInstruction());
+                stmt.setInt(1, resultSetProduto.getInt("id"));
+                stmt.setInt(2, idLoja);
 
-                resultSet2 = stmt.executeQuery();
-
-                if (resultSet2.next()) {
+                resultSetItensLoja = stmt.executeQuery();
+                
+                if (resultSetItensLoja.next()) {
                     Produto produto = new Produto();
-                    produto.setId(resultSet.getInt("id"));
-                    produto.setNome(resultSet.getString("nome"));
-                    produto.setMarca(resultSet.getString("marca"));
-                    produto.setCategoria(resultSet.getString("categoria"));
-                    produto.setValorUnidadeMedida(resultSet
+                    
+                    produto.setId(resultSetProduto.getInt("id"));
+                    produto.setNome(resultSetProduto.getString("nome"));
+                    produto.setMarca(resultSetProduto.getString("marca"));
+                    produto.setCategoria(resultSetProduto
+                            .getString("categoria"));
+                    produto.setValorUnidadeMedida(resultSetProduto
                             .getInt("vlr_unidade_medida"));
-                    produto.setUnidadeMedida(resultSet
+                    produto.setUnidadeMedida(resultSetProduto
                             .getString("unidade_medida"));
-                    produto.setGenero(resultSet.getString("genero"));
-                    produto.setDescricao(resultSet.getString("descricao"));
+                    produto.setGenero(resultSetProduto.getString("genero"));
+                    produto.setDescricao(resultSetProduto
+                            .getString("descricao"));
 
                     itensLoja.setProduto(produto);
                 }
 
-                itensLoja.setStatus(resultSet2.getBoolean("status"));
-                itensLoja.setDataCadastro(new Date(resultSet2
+                itensLoja.setStatus(resultSetItensLoja.getBoolean("status"));
+                itensLoja.setDataCadastro(new Date(resultSetItensLoja
                         .getDate("data_cadastro").getTime()));
-                itensLoja.setEstoque(resultSet2.getInt("estoque"));
-                itensLoja.setValorCompra(resultSet2.getFloat("vlr_compra"));
-                itensLoja.setValorVenda(resultSet2.getFloat("vlr_venda"));
+                itensLoja.setEstoque(resultSetItensLoja.getInt("estoque"));
+                itensLoja.setValorCompra(resultSetItensLoja
+                        .getFloat("vlr_compra"));
+                itensLoja.setValorVenda(resultSetItensLoja
+                        .getFloat("vlr_venda"));
 
-                list.add(itensLoja);
+                lista.add(itensLoja);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return lista;
+    }
+    
+    /**
+     * Faz alteração nos registros da tabela itens de loja
+     * 
+     * @param idProduto
+     * @param idLoja
+     * @return
+     * @throws Exception 
+     */
+    public boolean update(int idProduto, int idLoja) throws Exception {
+        PreparedStatement stmt;
+        
+        try {
+            Criteria criteria = new Criteria();
+            criteria.add(new Filter("produto_id", "=", "?"),
+                    Expression.AND_OPERATOR);
+            criteria.add(new Filter("loja_id", "=", "?"),
+                    Expression.AND_OPERATOR);
+            
+            SqlUpdate sql = new SqlUpdate();
+            sql.setEntity("itens_loja");
+            sql.setCriteria(criteria);
+            
+            Map<String, String> modelMap = this.getModelMap();
+
+            for (String key : modelMap.keySet()) {
+                sql.setRowData(modelMap.get(key), "?");
+            }
+
+            stmt = this.getConnection().prepareStatement(sql.getInstruction());
+
+            this.setStmt(stmt);
+            stmt.setInt(modelMap.size() + 1, idProduto);
+            stmt.setInt(modelMap.size() + 2, idLoja);
+
+            stmt.execute();
+            
+            return true;
+        } catch (Exception e) {
+            Transaction.rollback();
             throw new Exception(e.getMessage());
         }
+    }
+    
+    /**
+     * Deleta registros na tabela itens de loja
+     * 
+     * @param idProduto
+     * @param idLoja
+     * @return
+     * @throws Exception 
+     */
+    public boolean delete(int idProduto, int idLoja) throws Exception {
+        PreparedStatement stmt;
+        
+        try {
+            Criteria criteria = new Criteria();
+            criteria.add(new Filter("produto_id", "=", "?"),
+                    Expression.AND_OPERATOR);
+            criteria.add(new Filter("loja_id", "=", "?"),
+                    Expression.AND_OPERATOR);
+            
+            SqlDelete sql = new SqlDelete();
+            sql.setEntity("itens_loja");
+            sql.setCriteria(criteria);
 
-        return list;
+            stmt = this.getConnection().prepareStatement(sql.getInstruction());
+            stmt.setInt(1, idProduto);
+            stmt.setInt(2, idLoja);
+
+            stmt.execute();
+            
+            return true;
+        } catch (Exception e) {
+            Transaction.rollback();
+            throw new Exception(e.getMessage());
+        }
     }
 }
