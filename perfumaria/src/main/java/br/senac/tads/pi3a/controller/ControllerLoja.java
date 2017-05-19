@@ -61,7 +61,7 @@ public class ControllerLoja implements Logica {
                     DaoLoja dao = new DaoLoja(loja);
 
                     // Garante que o cnpj não esteja cadastrado na base de dados
-                    if (dao.findAll(loja, "cpf", "=", loja.getCnpj())
+                    if (dao.findAll(loja, "cnpj", "=", loja.getCnpj())
                             .isEmpty()) {
                         // Toda Loja deve ser cadastrado com status true
                         loja.setStatus(true);
@@ -124,7 +124,7 @@ public class ControllerLoja implements Logica {
                     DaoLoja dao = new DaoLoja(loja);
 
                     // Garante que não exista cpf repetido na base de dados
-                    List<Model> lista = dao.findAll(loja, "cpf", "=",
+                    List<Model> lista = dao.findAll(loja, "cnpj", "=",
                             loja.getCnpj());
 
                     if (lista.size() == 1) {
