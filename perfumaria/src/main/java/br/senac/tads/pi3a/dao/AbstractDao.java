@@ -89,6 +89,15 @@ public abstract class AbstractDao implements GenericDao<Model>{
     }
 
     /**
+     * Retorna o mapa do objeto
+     * 
+     * @return 
+     */
+    public Map<String, String> getModelMap() {
+        return modelMap;
+    }
+
+    /**
      * Faz inserção no banco de dados
      * 
      * @return
@@ -138,42 +147,6 @@ public abstract class AbstractDao implements GenericDao<Model>{
         try {
             Criteria criteria = new Criteria();
             criteria.add(new Filter("id", "=", "?"));
-            
-            SqlUpdate sql = new SqlUpdate();
-            sql.setEntity(this.entity);
-            sql.setCriteria(criteria);
-
-            for (String key : this.modelMap.keySet()) {
-                sql.setRowData(this.modelMap.get(key), "?");
-            }
-
-            stmt = this.conn.prepareStatement(sql.getInstruction());
-
-            this.setStmt(stmt);
-            stmt.setInt(this.modelMap.size() + 1, this.model.getId());
-
-            stmt.execute();
-            
-            return true;
-        } catch (Exception e) {
-            Transaction.rollback();
-            throw new Exception(e.getMessage());
-        }
-    }
-    
-    /**
-     * Faz alteração no banco de dados conforme o primary key informado
-     * 
-     * @param primaryKey
-     * @return
-     * @throws Exception 
-     */
-    public boolean update(String primaryKey) throws Exception {
-        PreparedStatement stmt;
-        
-        try {
-            Criteria criteria = new Criteria();
-            criteria.add(new Filter(primaryKey, "=", "?"));
             
             SqlUpdate sql = new SqlUpdate();
             sql.setEntity(this.entity);
@@ -460,7 +433,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
      * @param stmt
      * @throws Exception 
      */
-    private void setStmt(PreparedStatement stmt) throws Exception {
+    protected void setStmt(PreparedStatement stmt) throws Exception {
         int pos = 1;
         for (String key : this.modelMap.keySet()) {
             char firstLetter = key.charAt(0);
