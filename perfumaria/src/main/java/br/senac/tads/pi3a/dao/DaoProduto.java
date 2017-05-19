@@ -23,8 +23,14 @@
  */
 package br.senac.tads.pi3a.dao;
 
+import br.senac.tads.pi3a.ado.Criteria;
+import br.senac.tads.pi3a.ado.Expression;
+import br.senac.tads.pi3a.ado.Filter;
+import br.senac.tads.pi3a.ado.SqlSelect;
 import br.senac.tads.pi3a.model.Produto;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 /**
  *
@@ -38,5 +44,46 @@ public class DaoProduto extends AbstractDao{
     
     public DaoProduto(Connection conn, Produto model){
         super(conn, model);
+    }
+    
+    /**
+     * Verifica se o nome do produto já existe na loja informada
+     * 
+     * @param nomeProduto
+     * @param idLoja
+     * @return 
+     */
+    public int produtoExisteLoja(String nomeProduto, int idLoja) {
+        try {
+            PreparedStatement stmt;
+            ResultSet resultSet;
+            
+            Criteria criteria = new Criteria();
+            criteria.add(new Filter("produto.nome", "=", "?"),
+                    Expression.AND_OPERATOR);
+            criteria.add(new Filter("itens_loja.loja_id", "=", "?"),
+                    Expression.AND_OPERATOR);
+            
+            SqlSelect sql = new SqlSelect();
+            sql.setEntity("produto INNER JOIN itens_loja on"
+                    + " itens_loja.produto_id = produto.id");
+            sql.addColumn("id");
+            sql.addColumn("nome");
+            sql.setCriteria(criteria);
+            
+            stmt = this.getConnection().prepareStatement(sql.getInstruction());
+            stmt.setString(1, nomeProduto);
+            stmt.setInt(2, idLoja);
+            
+            resultSet = stmt.executeQuery();
+            
+            if (resultSet.next()) {
+                return resultSet.getInt("id");
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return -1;
     }
 }
