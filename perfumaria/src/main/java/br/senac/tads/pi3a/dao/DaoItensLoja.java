@@ -72,7 +72,7 @@ public class DaoItensLoja extends AbstractDao {
             ResultSet resultSetProduto, resultSetItensLoja;
             
             Criteria criteriaProduto = new Criteria();
-            criteriaProduto.add(new Filter("produto.nome", "LIKE", "?"),
+            criteriaProduto.add(new Filter("UPPER(produto.nome)", "LIKE", "?"),
                     Expression.AND_OPERATOR);
             criteriaProduto.add(new Filter("itens_loja.loja_id", "=", "?"),
                     Expression.AND_OPERATOR);

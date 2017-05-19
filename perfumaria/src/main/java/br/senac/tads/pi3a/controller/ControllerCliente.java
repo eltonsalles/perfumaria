@@ -267,8 +267,8 @@ public class ControllerCliente implements Logica {
                     if (digito && pesquisar.length() == 11) {
                         lista = dao.findAll(cliente, "cpf", "=", pesquisar);
                     } else {
-                        lista = dao.findAll(cliente, "nome", "LIKE",
-                                "%" + pesquisar + "%");
+                        lista = dao.findAll(cliente, "UPPER(nome)", "LIKE",
+                                "%" + pesquisar.toUpperCase() + "%");
                     }
 
                 } else {

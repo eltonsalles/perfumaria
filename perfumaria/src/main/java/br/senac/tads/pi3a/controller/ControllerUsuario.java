@@ -263,8 +263,8 @@ public class ControllerUsuario implements Logica {
                     if (codigo) {
                         lista = dao.findAll(usuario, "id", "=", pesquisar);
                     } else {
-                        lista = dao.findAll(usuario, "login", "LIKE",
-                                "%" + pesquisar + "%");
+                        lista = dao.findAll(usuario, "UPPER(login)", "LIKE",
+                                "%" + pesquisar.toUpperCase() + "%");
                     }
 
                 } else {

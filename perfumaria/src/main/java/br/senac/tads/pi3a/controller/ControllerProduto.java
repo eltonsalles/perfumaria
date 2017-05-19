@@ -75,8 +75,8 @@ public class ControllerProduto implements Logica {
                             .getNome(), 1) == -1) {
                         
                         List listaPorNome = daoProduto.findAll(itensLoja
-                                .getProduto(), "nome", "=", itensLoja
-                                        .getProduto().getNome());
+                                .getProduto(), "UPPER(nome)", "=", itensLoja
+                                        .getProduto().getNome().toUpperCase());
                         
                         int idProduto;
                         if (listaPorNome.isEmpty()) {
@@ -159,8 +159,9 @@ public class ControllerProduto implements Logica {
                     
                     // #MOCK - id da loja
                     // Garante que as alterações não dupliquem o nome do produto
-                    if (daoProduto.produtoExisteLoja(itensLoja.getProduto()
-                            .getNome(), 1) == itensLoja.getProduto().getId()) {
+                    if (daoProduto.produtoExisteLoja(
+                            itensLoja.getProduto().getNome().toUpperCase(), 1)
+                            == itensLoja.getProduto().getId()) {
                         // Chama a DAO de itens de loja passando a conexão e o
                         // objeto a ser alterado
                         DaoItensLoja daoItensLoja
@@ -322,7 +323,8 @@ public class ControllerProduto implements Logica {
                                 new String[]{pesquisar, "1"},
                                 new String[]{"and", "and"});
                     } else {
-                        lista = dao.findAllPorNome("%" + pesquisar + "%", 1);
+                        lista = dao.findAllPorNome(
+                                "%" + pesquisar.toUpperCase() + "%", 1);
                     }
 
                 } else {
@@ -381,7 +383,8 @@ public class ControllerProduto implements Logica {
                 DaoProduto dao = new DaoProduto((Connection) request
                         .getAttribute("connection"));
 
-                List lista = dao.findAll(produto, "nome", "LIKE", "%" + nome + "%");
+                List lista = dao.findAll(produto,
+                        "UPPER(nome)", "LIKE", "%" + nome.toUpperCase() + "%");
                 
                 if (!lista.isEmpty()) {
                     request.setAttribute("produtos", lista);

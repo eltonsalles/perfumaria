@@ -269,8 +269,8 @@ public class ControllerFuncionario implements Logica {
                     if (digito && pesquisar.length() == 11) {
                         lista = dao.findAll(funcionario, "cpf", "=", pesquisar);
                     } else {
-                        lista = dao.findAll(funcionario, "nome", "LIKE",
-                                "%" + pesquisar + "%");
+                        lista = dao.findAll(funcionario, "UPPER(nome)", "LIKE",
+                                "%" + pesquisar.toUpperCase() + "%");
                     }
 
                 } else {
