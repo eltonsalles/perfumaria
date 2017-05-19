@@ -8,17 +8,20 @@
         <div class="form-group col-md-12">
             <input type="hidden" class="form-control" id="id" name="id">
         </div>
+        <!--Verificar-->
         <div class="form-group col-md-12 <c:if test="${errorValidation.funcionario eq true}">has-error</c:if>">
             <label class="control-label" for="funcionario">Código do Funcionário</label>
             <input type="text" class="form-control" id="funcionario" placeholder="Código do Funcionário" name="funcionario" maxlength="10" required>
         </div>
+            <!--Validação Alfanumérica do Login de usuário - letras e numero-->
         <div class="form-group col-md-12 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="login">Login</label>
-            <input type="text" class="form-control" id="login" placeholder="Login" name="login" maxlength="50" required>
+            <input type="text" class="form-control" id="login" placeholder="Login" name="login" maxlength="50" required pattern="[a-zA-Z0-9]+">
         </div>
+            <!--Inicio da senha com Letra maiuscula, caracteres minusculo e numeros-->
         <div class="form-group col-md-12 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="senha">Senha</label>
-            <input type="password" class="form-control" id="senha" placeholder="Senha" name="senha" maxlength="8" required>
+            <input type="password" class="form-control" id="senha" placeholder="Senha" name="senha" maxlength="8" required pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
         </div>
         <div class="form-group col-md-12 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="nivel-usuario">Nível de Usuário</label>
