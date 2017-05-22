@@ -288,4 +288,10 @@ public class ControllerUsuario implements Logica {
             return "pesquisar";
         }
     }
+    
+    public String login(HttpServletRequest request,
+            HttpServletResponse response,
+            HttpSession session) throws Exception {
+        return "/WEB-INF/jsp/login-usuario.jsp";
+    }
 }
