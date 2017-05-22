@@ -15,7 +15,7 @@
         </div>
         <div class="form-group col-md-3 <c:if test="${listaErro.cnpj eq true}">has-error</c:if>">
                 <label class="control-label" for="cnpj">CNPJ</label>
-                <input type="text" class="form-control" id="cnpj" placeholder="xx.xxx.xxx/xxxx-xx" name="cnpj" maxlength="18" required pattern="d{2}.\d{3}.\d{3}\\d{4}\d{2}$">
+                <input type="text" class="form-control" id="cnpj" placeholder="xx.xxx.xxx/xxxx-xx" name="cnpj" maxlength="18" required pattern="[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2}$">
             </div>
             <div class="form-group col-md-3 status">
                 <label>Status</label><br>
@@ -29,10 +29,6 @@
             <div class="form-group col-md-5">
                 <label for="nome-fantasia">Nome Fantasia</label>
                 <input type="text" class="form-control" id="nome-fantasia" placeholder="Nome Fantasia" name="nome-fantasia" maxlength="150" required pattern="[a-z\s]{1,150}">
-            </div>
-            <div class="form-group col-md-3">
-                <label for="celular">Celular</label>
-                <input type="tel" class="form-control" id="celular" placeholder="(xx) xxxxx-xxxx" name="celular" maxlength="15" required pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}$">
             </div>
             <div class="form-group col-md-3">
                 <label for="telefone">Telefone</label>
