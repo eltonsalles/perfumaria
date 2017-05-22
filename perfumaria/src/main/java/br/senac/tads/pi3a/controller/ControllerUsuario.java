@@ -292,6 +292,33 @@ public class ControllerUsuario implements Logica {
     public String login(HttpServletRequest request,
             HttpServletResponse response,
             HttpSession session) throws Exception {
-        return "/WEB-INF/jsp/login-usuario.jsp";
+        Connection conn = (Connection) request.getAttribute("connection");
+        
+        DaoUsuario dao = new DaoUsuario(conn);
+        
+        String login = request.getParameter("login");
+        String senha = request.getParameter("senha");
+        
+        Usuario usuario = new Usuario();
+        
+        List list = dao.findAll(usuario,
+                new String[]{"login", "senha"},
+                new String[]{"=", "="},
+                new String[]{login, senha},
+                new String[]{"and", "and"});
+        
+        if (list.size() == 1) {
+            HttpSession sessionLogin = request.getSession(false);
+            if (sessionLogin != null) {
+                sessionLogin.invalidate();
+            }
+            
+            sessionLogin = request.getSession(true);
+            sessionLogin.setAttribute("usuarioLogado", (Usuario) list.get(0));
+            
+            return "index";
+        }
+        
+        return "/login.jsp";
     }
 }
