@@ -72,7 +72,7 @@ public class ControllerProduto implements Logica {
                     // Garante que o produto ainda não existe na loja
                     // que está se cadastrando
                     if (daoProduto.produtoExisteLoja(itensLoja.getProduto()
-                            .getNome(), 1) == -1) {
+                            .getNome().toUpperCase(), 1) == -1) {
                         
                         List listaPorNome = daoProduto.findAll(itensLoja
                                 .getProduto(), "UPPER(nome)", "=", itensLoja
