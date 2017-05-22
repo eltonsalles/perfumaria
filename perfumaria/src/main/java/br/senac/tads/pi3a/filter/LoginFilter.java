@@ -51,9 +51,22 @@ public class LoginFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
-        // Verificar se o usuário está logado
+        // Converte as variáveis ao tipo necessário
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        
+        // Se o usuário estiver tentando fazer login o sistema deixa ele passar
+        if (httpRequest.getParameter("controller") != null
+                && httpRequest.getParameter("action") != null) {
+            String controller = httpRequest.getParameter("controller");
+            String action = httpRequest.getParameter("action");
+            
+            if (controller.equalsIgnoreCase("Usuario")
+                    && action.equalsIgnoreCase("login")) {
+                chain.doFilter(request, response);
+                return;
+            }
+        }
         
         // Tenta recuperar a sesão do usuário
         HttpSession session = httpRequest.getSession();
@@ -62,7 +75,8 @@ public class LoginFilter implements Filter {
         // Usuário nulo significa que não está logado
         // Por tanto solicita o login
         if (usuario == null) {
-            httpResponse.sendRedirect(httpRequest.getContextPath()+ "/login.jsp");
+            httpResponse.sendRedirect(httpRequest
+                    .getContextPath()+ "/login.jsp");
             return;
         }
         
