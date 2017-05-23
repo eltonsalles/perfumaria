@@ -15,10 +15,7 @@
                             <label class="control-label" for="senha">Senha</label>
                             <input type="password" class="form-control" id="senha" placeholder="Senha" name="senha" maxlength="8" required pattern="^\w+$">
                         </div>
-                        <div class="form-group col-md-offset-7 col-md-5">
-                            <button type="reset" class="btn btn-default">
-                                Cancelar&nbsp;&nbsp;<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                            </button>
+                        <div class="form-group col-md-12">
                             <button type="submit" class="btn btn-default">
                                 Entrar&nbsp;&nbsp;<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
                             </button>
