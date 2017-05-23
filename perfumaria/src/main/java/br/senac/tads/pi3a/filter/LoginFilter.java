@@ -97,6 +97,7 @@ public class LoginFilter implements Filter {
             if (dao.permissao(controller, action,
                     usuario.getNivelUsuario().getTipo())) {
                 chain.doFilter(request, response);
+                return;
             }
         }
         
