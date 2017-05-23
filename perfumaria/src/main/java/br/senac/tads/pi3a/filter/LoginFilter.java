@@ -23,8 +23,10 @@
  */
 package br.senac.tads.pi3a.filter;
 
+import br.senac.tads.pi3a.dao.DaoUsuario;
 import br.senac.tads.pi3a.model.Usuario;
 import java.io.IOException;
+import java.sql.Connection;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -81,7 +83,24 @@ public class LoginFilter implements Filter {
         }
         
         // Nesse ponto é necessário verificar o nível de acesso
-        chain.doFilter(request, response);
+        if (httpRequest.getParameter("controller") != null
+                && httpRequest.getParameter("action") != null) {
+            String controller = httpRequest.getParameter("controller");
+            String action = httpRequest.getParameter("action");
+            
+            Connection conn = (Connection) httpRequest
+                    .getAttribute("connection");
+        
+            DaoUsuario dao = new DaoUsuario(conn);
+
+            // Se o usuário tiver permissão então o processamento prossegue
+            if (dao.permissao(controller, action,
+                    usuario.getNivelUsuario().getTipo())) {
+                chain.doFilter(request, response);
+            }
+        }
+        
+        httpResponse.sendRedirect("/perfumaria/");
     }
 
     @Override
