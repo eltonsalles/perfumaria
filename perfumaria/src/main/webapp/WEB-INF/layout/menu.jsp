@@ -167,7 +167,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="/perfumaria/sistema?controller=Usuario&action=logout">
                                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                                 Logout
                             </a>
