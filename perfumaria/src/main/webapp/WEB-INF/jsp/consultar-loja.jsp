@@ -1,10 +1,12 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Consultar Loja</h2>
-    <form action="#" method="post">
+    <jsp:include page="/WEB-INF/layout/message.jsp"/>
+    <form action="sistema?controller=Loja&action=pesquisar" method="post">
         <div class="form-group col-md-6 <c:if test="${errorValidation.pesquisar eq true}">has-error</c:if>">
             <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
@@ -27,19 +29,22 @@
             <th>Email</th>
             <th>Ações</th>
         </tr>
+        <c:forEach items="${sessionScope.listaLojas}" var="loja">
         <tr>
-            <td>1</td>
-            <td>Ativo</td>
-            <td>0000</td>
-            <td>000.000.000-00</td>
-            <td>000.000.000-00</td>  
-            <td>email@email.com</td>
+            <td><c:out value="${loja.id}"></c:out></td>
+            <td><c:out value="${loja.status eq true ? 'Ativo' : 'Inativo'}"></c:out></td>
+            <td><c:out value="${loja.razaoSocial}"></c:out></td>
+            <td><c:out value="${loja.cnpj}"></c:out></td>
+            <td><c:out value="${loja.telefone}"></c:out></td>  
+            <td><c:out value="${loja.email}"></c:out></td>
             <td>
-                <a href="#" class="btn btn-default" role="button" title="Editar">
+                <a href="sistema?controller=Loja&action=editar&id=<c:out value="${loja.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                 </a>
             </td>
         </tr>
+        </c:forEach>
+        <c:remove scope="session" var="listaLojas"></c:remove>
     </table>
 </div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>
