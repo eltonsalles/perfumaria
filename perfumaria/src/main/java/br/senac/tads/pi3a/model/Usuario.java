@@ -63,9 +63,9 @@ public class Usuario extends Model {
         // Se a senha for menor ou igual a 8 significa que está descriptograda
         if (senha.length() <= 8) {
             this.senha = BCrypt.hashpw(senha, BCrypt.gensalt());
+        } else {
+            this.senha = senha;
         }
-        
-        this.senha = senha;
     }
     
     public Funcionario getFuncionario() {
