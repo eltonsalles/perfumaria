@@ -51,7 +51,6 @@ import java.util.Map;
  * @author Elton
  */
 public abstract class AbstractDao implements GenericDao<Model>{
-    private boolean all = false;
     private Connection conn;
     private Model model;
     private String entity;
