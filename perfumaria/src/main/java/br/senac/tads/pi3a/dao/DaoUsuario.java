@@ -25,6 +25,8 @@ package br.senac.tads.pi3a.dao;
 
 import br.senac.tads.pi3a.model.Usuario;
 import java.sql.Connection;
+import java.util.List;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -34,7 +36,35 @@ public class DaoUsuario extends AbstractDao{
     public DaoUsuario(Connection conn){
         super(conn);
     }
+    
     public DaoUsuario(Connection conn, Usuario model){
         super(conn, model);
+    }
+    
+    /**
+     * Traz um usuário confirmando o login e a senha
+     * 
+     * @param login
+     * @param senha
+     * @return 
+     */
+    public Usuario confirmarUsuario(String login, String senha) {
+        try {
+            Usuario usuario = new Usuario();
+            List list = this.findAll(usuario, "login", "=", login);
+            
+            // O login no banco de dados é único
+            if (list.size() == 1) {
+                usuario = (Usuario) list.get(0);
+                
+                if (BCrypt.checkpw(senha, usuario.getSenha())) {
+                    return usuario;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return null;
     }
 }
