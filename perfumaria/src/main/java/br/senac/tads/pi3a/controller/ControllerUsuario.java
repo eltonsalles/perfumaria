@@ -339,4 +339,13 @@ public class ControllerUsuario implements Logica {
         
         return "/login.jsp";
     }
+    
+    public String logout(HttpServletRequest request,
+            HttpServletResponse response,
+            HttpSession session) throws Exception {
+        HttpSession sessionLogin = request.getSession();
+        sessionLogin.invalidate();
+        
+        return "/login.jsp";
+    }
 }
