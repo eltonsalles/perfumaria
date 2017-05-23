@@ -292,31 +292,49 @@ public class ControllerUsuario implements Logica {
     public String login(HttpServletRequest request,
             HttpServletResponse response,
             HttpSession session) throws Exception {
-        Connection conn = (Connection) request.getAttribute("connection");
-        
-        DaoUsuario dao = new DaoUsuario(conn);
-        
-        String login = request.getParameter("login");
-        String senha = request.getParameter("senha");
-        
-        Usuario usuario = new Usuario();
-        
-        List list = dao.findAll(usuario,
-                new String[]{"login", "senha"},
-                new String[]{"=", "="},
-                new String[]{login, senha},
-                new String[]{"and", "and"});
-        
-        if (list.size() == 1) {
-            HttpSession sessionLogin = request.getSession(false);
-            if (sessionLogin != null) {
-                sessionLogin.invalidate();
+        try {
+            // Faz o login apenas quando o método for post
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                Connection conn = (Connection) request
+                        .getAttribute("connection");
+
+                DaoUsuario dao = new DaoUsuario(conn);
+
+                String login = request.getParameter("login");
+                String senha = request.getParameter("senha");
+
+                Usuario usuario = dao.confirmarUsuario(login, senha);
+
+                if (usuario != null) {
+                    HttpSession sessionLogin = request.getSession(false);
+                    if (sessionLogin != null) {
+                        sessionLogin.invalidate();
+                    }
+
+                    sessionLogin = request.getSession(true);
+                    sessionLogin.setAttribute("usuarioLogado", usuario);
+
+                    return "index";
+                } else {
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage",
+                            "Login e/ou senha inválido(s).");
+                }
+            } else {
+                Usuario usuario = (Usuario) session
+                        .getAttribute("usuarioLogado");
+
+                // Ser for o método get e tiver um usuário logado
+                // então ele só redireciona para index
+                if (usuario != null) {
+                    return "index";
+                }
             }
-            
-            sessionLogin = request.getSession(true);
-            sessionLogin.setAttribute("usuarioLogado", (Usuario) list.get(0));
-            
-            return "index";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar o login.");
         }
         
         return "/login.jsp";
