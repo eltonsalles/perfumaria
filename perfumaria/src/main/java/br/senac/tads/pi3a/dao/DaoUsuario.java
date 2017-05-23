@@ -23,8 +23,14 @@
  */
 package br.senac.tads.pi3a.dao;
 
+import br.senac.tads.pi3a.ado.Criteria;
+import br.senac.tads.pi3a.ado.Expression;
+import br.senac.tads.pi3a.ado.Filter;
+import br.senac.tads.pi3a.ado.SqlSelect;
 import br.senac.tads.pi3a.model.Usuario;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -66,5 +72,49 @@ public class DaoUsuario extends AbstractDao{
         }
         
         return null;
+    }
+    
+    /**
+     * Verifica se o usuário tem permissão para acessar o controller e a action
+     * 
+     * @param controller
+     * @param action
+     * @param nivelAcesso
+     * @return 
+     */
+    public boolean permissao(String controller, String action,
+            String nivelAcesso) {
+        try {
+            PreparedStatement stmt;
+            ResultSet resultSet;
+            
+            Criteria criteria = new Criteria();
+            criteria.add(new Filter("UPPER(controller)", "=", "?"),
+                    Expression.AND_OPERATOR);
+            criteria.add(new Filter("UPPER(action)", "=", "?"),
+                    Expression.AND_OPERATOR);
+            criteria.add(new Filter("UPPER(nivel_acesso)", "=", "?"),
+                    Expression.AND_OPERATOR);
+            
+            SqlSelect sql = new SqlSelect();
+            sql.setEntity("permissoes");
+            sql.addColumn("*");
+            sql.setCriteria(criteria);
+            
+            stmt = this.getConnection().prepareStatement(sql.getInstruction());
+            stmt.setString(1, controller.toUpperCase());
+            stmt.setString(2, action.toUpperCase());
+            stmt.setString(3, nivelAcesso.toUpperCase());
+            
+            resultSet = stmt.executeQuery();
+            
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return false;
     }
 }
