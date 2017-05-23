@@ -26,6 +26,7 @@ package br.senac.tads.pi3a.model;
 import br.senac.tads.pi3a.annotation.Columm;
 import br.senac.tads.pi3a.annotation.ForeignKey;
 import br.senac.tads.pi3a.annotation.Table;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -59,6 +60,11 @@ public class Usuario extends Model {
     }
 
     public void setSenha(String senha) {
+        // Se a senha for menor ou igual a 8 significa que está descriptograda
+        if (senha.length() <= 8) {
+            this.senha = BCrypt.hashpw(senha, BCrypt.gensalt());
+        }
+        
         this.senha = senha;
     }
     
