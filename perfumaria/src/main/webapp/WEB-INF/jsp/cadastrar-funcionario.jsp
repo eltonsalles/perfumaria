@@ -56,7 +56,7 @@
                 <option value="solteiro" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'solteiro')}">selected</c:if>>Solteiro</option>
                 <option value="casado" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'casado')}">selected</c:if>>Casado</option>
                 <option value="divorciado" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'divorciado')}">selected</c:if>>Divorciado</option>
-                <option value="viuvo" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'viúvo')}">selected</c:if>>Viúvo</option>
+                <option value="viuvo" <c:if test="${fn:containsIgnoreCase(estadoCivil, 'vi�vo')}">selected</c:if>>Viúvo</option>
             </select>
         </div>
         <div class="form-group col-md-3 sexo <c:if test="${errorValidation.sexo eq true}">has-error</c:if>">

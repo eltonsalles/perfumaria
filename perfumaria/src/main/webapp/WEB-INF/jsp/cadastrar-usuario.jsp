@@ -1,18 +1,17 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
-    <h2><c:out value="${sessionScope.usuario.id > 0 ? 'Alterar' : 'Cadastrar'}"></c:out> UsuÃ¡rio</h2>
+    <h2><c:out value="${sessionScope.usuario.id > 0 ? 'Alterar' : 'Cadastrar'}"></c:out> Usuário</h2>
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
     <form action="sistema?controller=Usuario&action=<c:out value="${sessionScope.usuario.id > 0 ? 'editar' : 'novo'}"></c:out>" method="post" class="col-md-4">
             <div class="form-group col-md-12">
                 <input type="hidden" class="form-control" id="id" name="id" value="<c:out value="${sessionScope.usuario.id > 0 ? sessionScope.usuario.id : ''}"></c:out>">
             </div>
             <div class="form-group col-md-12 <c:if test="${errorValidation.funcionario eq true}">has-error</c:if>">
-                <label class="control-label" for="funcionario">CÃ³digo do FuncionÃ¡rio</label>
-                <input type="text" class="form-control" id="funcionario" placeholder="CÃ³digo do FuncionÃ¡rio" name="funcionario" maxlength="10" required pattern="^\d+$" value="<c:out value="${sessionScope.usuario.funcionario.id}"></c:out>" <c:if test="${sessionScope.usuario.id > 0}">readonly</c:if>>
+                <label class="control-label" for="funcionario">Código do Funcionário</label>
+                <input type="text" class="form-control" id="funcionario" placeholder="Código do Funcionário" name="funcionario" maxlength="10" required pattern="^\d+$" value="<c:out value="${sessionScope.usuario.funcionario.id}"></c:out>" <c:if test="${sessionScope.usuario.id > 0}">readonly</c:if>>
             </div>
             <div class="form-group col-md-12 <c:if test="${errorValidation.login eq true}">has-error</c:if>">
                 <label class="control-label" for="login">Login</label>
@@ -23,7 +22,7 @@
                 <input type="password" class="form-control" id="senha" placeholder="Senha" name="senha" maxlength="8" required pattern="^\w+$" value="">
             </div>
             <div class="form-group col-md-12 <c:if test="${errorValidation.nivelUsuario eq true}">has-error</c:if>">
-                <label class="control-label" for="nivel-usuario">NÃ­vel de UsuÃ¡rio</label>
+                <label class="control-label" for="nivel-usuario">Nível de Usuário</label>
                 <select class="form-control" id="nivel-usuario" name="nivel-usuario">
                 <c:set var="nivelUsuario" value="${sessionScope.usuario.nivelUsuario.id}"></c:set>
                     <option value="">---</option>
@@ -33,7 +32,7 @@
                     <option value="4" <c:if test="${fn:containsIgnoreCase(nivelUsuario, '4')}">selected</c:if> >Gerente De TI</option>
                     <option value="5" <c:if test="${fn:containsIgnoreCase(nivelUsuario, '5')}">selected</c:if> >Gerente De Vendas</option>
                     <option value="6" <c:if test="${fn:containsIgnoreCase(nivelUsuario, '6')}">selected</c:if> >Retaguarda</option>
-                    <option value="7" <c:if test="${fn:containsIgnoreCase(nivelUsuario, '7')}">selected</c:if> >Suporte TÃ©cnico</option>
+                    <option value="7" <c:if test="${fn:containsIgnoreCase(nivelUsuario, '7')}">selected</c:if> >Suporte Técnico</option>
                     <option value="8" <c:if test="${fn:containsIgnoreCase(nivelUsuario, '8')}">selected</c:if> >Vendedor</option>
                 </select>
             </div>

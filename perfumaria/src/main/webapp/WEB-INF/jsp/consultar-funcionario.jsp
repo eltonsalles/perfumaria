@@ -1,16 +1,15 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
-    <h2>Consultar FuncionÃ¡rio</h2>
+    <h2>Consultar Funcionário</h2>
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
     <form action="sistema?controller=Funcionario&action=pesquisar" method="post">
         <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o CPF ou nome" name="pesquisar" maxlength="150" pattern="^([a-zA-ZÃ -ÃºÃ€-Ãš0-9])([a-zA-ZÃ -ÃºÃ€-Ãš0-9]|\.|-|\s)+$">
+                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o CPF ou nome" name="pesquisar" maxlength="150" pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$">
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -21,12 +20,12 @@
     </form>
     <table class="table table-striped">
         <tr>
-            <th>CÃ³digo</th>
+            <th>Código</th>
             <th>Status</th>
             <th>Nome</th>
             <th>Data de Nascimento</th>
             <th>CPF</th>
-            <th>AÃ§Ãµes</th>
+            <th>Ações</th>
         </tr>
         <c:forEach items="${sessionScope.listaFuncionarios}" var="funcionario">
             <tr>

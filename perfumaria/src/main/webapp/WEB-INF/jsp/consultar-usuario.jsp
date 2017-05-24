@@ -1,16 +1,15 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
-    <h2>Consultar Usu√°rio</h2>
+    <h2>Consultar Usu·rio</h2>
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
     <form action="sistema?controller=Usuario&action=pesquisar" method="post">
         <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
                 <label class="control-label" for="pesquisar">Pesquisar</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="pesquisar" placeholder="Digite o c√≥digo ou login" name="pesquisar" maxlength="50" pattern="^\w+$">
+                    <input type="text" class="form-control" id="pesquisar" placeholder="Digite o cÛdigo ou login" name="pesquisar" maxlength="50" pattern="^\w+$">
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-default">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -21,10 +20,10 @@
         </form>
         <table class="table table-striped">
             <tr>
-                <th>C√≥digo</th>
+                <th>CÛdigo</th>
                 <th>Login</th>
-                <th>N√≠vel de Usu√°rio</th>
-                <th>A√ß√µes</th>
+                <th>NÌvel de Usu·rio</th>
+                <th>AÁıes</th>
             </tr>
         <c:forEach items="${sessionScope.listaUsuarios}" var="usuario">
             <tr>
