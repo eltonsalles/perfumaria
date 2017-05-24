@@ -42,7 +42,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author Elton
  */
-@WebFilter(filterName = "LoginFilter", servletNames = {"ControllerServlet"}, urlPatterns = {"/sistema"})
+@WebFilter(filterName = "LoginFilter", servletNames = {"ControllerServlet"},
+        urlPatterns = {"/sistema"})
 public class LoginFilter implements Filter {
 
     @Override
@@ -98,6 +99,10 @@ public class LoginFilter implements Filter {
                     usuario.getNivelUsuario().getTipo())) {
                 chain.doFilter(request, response);
                 return;
+            } else {
+                session.setAttribute("alert", "alert-info");
+                session.setAttribute("alertMessage", "Você não tem o nível de"
+                        + " privilégio necessário para usar este recurso.");
             }
         }
         
