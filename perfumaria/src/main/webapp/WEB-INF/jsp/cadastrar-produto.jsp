@@ -12,7 +12,7 @@
         </div>
         <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
             <label class="control-label" for="nome">Nome</label>
-            <input type="text" class="form-control" id="nome" placeholder="Nome do produto" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.itensLoja.produto.nome}"></c:out>" <c:if test="${sessionScope.itensLoja.produto.id > 0}">readonly</c:if>>
+            <input type="text" class="form-control" id="nome" placeholder="Nome do produto" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.itensLoja.produto.nome}"></c:out>" <c:if test="${sessionScope.itensLoja.produto.id > 0}">readonly</c:if>>
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.dataCadastro eq true}">has-error</c:if>">
             <label class="control-label" for="data-cadastro">Data do Cadastro</label>
@@ -29,11 +29,11 @@
         </div>
         <div class="form-group col-md-6 <c:if test="${errorValidation.categoria eq true}">has-error</c:if>">
             <label class="control-label" for="categoria">Categoria</label>
-            <input type="text" class="form-control" id="categoria" placeholder="Categoria do produto" name="categoria" maxlength="100" pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.itensLoja.produto.categoria}"></c:out>">
+            <input type="text" class="form-control" id="categoria" placeholder="Categoria do produto" name="categoria" maxlength="100" pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.itensLoja.produto.categoria}"></c:out>">
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.marca eq true}">has-error</c:if>">
             <label class="control-label" for="marca">Marca</label>
-            <input type="text" class="form-control" id="marca" placeholder="Marca" name="marca" maxlength="150" pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.itensLoja.produto.marca}"></c:out>">
+            <input type="text" class="form-control" id="marca" placeholder="Marca" name="marca" maxlength="150" pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.itensLoja.produto.marca}"></c:out>">
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.estoque eq true}">has-error</c:if>">
             <label class="control-label" for="estoque">Quantidade</label>
@@ -78,7 +78,7 @@
         </div>
         <div class="form-group col-md-12 <c:if test="${errorValidation.descricao eq true}">has-error</c:if>">
             <label class="control-label" for="descricao">Descrição</label>
-            <textarea id="descricao" class="form-control" rows="3" name="descricao" pattern="^([a-zA-Zà-úÀ-Ú0-9]|,|\.|-|\s)+$"><c:out value="${sessionScope.itensLoja.produto.descricao}"></c:out></textarea>
+            <textarea id="descricao" class="form-control" rows="3" name="descricao" pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|,|\.|-|\s)+$"><c:out value="${sessionScope.itensLoja.produto.descricao}"></c:out></textarea>
         </div>
         <div class="form-group col-md-offset-8 col-md-4">
             <c:if test="${sessionScope.itensLoja.produto.id > 0}">

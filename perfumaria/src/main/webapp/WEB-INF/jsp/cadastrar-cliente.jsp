@@ -12,7 +12,7 @@
         </div>
         <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
             <label class="control-label" for="nome">Nome</label>
-            <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú]|\.|\s)+$" value="<c:out value="${sessionScope.cliente.nome}"></c:out>">
+            <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú])([a-zA-Zà-úÀ-Ú]|\.|\s)+$" value="<c:out value="${sessionScope.cliente.nome}"></c:out>">
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.dataNascimento eq true}">has-error</c:if>"> 
             <label class="control-label" for="data-nascimento">Data de Nascimento</label>
@@ -65,7 +65,7 @@
         </div>
         <div class="form-group col-md-6 <c:if test="${errorValidation.logradouro eq true}">has-error</c:if>">
             <label class="control-label" for="logradouro">Logradouro</label>
-            <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida..." name="logradouro" maxlength="150" required  pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.logradouro}"></c:out>">
+            <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida..." name="logradouro" maxlength="150" required  pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.logradouro}"></c:out>">
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.numero eq true}">has-error</c:if>">
             <label class="control-label" for="numero">Número</label>
@@ -77,11 +77,11 @@
         </div>
         <div class="form-group col-md-4 <c:if test="${errorValidation.bairro eq true}">has-error</c:if>">
             <label class="control-label" for="bairro">Bairro</label>
-            <input type="text" class="form-control" id="bairro" name="bairro" maxlength="50" required pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.bairro}"></c:out>">
+            <input type="text" class="form-control" id="bairro" name="bairro" maxlength="50" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.bairro}"></c:out>">
         </div>
         <div class="form-group col-md-4 <c:if test="${errorValidation.cidade eq true}">has-error</c:if>">
             <label class="control-label" for="cidade">Cidade</label>
-            <input type="text" class="form-control" id="cidade" name="cidade" maxlength="50" required pattern="^([a-zA-Zà-úÀ-Ú]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.cidade}"></c:out>">
+            <input type="text" class="form-control" id="cidade" name="cidade" maxlength="50" required pattern="^([a-zA-Zà-úÀ-Ú])([a-zA-Zà-úÀ-Ú]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.cidade}"></c:out>">
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.uf eq true}">has-error</c:if>">
             <label class="control-label" for="uf">UF</label>

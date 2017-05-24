@@ -10,7 +10,7 @@
         <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o CPF ou nome" name="pesquisar" maxlength="150" pattern="[a-z\s][0-9]{1,150}+$">
+                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o CPF ou nome" name="pesquisar" maxlength="150" pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$">
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
