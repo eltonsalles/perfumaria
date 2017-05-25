@@ -201,7 +201,7 @@
                         <li>
                             <a href="/perfumaria/sistema?controller=Usuario&action=logout">
                                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                                Logout
+                                Sair
                             </a>
                         </li>
                         <br><br><br><br>

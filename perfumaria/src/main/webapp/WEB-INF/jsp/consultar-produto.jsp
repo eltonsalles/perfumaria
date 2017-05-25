@@ -23,7 +23,7 @@
             <th>Nome</th>
             <th>Categoria</th>
             <th>Quantidade</th>
-            <th>Editar</th>
+            <th>Ações</th>
         </tr>
         <c:forEach items="${sessionScope.listaItensLoja}" var="itemLoja">
             <tr>
