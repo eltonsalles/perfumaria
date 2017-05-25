@@ -35,6 +35,7 @@ function configurarForm() {
     var celular = document.querySelector("#celular");
     var telefone = document.querySelector("#telefone");
     var cep = document.querySelector("#cep");
+    var cnpj = document.querySelector("#cnpj");
     
     if (cpf !== null) {
         cpf.value = formatarCpf(cpf.value);
@@ -61,6 +62,13 @@ function configurarForm() {
         cep.value = formatarCep(cep.value);
         cep.addEventListener('focusout', function () {
            this.value = formatarCep(this.value);
+        });
+    }
+    
+    if (cnpj !== null) {
+        cnpj.value = formatarCnpj(cnpj.value);
+        cnpj.addEventListener('focusout', function () {
+           this.value = formatarCnpj(this.value);
         });
     }
 }
