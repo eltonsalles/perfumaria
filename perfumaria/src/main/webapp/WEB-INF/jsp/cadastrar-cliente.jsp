@@ -77,7 +77,7 @@
                     <label class="control-label" for="numero">Número</label>
                     <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero" maxlength="10" required pattern="^\d+$" value="<c:out value="${sessionScope.cliente.numero}"></c:out>">
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-3 <c:if test="${errorValidation.complemento eq true}">has-error</c:if>">
                     <label for="complemento">Complemento</label>
                     <input type="text" class="form-control" id="complemento" placeholder="Bloco, sala..." name="complemento" maxlength="50" pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.cliente.complemento}"></c:out>">
                 </div>

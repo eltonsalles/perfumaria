@@ -80,64 +80,68 @@
             <label class="control-label" for="telefone">Telefone</label>
             <input type="tel" class="form-control" id="telefone" placeholder="(xx) xxxx-xxxx" name="telefone" maxlength="14" required pattern="\(\d{2}\) \d{4,5}-\d{4}$" value="<c:out value="${sessionScope.funcionario.telefone}"></c:out>">
         </div>
-        <div class="form-group col-md-6 <c:if test="${errorValidation.logradouro eq true}">has-error</c:if>">
-            <label class="control-label" for="logradouro">Logradouro</label>
-            <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida..." name="logradouro" maxlength="150" required  pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.funcionario.logradouro}"></c:out>">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="form-group col-md-2 <c:if test="${errorValidation.cep eq true}">has-error</c:if>">
+                    <label class="control-label" for="cep">CEP</label>
+                    <input type="text" class="form-control" id="cep" placeholder="xxxxx-xxx" name="cep" maxlength="9" required pattern="\d{5}-\d{3}$" value="<c:out value="${sessionScope.funcionario.cep}"></c:out>">
+                </div>
+                <div class="form-group col-md-5 <c:if test="${errorValidation.logradouro eq true}">has-error</c:if>">
+                    <label class="control-label" for="logradouro">Logradouro</label>
+                    <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida..." name="logradouro" maxlength="150" required  pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.funcionario.logradouro}"></c:out>">
+                </div>
+                <div class="form-group col-md-2 <c:if test="${errorValidation.numero eq true}">has-error</c:if>">
+                    <label class="control-label" for="numero">Número</label>
+                    <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero" maxlength="10" required pattern="^\d+$" value="<c:out value="${sessionScope.funcionario.numero}"></c:out>">
+                </div>
+                <div class="form-group col-md-3 <c:if test="${errorValidation.complemento eq true}">has-error</c:if>">
+                    <label for="complemento">Complemento</label>
+                    <input type="text" class="form-control" id="complemento" placeholder="Bloco, sala..." name="complemento" maxlength="50" pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.funcionario.complemento}"></c:out>">
+                </div>
+                <div class="form-group col-md-4 <c:if test="${errorValidation.bairro eq true}">has-error</c:if>">
+                    <label class="control-label" for="bairro">Bairro</label>
+                    <input type="text" class="form-control" id="bairro" name="bairro" maxlength="50" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.funcionario.bairro}"></c:out>">
+                </div>
+                <div class="form-group col-md-4 <c:if test="${errorValidation.cidade eq true}">has-error</c:if>">
+                    <label class="control-label" for="cidade">Cidade</label>
+                    <input type="text" class="form-control" id="cidade" name="cidade" maxlength="50" required pattern="^([a-zA-Zà-úÀ-Ú])([a-zA-Zà-úÀ-Ú]|\.|-|\s)+$" value="<c:out value="${sessionScope.funcionario.cidade}"></c:out>">
+                </div>
+                <div class="form-group col-md-2 <c:if test="${errorValidation.uf eq true}">has-error</c:if>">
+                    <label class="control-label" for="uf">UF</label>
+                    <select class="form-control" id="uf" name="uf" required>
+                        <c:set var="uf" value="${sessionScope.funcionario.uf}"></c:set>
+                        <option value="">---</option>
+                        <option value="AC" <c:if test="${fn:containsIgnoreCase(uf, 'ac')}">selected</c:if>>AC</option>
+                        <option value="AL" <c:if test="${fn:containsIgnoreCase(uf, 'al')}">selected</c:if>>AL</option>
+                        <option value="AP" <c:if test="${fn:containsIgnoreCase(uf, 'ap')}">selected</c:if>>AP</option>
+                        <option value="AM" <c:if test="${fn:containsIgnoreCase(uf, 'am')}">selected</c:if>>AM</option>
+                        <option value="BA" <c:if test="${fn:containsIgnoreCase(uf, 'ba')}">selected</c:if>>BA</option>
+                        <option value="CE" <c:if test="${fn:containsIgnoreCase(uf, 'ce')}">selected</c:if>>CE</option>
+                        <option value="DF" <c:if test="${fn:containsIgnoreCase(uf, 'df')}">selected</c:if>>DF</option>
+                        <option value="ES" <c:if test="${fn:containsIgnoreCase(uf, 'es')}">selected</c:if>>ES</option>
+                        <option value="GO" <c:if test="${fn:containsIgnoreCase(uf, 'go')}">selected</c:if>>GO</option>
+                        <option value="MA" <c:if test="${fn:containsIgnoreCase(uf, 'ma')}">selected</c:if>>MA</option>
+                        <option value="MT" <c:if test="${fn:containsIgnoreCase(uf, 'mt')}">selected</c:if>>MT</option>
+                        <option value="MS" <c:if test="${fn:containsIgnoreCase(uf, 'ms')}">selected</c:if>>MS</option>
+                        <option value="MG" <c:if test="${fn:containsIgnoreCase(uf, 'mg')}">selected</c:if>>MG</option>
+                        <option value="PR" <c:if test="${fn:containsIgnoreCase(uf, 'pr')}">selected</c:if>>PR</option>
+                        <option value="PB" <c:if test="${fn:containsIgnoreCase(uf, 'pb')}">selected</c:if>>PB</option>
+                        <option value="PA" <c:if test="${fn:containsIgnoreCase(uf, 'pa')}">selected</c:if>>PA</option>
+                        <option value="PE" <c:if test="${fn:containsIgnoreCase(uf, 'pe')}">selected</c:if>>PE</option>
+                        <option value="PI" <c:if test="${fn:containsIgnoreCase(uf, 'pi')}">selected</c:if>>PI</option>
+                        <option value="RJ" <c:if test="${fn:containsIgnoreCase(uf, 'rj')}">selected</c:if>>RJ</option>
+                        <option value="RN" <c:if test="${fn:containsIgnoreCase(uf, 'rn')}">selected</c:if>>RN</option>
+                        <option value="RS" <c:if test="${fn:containsIgnoreCase(uf, 'rs')}">selected</c:if>>RS</option>
+                        <option value="RO" <c:if test="${fn:containsIgnoreCase(uf, 'ro')}">selected</c:if>>RO</option>
+                        <option value="RR" <c:if test="${fn:containsIgnoreCase(uf, 'rr')}">selected</c:if>>RR</option>
+                        <option value="SC" <c:if test="${fn:containsIgnoreCase(uf, 'sc')}">selected</c:if>>SC</option>
+                        <option value="SE" <c:if test="${fn:containsIgnoreCase(uf, 'se')}">selected</c:if>>SE</option>
+                        <option value="SP" <c:if test="${fn:containsIgnoreCase(uf, 'sp')}">selected</c:if>>SP</option>
+                        <option value="TO" <c:if test="${fn:containsIgnoreCase(uf, 'to')}">selected</c:if>>TO</option>
+                    </select>
+                </div>
+            </div>
         </div>
-        <div class="form-group col-md-2 <c:if test="${errorValidation.numero eq true}">has-error</c:if>">
-            <label class="control-label" for="numero">Número</label>
-            <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero" maxlength="10" required pattern="^\d+$" value="<c:out value="${sessionScope.funcionario.numero}"></c:out>">
-        </div>
-        <div class="form-group col-md-4">
-            <label for="complemento">Complemento</label>
-            <input type="text" class="form-control" id="complemento" placeholder="Bloco, sala..." name="complemento" maxlength="50" pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.funcionario.complemento}"></c:out>">
-        </div>
-        <div class="form-group col-md-4 <c:if test="${errorValidation.bairro eq true}">has-error</c:if>">
-            <label class="control-label" for="bairro">Bairro</label>
-            <input type="text" class="form-control" id="bairro" name="bairro" maxlength="50" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.funcionario.bairro}"></c:out>">
-        </div>
-        <div class="form-group col-md-4 <c:if test="${errorValidation.cidade eq true}">has-error</c:if>">
-            <label class="control-label" for="cidade">Cidade</label>
-            <input type="text" class="form-control" id="cidade" name="cidade" maxlength="50" required pattern="^([a-zA-Zà-úÀ-Ú])([a-zA-Zà-úÀ-Ú]|\.|-|\s)+$" value="<c:out value="${sessionScope.funcionario.cidade}"></c:out>">
-        </div>
-        <div class="form-group col-md-2 <c:if test="${errorValidation.uf eq true}">has-error</c:if>">
-            <label class="control-label" for="uf">UF</label>
-            <select class="form-control" id="uf" name="uf" required>
-                <c:set var="uf" value="${sessionScope.funcionario.uf}"></c:set>
-                <option value="">---</option>
-                <option value="AC" <c:if test="${fn:containsIgnoreCase(uf, 'ac')}">selected</c:if>>AC</option>
-                <option value="AL" <c:if test="${fn:containsIgnoreCase(uf, 'al')}">selected</c:if>>AL</option>
-                <option value="AP" <c:if test="${fn:containsIgnoreCase(uf, 'ap')}">selected</c:if>>AP</option>
-                <option value="AM" <c:if test="${fn:containsIgnoreCase(uf, 'am')}">selected</c:if>>AM</option>
-                <option value="BA" <c:if test="${fn:containsIgnoreCase(uf, 'ba')}">selected</c:if>>BA</option>
-                <option value="CE" <c:if test="${fn:containsIgnoreCase(uf, 'ce')}">selected</c:if>>CE</option>
-                <option value="DF" <c:if test="${fn:containsIgnoreCase(uf, 'df')}">selected</c:if>>DF</option>
-                <option value="ES" <c:if test="${fn:containsIgnoreCase(uf, 'es')}">selected</c:if>>ES</option>
-                <option value="GO" <c:if test="${fn:containsIgnoreCase(uf, 'go')}">selected</c:if>>GO</option>
-                <option value="MA" <c:if test="${fn:containsIgnoreCase(uf, 'ma')}">selected</c:if>>MA</option>
-                <option value="MT" <c:if test="${fn:containsIgnoreCase(uf, 'mt')}">selected</c:if>>MT</option>
-                <option value="MS" <c:if test="${fn:containsIgnoreCase(uf, 'ms')}">selected</c:if>>MS</option>
-                <option value="MG" <c:if test="${fn:containsIgnoreCase(uf, 'mg')}">selected</c:if>>MG</option>
-                <option value="PR" <c:if test="${fn:containsIgnoreCase(uf, 'pr')}">selected</c:if>>PR</option>
-                <option value="PB" <c:if test="${fn:containsIgnoreCase(uf, 'pb')}">selected</c:if>>PB</option>
-                <option value="PA" <c:if test="${fn:containsIgnoreCase(uf, 'pa')}">selected</c:if>>PA</option>
-                <option value="PE" <c:if test="${fn:containsIgnoreCase(uf, 'pe')}">selected</c:if>>PE</option>
-                <option value="PI" <c:if test="${fn:containsIgnoreCase(uf, 'pi')}">selected</c:if>>PI</option>
-                <option value="RJ" <c:if test="${fn:containsIgnoreCase(uf, 'rj')}">selected</c:if>>RJ</option>
-                <option value="RN" <c:if test="${fn:containsIgnoreCase(uf, 'rn')}">selected</c:if>>RN</option>
-                <option value="RS" <c:if test="${fn:containsIgnoreCase(uf, 'rs')}">selected</c:if>>RS</option>
-                <option value="RO" <c:if test="${fn:containsIgnoreCase(uf, 'ro')}">selected</c:if>>RO</option>
-                <option value="RR" <c:if test="${fn:containsIgnoreCase(uf, 'rr')}">selected</c:if>>RR</option>
-                <option value="SC" <c:if test="${fn:containsIgnoreCase(uf, 'sc')}">selected</c:if>>SC</option>
-                <option value="SE" <c:if test="${fn:containsIgnoreCase(uf, 'se')}">selected</c:if>>SE</option>
-                <option value="SP" <c:if test="${fn:containsIgnoreCase(uf, 'sp')}">selected</c:if>>SP</option>
-                <option value="TO" <c:if test="${fn:containsIgnoreCase(uf, 'to')}">selected</c:if>>TO</option>
-            </select>
-        </div>
-        <div class="form-group col-md-2 <c:if test="${errorValidation.cep eq true}">has-error</c:if>">
-            <label class="control-label" for="cep">CEP</label>
-            <input type="text" class="form-control" id="cep" placeholder="xxxxx-xxx" name="cep" maxlength="9" required pattern="\d{5}-\d{3}$" value="<c:out value="${sessionScope.funcionario.cep}"></c:out>">
-        </div>    
         <div class="form-group col-md-offset-8 col-md-4">
             <c:if test="${sessionScope.funcionario.id > 0}">
             <a href="sistema?controller=Funcionario&action=excluir&id=<c:out value="${sessionScope.funcionario.id}"></c:out>" class="btn btn-default">
