@@ -26,7 +26,6 @@ package br.senac.tads.pi3a.inputFilter;
 import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.validation.ValidationAlpha;
-import br.senac.tads.pi3a.validation.ValidationAlphaNumerico;
 import br.senac.tads.pi3a.validation.ValidationBoolean;
 import br.senac.tads.pi3a.validation.ValidationCnpj;
 import br.senac.tads.pi3a.validation.ValidationEmail;
@@ -45,9 +44,7 @@ import java.util.Map;
 public class InputFilterLoja extends InputFilter {
 
     public InputFilterLoja(Map<String, String[]> allMap) {
-
         super(allMap);
-
     }
 
     /**
@@ -57,8 +54,6 @@ public class InputFilterLoja extends InputFilter {
      */
     @Override
     public boolean isValid() {
-
-        ValidationAlphaNumerico validatioAlphaNumerico = new ValidationAlphaNumerico();
         ValidationAlpha validationAlpha = new ValidationAlpha();
         ValidationTamanho validationTamanho = new ValidationTamanho();
         ValidationString validationString = new ValidationString();
@@ -78,160 +73,140 @@ public class InputFilterLoja extends InputFilter {
                 this.errorValidation.replace("id", false);
             }
         }
+
         //Valida o campo texto razao-social para que possa conter letras e
         //numeros
         if (this.allMap.containsKey("razao-social")) {
-
             validationTamanho.setTamanho(150);
 
             if (validationTamanho.isValid(this.allMap.get("razao-social")[0])
-                    && validatioAlphaNumerico.isValid(this.allMap.get("razao-social")[0])) {
-
-                this.errorValidation.replace("razao-social", false);
-
+                    && validationString.isValid(this.allMap
+                            .get("razao-social")[0])) {
+                this.errorValidation.replace("razaoSocial", false);
             }
 
         }
+
         //Valida o campo CNPJ da Loja
         if (this.allMap.containsKey("cnpj")) {
-
             String cnpj = this.allMap.get("cnpj")[0].replaceAll("\\D", "");
-
             ValidationCnpj validationCnpj = new ValidationCnpj();
 
             if (validationCnpj.isValid(cnpj)) {
-
                 this.errorValidation.replace("cnpj", false);
                 this.allMap.replace("cnpj", new String[]{cnpj});
-
             }
-
         }
+
         //Validando o status da loja
         if (this.allMap.containsKey("status")) {
-
             ValidationBoolean validationBoolean = new ValidationBoolean();
 
             if (validationBoolean.isValid(this.allMap.get("status")[0])) {
-
                 this.errorValidation.replace("status", false);
-
             }
-
         }
+
         //Validando o valor do campo nome-fantasia
         if (this.allMap.containsKey("nome-fantasia")) {
-
             validationTamanho.setTamanho(150);
 
             if (validationTamanho.isValid(this.allMap.get("nome-fantasia")[0])
-                    && validationAlpha.isValid(this.allMap.get("nome-fantasia")[0])) {
-
-                this.errorValidation.replace("nome-fantasia", false);
-
+                    && validationAlpha.isValid(this.allMap
+                            .get("nome-fantasia")[0])) {
+                this.errorValidation.replace("nomeFantasia", false);
             }
-
         }
-        
-        
-        //Validando o valor e o tamanho do campo telefone no formulário Cadastrar
-        //Loja
-        if (this.allMap.containsKey("telefone")) {
 
+        //Validando o valor e o tamanho do campo telefone no
+        // formulário Cadastrar Loja
+        if (this.allMap.containsKey("telefone")) {
             //Extrai apenas os digitos numéricos do campo telefone
-            String telefone = this.allMap.get("telefone")[0].replaceAll("\\D", "");
+            String telefone = this.allMap.get("telefone")[0]
+                    .replaceAll("\\D", "");
             validationTamanho.setTamanho(11);
 
             if (validationTamanho.isValid(telefone)) {
-
                 this.errorValidation.replace("telefone", false);
                 this.allMap.replace("telefone", new String[]{telefone});
-
             }
-
         }
+
         //Validando o valor do campo enail do formulario cadastrar loja
         if (this.allMap.containsKey("email")) {
-
             ValidationEmail validationEmail = new ValidationEmail();
-
             validationTamanho.setTamanho(150);
 
             if (validationTamanho.isValid(this.allMap.get("email")[0])
                     && validationEmail.isValid(this.allMap.get("email")[0])) {
-
                 this.errorValidation.replace("email", false);
-
             }
-
         }
-        //Validando o valor do campo logradouro do formulario cadastrar loja com caractéres 
-        //válidos apenas
+
+        //Validando o valor do campo logradouro do formulario cadastrar loja
+        // com caractéres válidos apenas
         if (this.allMap.containsKey("logradouro")) {
-
             validationTamanho.setTamanho(150);
+
             if (validationTamanho.isValid(this.allMap.get("logradouro")[0])
-                    && validationString.isValid(this.allMap.get("logradouro")[0])) {
+                    && validationString.isValid(this.allMap
+                            .get("logradouro")[0])) {
                 this.errorValidation.replace("logradouro", false);
-
             }
-
         }
-        //Validando o valor do campo numero do formulario cadastrar loja com caractéres
-        //válidos
+
+        //Validando o valor do campo numero do formulario cadastrar
+        // loja com caractéres válidos
         if (this.allMap.containsKey("numero")) {
             String numero = this.allMap.get("numero")[0].replaceAll("\\D", "");
-
             validationTamanho.setTamanho(10);
 
             if (validationTamanho.isValid(numero)) {
                 this.errorValidation.replace("numero", false);
-
             }
-
         }
-        //Validando o valor do campo complemento do formulário cadastrar loja verificando se
-        //ha algum valor diferente de ""
+
+        //Validando o valor do campo complemento do formulário cadastrar
+        // loja verificando se ha algum valor diferente de ""
         if (this.allMap.containsKey("complemento")) {
             if (!this.allMap.get("complemento")[0].isEmpty()) {
                 validationTamanho.setTamanho(50);
-            }
-            if (validationTamanho.isValid(this.allMap.get("complemento")[0])
-                    && validationString.isValid(this.allMap.get("complemento")[0])) {
+
+                if (validationTamanho.isValid(this.allMap.get("complemento")[0])
+                        && validationString.isValid(this.allMap
+                                .get("complemento")[0])) {
+                    this.errorValidation.replace("complemento", false);
+                }
+            } else {
                 this.errorValidation.replace("complemento", false);
-
             }
-
         }
-        //Validando o valor do campo Bairro do formulario cadastrar loja - tamanho e 
-        //caractperes válidos
-        if (this.allMap.containsKey("bairro")) {
 
+        //Validando o valor do campo Bairro do formulario cadastrar loja -
+        // tamanho e caracteres válidos
+        if (this.allMap.containsKey("bairro")) {
             validationTamanho.setTamanho(50);
 
             if (validationTamanho.isValid(this.allMap.get("bairro")[0])
                     && validationString.isValid(this.allMap.get("bairro")[0])) {
-
                 this.errorValidation.replace("bairro", false);
-
             }
-
         }
-        //Validando o valor do campo cidade do formulário cadastrar loja - tamanho e 
-        //campos válidos
-        if (this.allMap.containsKey("cidade")) {
 
+        //Validando o valor do campo cidade do formulário cadastrar loja -
+        // tamanho e campos válidos
+        if (this.allMap.containsKey("cidade")) {
             validationTamanho.setTamanho(50);
+
             if (validationTamanho.isValid(this.allMap.get("cidade")[0])
-                    && validationAlpha.isValid(this.allMap.get("cidade")[0])) {
+                    && validationString.isValid(this.allMap.get("cidade")[0])) {
                 this.errorValidation.replace("cidade", false);
             }
-
         }
-        //Validando o valor do campo UF(estado) do formulario cliente de acordo com 
-        //valor igual da lista
-        if (this.allMap.containsKey("uf")) {
 
+        //Validando o valor do campo UF(estado) do formulário loja de acordo
+        // com valor igual da lista
+        if (this.allMap.containsKey("uf")) {
             List ufs = new ArrayList();
             ufs.addAll(Arrays.asList(new String[]{"AC", "AL", "AP", "AM", "BA",
                 "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PR", "PB",
@@ -239,28 +214,21 @@ public class InputFilterLoja extends InputFilter {
                 "SP", "TO"}));
 
             if (ufs.contains(this.allMap.get("uf")[0])) {
-
                 this.errorValidation.replace("uf", false);
-
             }
-
         }
-        // Validando o valor do campo CEP e o tamanho no formulário cadastrar loja
-        if(this.allMap.containsKey("cep")){
-        
+
+        // Validando o valor do campo CEP e o tamanho no formulário cadastrar
+        // loja
+        if (this.allMap.containsKey("cep")) {
             //Extrai apenas os digitos
             String cep = this.allMap.get("cep")[0].replaceAll("\\D", "");
-            
             validationTamanho.setTamanho(8);
-            
-            if(validationTamanho.isValid(cep)){
-            
+
+            if (validationTamanho.isValid(cep)) {
                 this.errorValidation.replace("cep", false);
                 this.allMap.replace("cep", new String[]{cep});
-                
             }
-        
-        
         }
 
         return this.errorStatus();
@@ -268,23 +236,23 @@ public class InputFilterLoja extends InputFilter {
 
     @Override
     protected Model getModel() {
-        
+
         Loja loja = new Loja();
-        
-        try{
-           
+
+        try {
+
             if (!this.allMap.get("id")[0].isEmpty()) {
                 loja.setId(Integer.valueOf(this.allMap.get("id")[0]));
             }
-            loja.setRazaoSocial(this.allMap.get("razaoSocial")[0]);
+            loja.setRazaoSocial(this.allMap.get("razao-social")[0]);
             loja.setCnpj(this.allMap.get("cnpj")[0]);
             loja.setStatus(Boolean.valueOf(this.allMap.get("status")[0]));
-            loja.setNomeFantasia(this.allMap.get("razaoSocial")[0]);
+            loja.setNomeFantasia(this.allMap.get("nome-fantasia")[0]);
             loja.setTelefone(this.allMap.get("telefone")[0]);
             loja.setEmail(this.allMap.get("email")[0]);
             loja.setLogradouro(this.allMap.get("logradouro")[0]);
             loja.setNumero(this.allMap.get("numero")[0]);
-            
+
             if (!this.allMap.get("complemento")[0].isEmpty()) {
                 loja.setComplemento(this.allMap.get("complemento")[0]);
             }
@@ -292,17 +260,11 @@ public class InputFilterLoja extends InputFilter {
             loja.setCidade(this.allMap.get("cidade")[0]);
             loja.setUf(this.allMap.get("uf")[0]);
             loja.setCep(this.allMap.get("cep")[0]);
-            
-            
-        
-        }catch(NumberFormatException e){
-        
+        } catch (NumberFormatException e) {
             e.printStackTrace(System.err);
             loja = null;
-        
         }
 
         return loja;
     }
-
 }
