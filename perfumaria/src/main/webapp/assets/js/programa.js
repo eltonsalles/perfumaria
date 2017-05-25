@@ -25,7 +25,9 @@ window.addEventListener('load', init);
 
 function init() {
     configurarForm();
+    configurarLista();
     carregaProdutos();
+    carregarEndereco();
 }
 
 function configurarForm() {
@@ -71,6 +73,14 @@ function formatarCpf(value) {
     return value;
 }
 
+function formatarCnpj(value) {
+    var pattern = /^([\d]{2})([\d]{3})([\d]{3})([\d]{4})([\d]{2})$/;
+    value = value.replace(/[^\d]+/g, '');
+    value = value.replace(pattern, '$1.$2.$3/$4-$5');
+    
+    return value;
+}
+
 function formatarTelefone(value) {
     var pattern = /^([\d]{2})([\d]{4,5})([\d]{4})$/;
     value = value.replace(/[^\d]+/g, '');
@@ -85,6 +95,23 @@ function formatarCep(value) {
     value = value.replace(pattern, '$1-$2');
     
     return value;
+}
+
+function configurarLista() {
+    var cpfs = document.querySelectorAll('.cpfs');
+    var cnpjs = document.querySelectorAll('.cnpjs');
+    
+    if (cpfs !== null) {
+        cpfs.forEach(function (td){
+           td.textContent = formatarCpf(td.textContent);
+        });
+    }
+    
+    if (cnpjs !== null) {
+        cnpjs.forEach(function (td){
+           td.textContent = formatarCnpj(td.textContent);
+        });
+    }
 }
 
 /**
@@ -156,4 +183,53 @@ function filtrarNome(obj) {
     var value = document.querySelector("#nome").value;
     
     return obj.nome.toUpperCase() === value.toUpperCase();
+}
+
+function carregarEndereco() {
+    var cep = document.querySelector("#cep");
+    
+    if (cep !== null) {
+        cep.addEventListener('keyup', function (e) {
+            var buscarCep = this.value.replace(/\D/, '');
+            var codigo = e.keyCode;
+            
+            // Faz a busca se existir 8 números no buscarCep e se a tecla
+            // pressionado no teclado estiver entre os códigos abaixo
+            if (buscarCep.length === 8 && (codigo >= 48 && codigo <= 57
+                    || codigo >= 96 && codigo <= 105)) {
+                $.ajax({
+                    url : 'https://viacep.com.br/ws/' + buscarCep + '/json/',
+                    dataType : 'json',
+                    contentType:"application/json",
+                    error : function() {
+                        alert("Error");
+                    },
+                    success : function(data) {
+                        var logradouro = document.querySelector("#logradouro");
+                        var complemento = document.querySelector("#complemento");
+                        var bairro = document.querySelector("#bairro");
+                        var cidade = document.querySelector("#cidade");
+                        var uf = document.querySelector("#uf");
+                                                
+                        if (!data.erro) {
+                            logradouro.value = data.logradouro;
+                            complemento.value = data.complemento;
+                            bairro.value = data.bairro;
+                            cidade.value = data.localidade;
+                            uf.value = data.uf;
+                            
+                            var numero = document.querySelector("#numero");
+                            numero.focus();
+                        } else {
+                            logradouro.value = "";
+                            complemento.value = "";
+                            bairro.value = "";
+                            cidade.value = "";
+                            uf.value = "";
+                        }
+                    }
+                });
+            }
+        });
+    }
 }
