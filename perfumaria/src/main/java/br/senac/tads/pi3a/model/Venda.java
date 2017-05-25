@@ -57,7 +57,7 @@ public class Venda extends Model {
         this.dataVenda = dataVenda;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 

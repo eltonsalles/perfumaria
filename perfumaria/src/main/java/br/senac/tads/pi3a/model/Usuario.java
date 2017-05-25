@@ -26,6 +26,7 @@ package br.senac.tads.pi3a.model;
 import br.senac.tads.pi3a.annotation.Columm;
 import br.senac.tads.pi3a.annotation.ForeignKey;
 import br.senac.tads.pi3a.annotation.Table;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -34,7 +35,7 @@ import br.senac.tads.pi3a.annotation.Table;
 @Table(name = "usuario")
 public class Usuario extends Model {
     @Columm(name = "login")
-    private String nome;
+    private String login;
 
     @Columm(name = "senha")
     private String senha;
@@ -45,12 +46,13 @@ public class Usuario extends Model {
     @ForeignKey(name = "nivel_usuario_id", referenced = "NivelUsuario", referencedName = "id")
     private NivelUsuario nivelUsuario;
 
-    public String getNome() {
-        return nome;
+   
+    public String getLogin() {
+        return login;
     }
-
-    public void setNome(String nome) {
-        this.nome = nome;
+    
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getSenha() {
@@ -58,7 +60,12 @@ public class Usuario extends Model {
     }
 
     public void setSenha(String senha) {
-        this.senha = senha;
+        // Se a senha for menor ou igual a 8 significa que está descriptograda
+        if (senha.length() <= 8) {
+            this.senha = BCrypt.hashpw(senha, BCrypt.gensalt(4));
+        } else {
+            this.senha = senha;
+        }
     }
     
     public Funcionario getFuncionario() {

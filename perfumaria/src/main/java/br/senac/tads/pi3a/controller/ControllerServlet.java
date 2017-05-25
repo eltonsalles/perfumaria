@@ -94,6 +94,10 @@ public class ControllerServlet extends HttpServlet {
                             + "&action=" + action);
                     break;
                 
+                case "index":
+                    response.sendRedirect("/perfumaria/");
+                    break;
+                
                 default:
                     request.getRequestDispatcher(pagina)
                             .forward(request, response);

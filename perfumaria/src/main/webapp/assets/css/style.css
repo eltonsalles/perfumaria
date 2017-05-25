@@ -31,6 +31,12 @@ body,
     padding: 10px 0px;
 }
 
+/* Tamanho mínimo da tela de login e da sidebar */
+.sidebar, 
+.login {
+    min-height: 485px;
+}
+
 /* Formatação dos links que estão na sidebar */
 .sidebar a {
     color: hsl(0, 0%, 100%);
@@ -69,32 +75,4 @@ body,
 .sexo,
 .status {
     height: 59px !important;
-}
-#formlogin{
-    
-    text-align: center;
-       
-}
-#formlogin{
-
-width: 800px; 
-height: 650px; 
-left: 50%; 
-margin: -130px 0 0 -210px; 
-padding:250px;
-position: relative; 
-top: 50%;
-   
-}
-#formesquecersenha{
-    
-width: 800px; 
-height: 700px; 
-left: 50%; 
-margin: -130px 0 0 -210px; 
-padding:120px;
-position: relative; 
-top: 50%;
-    
-    
 }

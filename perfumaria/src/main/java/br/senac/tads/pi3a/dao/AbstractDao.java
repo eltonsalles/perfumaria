@@ -39,6 +39,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -50,27 +51,49 @@ import java.util.Map;
  * @author Elton
  */
 public abstract class AbstractDao implements GenericDao<Model>{
-    private boolean all = false;
+    private Connection conn;
     private Model model;
     private String entity;
     private Map<String, String> modelMap;
 
     /**
      * Contrustor padrão
+     * 
+     * @param conn 
      */
-    public AbstractDao() {
-        
+    public AbstractDao(Connection conn) {
+        this.conn = conn;
     }
     
     /**
      * Construtor passando o objeto como parâmetro
      * 
+     * @param conn
      * @param model 
      */
-    public AbstractDao(Model model) {
+    public AbstractDao(Connection conn, Model model) {
+        this.conn = conn;
         this.model = model;
         this.entity = readEntity(model);
         this.modelMap = readModel(model);
+    }
+    
+    /**
+     * Retorna a conexão
+     * 
+     * @return 
+     */
+    protected Connection getConnection() {
+        return this.conn;
+    }
+
+    /**
+     * Retorna o mapa do objeto
+     * 
+     * @return 
+     */
+    public Map<String, String> getModelMap() {
+        return modelMap;
     }
 
     /**
@@ -80,10 +103,8 @@ public abstract class AbstractDao implements GenericDao<Model>{
      * @throws Exception 
      */
     @Override
-    @SuppressWarnings("UseSpecificCatch")
     public int insert() throws Exception {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        PreparedStatement stmt;
         
         try {
             SqlInsert sql = new SqlInsert();
@@ -93,11 +114,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
                 sql.setRowData(this.modelMap.get(key), "?");
             }
 
-            Transaction.open();
-
-            conn = Transaction.get();
-
-            stmt = conn.prepareStatement(sql.getInstruction(),
+            stmt = this.conn.prepareStatement(sql.getInstruction(),
                     Statement.RETURN_GENERATED_KEYS);
 
             this.setStmt(stmt);
@@ -111,14 +128,6 @@ public abstract class AbstractDao implements GenericDao<Model>{
         } catch (Exception e) {
             Transaction.rollback();
             throw new Exception(e.getMessage());
-        } finally {
-            if (stmt != null && !stmt.isClosed()) {
-                stmt.close();
-            }
-            
-            if (conn != null && !conn.isClosed()) {
-                Transaction.close();
-            }
         }
         
         return -1;
@@ -132,8 +141,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
      */
     @Override
     public boolean update() throws Exception {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        PreparedStatement stmt;
         
         try {
             Criteria criteria = new Criteria();
@@ -147,11 +155,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
                 sql.setRowData(this.modelMap.get(key), "?");
             }
 
-            Transaction.open();
-
-            conn = Transaction.get();
-
-            stmt = conn.prepareStatement(sql.getInstruction());
+            stmt = this.conn.prepareStatement(sql.getInstruction());
 
             this.setStmt(stmt);
             stmt.setInt(this.modelMap.size() + 1, this.model.getId());
@@ -162,14 +166,6 @@ public abstract class AbstractDao implements GenericDao<Model>{
         } catch (Exception e) {
             Transaction.rollback();
             throw new Exception(e.getMessage());
-        } finally {
-            if (stmt != null && !stmt.isClosed()) {
-                stmt.close();
-            }
-            
-            if (conn != null && !conn.isClosed()) {
-                Transaction.close();
-            }
         }
     }
 
@@ -182,8 +178,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
      */
     @Override
     public boolean delete(int id) throws Exception {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        PreparedStatement stmt;
         
         try {
             Criteria criteria = new Criteria();
@@ -193,11 +188,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
             sql.setEntity(this.entity);
             sql.setCriteria(criteria);
 
-            Transaction.open();
-
-            conn = Transaction.get();
-
-            stmt = conn.prepareStatement(sql.getInstruction());
+            stmt = this.conn.prepareStatement(sql.getInstruction());
 
             stmt.setInt(1, id);
 
@@ -207,14 +198,6 @@ public abstract class AbstractDao implements GenericDao<Model>{
         } catch (Exception e) {
             Transaction.rollback();
             throw new Exception(e.getMessage());
-        } finally {
-            if (stmt != null && !stmt.isClosed()) {
-                stmt.close();
-            }
-            
-            if (conn != null && !conn.isClosed()) {
-                Transaction.close();
-            }
         }
     }
 
@@ -227,11 +210,9 @@ public abstract class AbstractDao implements GenericDao<Model>{
      * @throws Exception 
      */
     @Override
-    @SuppressWarnings("UseSpecificCatch")
     public Model findOne(Model obj, int id) throws Exception {
         ResultSet resultSet;
-        PreparedStatement stmt = null;
-        Connection conn = null;
+        PreparedStatement stmt;
         Model result = null;
         
         try {
@@ -249,13 +230,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
             sql.addColumn("*");
             sql.setCriteria(criteria);
             
-            if (conn == null) {
-                Transaction.open();
-            
-                conn = Transaction.get();
-            }
-            
-            stmt = conn.prepareStatement(sql.getInstruction());
+            stmt = this.conn.prepareStatement(sql.getInstruction());
             stmt.setInt(1, id);
             
             resultSet = stmt.executeQuery();
@@ -265,14 +240,6 @@ public abstract class AbstractDao implements GenericDao<Model>{
             }
         } catch (Exception e) {
             throw new Exception(e.getMessage());
-        } finally {
-            if (stmt != null && !stmt.isClosed() && !this.all) {
-                stmt.close();
-            }
-            
-            if (conn != null && !conn.isClosed() && !this.all) {
-                Transaction.close();
-            }
         }
         
         return result;
@@ -287,12 +254,8 @@ public abstract class AbstractDao implements GenericDao<Model>{
      */
     @Override
     public List<Model> findAll(Model obj) throws Exception {
-        // Para evitar que a conexão feche antes de finalizar o resultSet
-        this.all = true;
-        
         ResultSet resultSet;
-        PreparedStatement stmt = null;
-        Connection conn = null;
+        PreparedStatement stmt;
         List<Model> list = new ArrayList<>();
         
         try {
@@ -306,13 +269,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
             sql.setEntity(table.name());
             sql.addColumn("*");
             
-            if (conn == null) {
-                Transaction.open();
-            
-                conn = Transaction.get();
-            }
-            
-            stmt = conn.prepareStatement(sql.getInstruction());
+            stmt = this.conn.prepareStatement(sql.getInstruction());
             
             resultSet = stmt.executeQuery();
             
@@ -321,14 +278,6 @@ public abstract class AbstractDao implements GenericDao<Model>{
             }
         } catch (Exception e) {
             throw new Exception(e.getMessage());
-        } finally {
-            if (stmt != null && !stmt.isClosed()) {
-                stmt.close();
-            }
-            
-            if (conn != null && !conn.isClosed()) {
-                Transaction.close();
-            }
         }
         
         return list;
@@ -347,12 +296,8 @@ public abstract class AbstractDao implements GenericDao<Model>{
     @Override
     public List<Model> findAll(Model obj, String field, String criteria,
             String value) throws Exception {
-        // Para evitar que a conexão feche antes de finalizar o resultSet
-        this.all = true;
-        
         ResultSet resultSet;
-        PreparedStatement stmt = null;
-        Connection conn = null;
+        PreparedStatement stmt;
         List<Model> list = new ArrayList<>();
         
         try {
@@ -363,20 +308,15 @@ public abstract class AbstractDao implements GenericDao<Model>{
             Table table = obj.getClass().getAnnotation(Table.class);
             
             Criteria c = new Criteria();
-            c.add(new Filter(field, criteria, value));
+            c.add(new Filter(field, criteria, "?"));
             
             SqlSelect sql = new SqlSelect();
             sql.setEntity(table.name());
             sql.addColumn("*");
             sql.setCriteria(c);
             
-            if (conn == null) {
-                Transaction.open();
-            
-                conn = Transaction.get();
-            }
-            
-            stmt = conn.prepareStatement(sql.getInstruction());
+            stmt = this.conn.prepareStatement(sql.getInstruction());
+            stmt.setObject(1, value);
             
             resultSet = stmt.executeQuery();
             
@@ -385,14 +325,56 @@ public abstract class AbstractDao implements GenericDao<Model>{
             }
         } catch (Exception e) {
             throw new Exception(e.getMessage());
-        } finally {
-            if (stmt != null && !stmt.isClosed()) {
-                stmt.close();
+        }
+        
+        return list;
+    }
+
+    @Override
+    public List<Model> findAll(Model obj, String[] field, String[] criteria,
+            String[] value, String[] operator) throws Exception {
+        ResultSet resultSet;
+        PreparedStatement stmt;
+        List<Model> list = new ArrayList<>();
+        
+        try {
+            if (!obj.getClass().isAnnotationPresent(Table.class)) {
+                return null;
             }
             
-            if (conn != null && !conn.isClosed()) {
-                Transaction.close();
+            Table table = obj.getClass().getAnnotation(Table.class);
+            
+            Criteria c = new Criteria();
+            for (int i = 0; i < criteria.length; i++) {
+                // Operator AND ou OR
+                String o;
+                if (operator[i].equalsIgnoreCase("or")) {
+                    o = Criteria.OR_OPERATOR;
+                } else {
+                    o = Criteria.AND_OPERATOR;
+                }
+                
+                c.add(new Filter(field[i], criteria[i], "?"), o);
             }
+            
+            SqlSelect sql = new SqlSelect();
+            sql.setEntity(table.name());
+            sql.addColumn("*");
+            sql.setCriteria(c);
+            
+            stmt = this.conn.prepareStatement(sql.getInstruction());
+            
+            for (int i = 0; i < value.length; i++) {
+                stmt.setObject(i + 1, value[i]);
+            }
+            
+            resultSet = stmt.executeQuery();
+            
+            while(resultSet.next()) {
+                list.add(prepareModel(obj, resultSet));
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
         
         return list;
@@ -406,9 +388,9 @@ public abstract class AbstractDao implements GenericDao<Model>{
      */
     private String readEntity(Model model) {
         if (model.getClass().isAnnotationPresent(Table.class)) {
-            Table entity = model.getClass().getAnnotation(Table.class);
+            Table table = model.getClass().getAnnotation(Table.class);
             
-            return entity.name();
+            return table.name();
         }
         
         return null;
@@ -450,7 +432,7 @@ public abstract class AbstractDao implements GenericDao<Model>{
      * @param stmt
      * @throws Exception 
      */
-    private void setStmt(PreparedStatement stmt) throws Exception {
+    protected void setStmt(PreparedStatement stmt) throws Exception {
         int pos = 1;
         for (String key : this.modelMap.keySet()) {
             char firstLetter = key.charAt(0);
@@ -487,7 +469,9 @@ public abstract class AbstractDao implements GenericDao<Model>{
             throws Exception {
         Model newObj = obj.getClass().newInstance();
         
-        newObj.setId(resultSet.getInt("id"));
+        if (this.confirmPrimaryKey(resultSet, "id")) {
+            newObj.setId(resultSet.getInt("id"));
+        }
 
         // Se o objeto for igual ao atributo model, então não é
         // necessário fazer o mapa do objeto porque já foi feito no construtor
@@ -522,11 +506,37 @@ public abstract class AbstractDao implements GenericDao<Model>{
 
                 method.invoke(newObj, foreignKey);
                 
+            } else if (field.getType().getName().equalsIgnoreCase("float")) {
+                method.invoke(newObj, resultSet.getFloat(objMap.get(key)));
             } else {
                 method.invoke(newObj, resultSet.getObject(objMap.get(key)));
             }
         }
         
         return newObj;
+    }
+    
+    /**
+     * Confirma se na tabela existe o primary key informado
+     * 
+     * @param resultSet
+     * @param primaryKey
+     * @return 
+     */
+    private boolean confirmPrimaryKey(ResultSet resultSet, String primaryKey) {
+        try {
+            ResultSetMetaData rsmd = resultSet.getMetaData();
+            int numColumns = rsmd.getColumnCount();
+            
+            for (int i = 1; i < numColumns + 1; i++) {
+                if (primaryKey.equalsIgnoreCase(rsmd.getColumnName(i))) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return false;
     }
 }

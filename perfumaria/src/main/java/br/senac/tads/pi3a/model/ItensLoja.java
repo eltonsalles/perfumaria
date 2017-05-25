@@ -71,7 +71,7 @@ public class ItensLoja extends Model {
         this.loja = loja;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
