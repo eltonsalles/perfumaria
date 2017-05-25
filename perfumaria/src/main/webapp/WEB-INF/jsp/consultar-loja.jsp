@@ -24,7 +24,7 @@
             <th>Código</th>
             <th>Status</th>
             <th>Razão Social</th>
-            <th>cnpj</th>
+            <th>CNPJ</th>
             <th>Telefone</th>
             <th>Email</th>
             <th>Ações</th>
@@ -34,7 +34,7 @@
             <td><c:out value="${loja.id}"></c:out></td>
             <td><c:out value="${loja.status eq true ? 'Ativo' : 'Inativo'}"></c:out></td>
             <td><c:out value="${loja.razaoSocial}"></c:out></td>
-            <td><c:out value="${loja.cnpj}"></c:out></td>
+            <td class="cnpjs"><c:out value="${loja.cnpj}"></c:out></td>
             <td><c:out value="${loja.telefone}"></c:out></td>  
             <td><c:out value="${loja.email}"></c:out></td>
             <td>
