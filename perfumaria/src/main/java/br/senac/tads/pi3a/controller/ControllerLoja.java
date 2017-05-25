@@ -27,6 +27,7 @@ import br.senac.tads.pi3a.dao.DaoLoja;
 import br.senac.tads.pi3a.inputFilter.InputFilterLoja;
 import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
+import java.sql.Connection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +40,8 @@ import javax.servlet.http.HttpSession;
 public class ControllerLoja implements Logica {
 
     @Override
-    public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String novo(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session) throws Exception {
 
         try {
 
@@ -58,7 +60,9 @@ public class ControllerLoja implements Logica {
                     // Atualiza o objeto Loja com os dados validados
                     loja = (Loja) inputFilterLoja.createModel();
 
-                    DaoLoja dao = new DaoLoja(loja);
+                    DaoLoja dao = new DaoLoja(
+                            (Connection) request.getAttribute("connection"),
+                            loja);
 
                     // Garante que o cnpj não esteja cadastrado na base de dados
                     if (dao.findAll(loja, "cnpj", "=", loja.getCnpj())
@@ -75,7 +79,7 @@ public class ControllerLoja implements Logica {
                         }
                     } else {
                         // Manda para a jsp os campos inválidos e uma mensagem
-                        session.setAttribute("cliente", loja);
+                        session.setAttribute("loja", loja);
                         session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
                                 "Este CNPJ já está cadastrado.");
@@ -84,10 +88,10 @@ public class ControllerLoja implements Logica {
                     // Manda para a jsp os campos inválidos e uma mensagem
                     session.setAttribute("errorValidation",
                             inputFilterLoja.getErrorValidation());
-                    session.setAttribute("cliente", loja);
+                    session.setAttribute("loja", loja);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
-                            "Verifique os campo em vermelho.");
+                            "Verifique o(s) campo(s) em vermelho.");
                 }
             }
 
@@ -102,7 +106,9 @@ public class ControllerLoja implements Logica {
     }
 
     @Override
-    public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String editar(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
 
         try {
             //Valida se o formulário que está sendo submetido é do tipo post
@@ -121,7 +127,9 @@ public class ControllerLoja implements Logica {
                     // Atualiza o objeto Loja com os dados validados
                     loja = (Loja) inputFilterLoja.createModel();
 
-                    DaoLoja dao = new DaoLoja(loja);
+                    DaoLoja dao = new DaoLoja(
+                            (Connection) request.getAttribute("connection"),
+                            loja);
 
                     // Garante que não exista cpf repetido na base de dados
                     List<Model> lista = dao.findAll(loja, "cnpj", "=",
@@ -176,7 +184,8 @@ public class ControllerLoja implements Logica {
 
                 if (digito) {
                     Model loja = new Loja();
-                    DaoLoja dao = new DaoLoja();
+                    DaoLoja dao = new DaoLoja(
+                            (Connection) request.getAttribute("connection"));
                     loja = dao.findOne(loja, Integer.valueOf(request
                             .getParameter("id")));
 
@@ -200,10 +209,11 @@ public class ControllerLoja implements Logica {
     }
 
     @Override
-    public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String excluir(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
 
         try {
-            
             if (request.getParameter("id") != null) {
                 String id = request.getParameter("id");
                 boolean digito = true;
@@ -216,8 +226,10 @@ public class ControllerLoja implements Logica {
                 }
 
                 if (digito) {
-                    Loja cliente = new Loja();
-                    DaoLoja dao = new DaoLoja(cliente);
+                    Loja loja = new Loja();
+                    DaoLoja dao = new DaoLoja(
+                            (Connection) request.getAttribute("connection"),
+                            loja);
 
                     if (dao.delete(Integer.valueOf(id))) {
                         session.setAttribute("alert", "alert-warning");
@@ -227,7 +239,7 @@ public class ControllerLoja implements Logica {
                     }
                 }
             }
-            
+
             return "/WEB-INF/jsp/cadastrar-loja.jsp";
 
         } catch (Exception e) {
@@ -238,19 +250,20 @@ public class ControllerLoja implements Logica {
                     "Não foi possível realizar a exclusão.");
             return "excluir";
         }
-
-        
     }
 
     @Override
-    public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String pesquisar(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
 
         try {
-            
-           // Se o formulário for submetido por post então entra aqui
+
+            // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 Loja loja = new Loja();
-                DaoLoja dao = new DaoLoja();
+                DaoLoja dao = new DaoLoja(
+                        (Connection) request.getAttribute("connection"));
                 List<Model> lista;
 
                 // Se não houver valor para pesquisar então retorna tudo
@@ -269,7 +282,7 @@ public class ControllerLoja implements Logica {
                     if (digito && pesquisar.length() == 14) {
                         lista = dao.findAll(loja, "cnpj", "=", pesquisar);
                     } else {
-                        lista = dao.findAll(loja, "nome", "LIKE",
+                        lista = dao.findAll(loja, "nome_fantasia", "LIKE",
                                 "%" + pesquisar + "%");
                     }
 
