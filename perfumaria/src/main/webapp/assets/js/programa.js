@@ -36,6 +36,9 @@ function configurarForm() {
     var telefone = document.querySelector("#telefone");
     var cep = document.querySelector("#cep");
     var cnpj = document.querySelector("#cnpj");
+    var valorCompra = document.querySelector("#valor-compra");
+    var valorVenda = document.querySelector("#valor-venda");
+    var dataCadastro = document.querySelector("#data-cadastro");
     
     if (cpf !== null) {
         cpf.value = formatarCpf(cpf.value);
@@ -71,6 +74,26 @@ function configurarForm() {
            this.value = formatarCnpj(this.value);
         });
     }
+    
+    if (valorCompra !== null) {
+        valorCompra.value = formatarDinheiro(valorCompra.value);
+        valorCompra.addEventListener('focusout', function () {
+            this.value = formatarDinheiro(this.value);
+        });
+    }
+    
+    if (valorVenda !== null) {
+        valorVenda.value = formatarDinheiro(valorVenda.value);
+        valorVenda.addEventListener('focusout', function () {
+            this.value = formatarDinheiro(this.value);
+        });
+    }
+    
+    if (dataCadastro !== null) {
+        if (dataCadastro.value === '') {
+            incluirDataDoDia(dataCadastro);
+        }
+    }
 }
 
 function formatarCpf(value) {
@@ -105,6 +128,28 @@ function formatarCep(value) {
     return value;
 }
 
+function formatarDinheiro(value) {
+    var test = value;
+    test = test.replace(/[\D]+/g, '');
+    
+    // Só formata se for um número
+    if (parseInt(test)) {
+        test += '';
+        test = test.replace(/([0-9]{2})$/g, ',$1');
+        if (test.length > 6) {
+            test = test.replace(/([0-9]{3}),([0-9]{2}$)/g, '.$1,$2');
+        }
+        
+        return test;
+    }
+    
+    return value;
+}
+
+function incluirDataDoDia(field) {
+    field.value = new Date().toISOString().slice(0, 10);
+}
+
 function configurarLista() {
     var cpfs = document.querySelectorAll('.cpfs');
     var cnpjs = document.querySelectorAll('.cnpjs');
@@ -128,18 +173,6 @@ function configurarLista() {
  * @returns
  */
 function carregaProdutos() {
-//    console.log(location.origin);
-//    
-//    var xhr = new XMLHttpRequest();
-//    xhr.open('get', location.origin + '/perfumaria/sistema?controller=Produto&action=produtos');
-//    xhr.addEventListener('load', function (e) {
-//        var result = e.target.response;
-//        lista = JSON.parse(result);
-//    });
-//    xhr.send();
-//    
-//    console.log(lista);
-    
     var produtos = document.querySelector("#form-produtos");
     
     if (produtos !== null) {
