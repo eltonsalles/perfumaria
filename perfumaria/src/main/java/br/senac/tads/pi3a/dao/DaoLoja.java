@@ -25,6 +25,7 @@ package br.senac.tads.pi3a.dao;
 
 
 import br.senac.tads.pi3a.model.Loja;
+import java.sql.Connection;
 
 /**
  *
@@ -32,11 +33,11 @@ import br.senac.tads.pi3a.model.Loja;
  */
 public class DaoLoja extends AbstractDao {
 
-    public DaoLoja() {
-        
+    public DaoLoja(Connection conn) {
+        super(conn);
     }
     
-    public DaoLoja(Loja model) {
-        super(model);
+    public DaoLoja(Connection conn, Loja model) {
+        super(conn, model);
     }
 }
