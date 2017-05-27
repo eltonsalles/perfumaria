@@ -30,9 +30,7 @@ import java.util.List;
  *
  * @author Douglas Oliveira
  */
-public class Venda {
-
-    private int id;
+public class Venda extends Model{
 
     private Date data;
 
@@ -47,14 +45,6 @@ public class Venda {
     private List<ItensVenda> listaItensVenda;
 
     private float valorVenda;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Date getData() {
         return data;

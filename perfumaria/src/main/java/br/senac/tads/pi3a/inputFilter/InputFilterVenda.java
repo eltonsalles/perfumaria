@@ -178,6 +178,6 @@ public class InputFilterVenda extends InputFilter {
             e.printStackTrace(System.err);
             itensVenda= null;
         }
-        return null;
+        return venda;
     }
 }
