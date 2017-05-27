@@ -29,7 +29,11 @@ import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
 import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
+import br.senac.tads.pi3a.validation.ValidationDate;
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -357,8 +361,74 @@ public class ControllerProduto implements Logica {
         return "/WEB-INF/jsp/manutencao-produto.jsp";
     }
 
-    public String relatorio(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        return "/WEB-INF/jsp/relatorio-estoque.jsp";
+    public String relatorio(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session) {
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                ItensLoja itensLoja = new ItensLoja();
+                DaoItensLoja dao = new DaoItensLoja(
+                        (Connection) request.getAttribute("connection"));
+                List<Model> lista = null;
+
+                // Verifica se as datas são válidas
+                if (request.getParameter("data-inicial") != null
+                        && !request.getParameter("data-inicial").isEmpty()
+                        && request.getParameter("data-final") != null
+                        && !request.getParameter("data-final").isEmpty()) {
+                    String dataInicial = request.getParameter("data-inicial");
+                    String dataFinal = request.getParameter("data-final");
+                    
+                    ValidationDate vD = new ValidationDate();
+                    
+                    if (vD.isValid(dataInicial) && vD.isValid(dataFinal)) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        sdf.setLenient(false);
+                        
+                        Date dI = sdf.parse(dataInicial);
+                        Date dF = sdf.parse(dataFinal);
+                        
+                        // Verifica se a data final está depois da inicial e
+                        // antes de hoje
+                        if (dF.after(dI) && dF.before(new Date())) {
+                            lista = dao.findAll(itensLoja,
+                                    new String[]{"status", "loja_id", "data_cadastro", "data_cadastro"},
+                                    new String[]{"=", "=", ">=", "<="},
+                                    new String[]{"true", "1", dataInicial, dataFinal},
+                                    new String[]{"and", "and", "and", "and"});
+                        } else {
+                            session.setAttribute("alert", "alert-danger");
+                            session.setAttribute("alertMessage", 
+                                    "A data final não pode ser anterior a da"
+                                            + " inicial.");
+                            
+                            return "/WEB-INF/jsp/relatorio-estoque.jsp";
+                        }
+                    }
+                    
+                    if (lista != null && !lista.isEmpty()) {
+                        session.setAttribute("listaProdutos", lista);
+                        return "pesquisar";
+                    } else {
+                        session.setAttribute("alert", "alert-warning");
+                        session.setAttribute("alertMessage",
+                                "A consulta não retornou nenhum resultado.");
+                    }
+                } else {
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage", 
+                            "Verifique as datas informadas.");
+                }
+            }
+
+            return "/WEB-INF/jsp/relatorio-estoque.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a consulta.");
+            return "pesquisar";
+        }
     }
 
     public String historico(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
