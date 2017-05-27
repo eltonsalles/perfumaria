@@ -23,7 +23,11 @@
  */
 package br.senac.tads.pi3a.inputFilter;
 
+import br.senac.tads.pi3a.dao.DaoProduto;
+import br.senac.tads.pi3a.model.HistoricoProduto;
+import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.model.Produto;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
@@ -33,7 +37,7 @@ import java.util.Map;
  *
  * @author joao.mihamasaki
  */
-public class InputFilterManutencaoProduto extends InputFilter{
+public class InputFilterManutencaoProduto extends InputFilter {
 
     public InputFilterManutencaoProduto(Map<String, String[]> allMap) {
         super(allMap);
@@ -47,25 +51,23 @@ public class InputFilterManutencaoProduto extends InputFilter{
         //Validar nome produto
         if (this.allMap.containsKey("nome")) {
             validationTamanho.setTamanho(150);
-
             if (validationTamanho.isValid(this.allMap.get("nome")[0])
                     && validationString.isValid(this.allMap.get("nome")[0])) {
                 this.errorValidation.replace("nome", false);
             }
-        }      
+        }
         //Validar justificativa
         if (this.allMap.containsKey("justificativa")) {
             String justificativa = this.allMap.get("justificativa")[0];
-
             if (!justificativa.isEmpty()) {
                 if (justificativa.equalsIgnoreCase("Entrada")
                         || justificativa.equalsIgnoreCase("Saida")
                         || justificativa.equalsIgnoreCase("Fora de Linha")
-                        || justificativa.equalsIgnoreCase("Quebra")){
+                        || justificativa.equalsIgnoreCase("Quebra")) {
                     this.errorValidation.replace("justificativa", false);
                 }
             }
-        } 
+        }
         //Validar quantidade
         if (this.allMap.containsKey("quantidade")) {
             String estoque = this.allMap.get("quantidade")[0]
@@ -75,8 +77,7 @@ public class InputFilterManutencaoProduto extends InputFilter{
                 this.errorValidation.replace("quantidade", false);
                 this.allMap.replace("quantidade", new String[]{estoque});
             }
-
-        }      
+        }
         //Validar campo observação
         if (this.allMap.containsKey("descricao")) {
             validationTamanho.setTamanho(8000);
@@ -93,7 +94,7 @@ public class InputFilterManutencaoProduto extends InputFilter{
 
     @Override
     protected Model getModel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
-    
+
 }

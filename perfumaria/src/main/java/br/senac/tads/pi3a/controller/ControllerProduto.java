@@ -23,10 +23,15 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoHistoricoProduto;
 import br.senac.tads.pi3a.dao.DaoItensLoja;
+import br.senac.tads.pi3a.dao.DaoLoja;
 import br.senac.tads.pi3a.dao.DaoProduto;
+import br.senac.tads.pi3a.inputFilter.InputFilterManutencaoProduto;
 import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
+import br.senac.tads.pi3a.model.HistoricoProduto;
 import br.senac.tads.pi3a.model.ItensLoja;
+import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
 import java.sql.Connection;
@@ -50,34 +55,34 @@ public class ControllerProduto implements Logica {
                 // Classe de validação do formulário de produto
                 InputFilterProduto inputFilterProduto
                         = new InputFilterProduto(request.getParameterMap());
-                
+
                 // Cria um objeto itens loja com os dados do formulário,
                 // mas sem validação
                 ItensLoja itensLoja = (ItensLoja) inputFilterProduto.getData();
-                
+
                 if (inputFilterProduto.isValid()) {
                     // Atualiza o objeto itens loja com os dados validados
                     itensLoja = (ItensLoja) inputFilterProduto.createModel();
-                    
+
                     // Pega a conexão com o banco de dados
                     Connection conn = (Connection) request
                             .getAttribute("connection");
-                    
+
                     // Chama a DAO de produto passando a conexão e o objeto
                     // a ser inserido
                     DaoProduto daoProduto = new DaoProduto(conn,
                             itensLoja.getProduto());
-                    
+
                     // #MOCK - id da loja
                     // Garante que o produto ainda não existe na loja
                     // que está se cadastrando
                     if (daoProduto.produtoExisteLoja(itensLoja.getProduto()
                             .getNome().toUpperCase(), 1) == -1) {
-                        
+
                         List listaPorNome = daoProduto.findAll(itensLoja
                                 .getProduto(), "UPPER(nome)", "=", itensLoja
                                         .getProduto().getNome().toUpperCase());
-                        
+
                         int idProduto;
                         if (listaPorNome.isEmpty()) {
                             // Faz a inserção na tabela produto
@@ -86,14 +91,14 @@ public class ControllerProduto implements Logica {
                             Produto produto = (Produto) listaPorNome.get(0);
                             idProduto = produto.getId();
                         }
-                        
+
                         itensLoja.getProduto().setId(idProduto);
 
                         // Chama a DAO de itens de loja passando a conexão
                         // e o objeto a ser inserido
                         DaoItensLoja daoItensLoja = new DaoItensLoja(conn,
                                 itensLoja);
-                        
+
                         // Faz a inserção na tabela itens de loja
                         if (daoItensLoja.insert() != -1) {
                             session.setAttribute("alert", "alert-success");
@@ -137,26 +142,26 @@ public class ControllerProduto implements Logica {
         try {
             // Pega a conexão
             Connection conn = (Connection) request.getAttribute("connection");
-                        
+
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 // Classe de validação do formulário de produtos
                 InputFilterProduto inputFilterProduto
                         = new InputFilterProduto(request.getParameterMap());
-                
+
                 // Cria um objeto itensLoja com os dados do formulário,
                 // mas sem validação
                 ItensLoja itensLoja = (ItensLoja) inputFilterProduto.getData();
-                
+
                 if (inputFilterProduto.isValid()) {
                     // Atualiza os dados com as informações validadas
                     itensLoja = (ItensLoja) inputFilterProduto.createModel();
-                    
+
                     // Chama a DAO de produto passando a conexão e o objeto
                     // a ser alterado
                     DaoProduto daoProduto = new DaoProduto(conn,
                             itensLoja.getProduto());
-                    
+
                     // #MOCK - id da loja
                     // Garante que as alterações não dupliquem o nome do produto
                     if (daoProduto.produtoExisteLoja(
@@ -166,7 +171,7 @@ public class ControllerProduto implements Logica {
                         // objeto a ser alterado
                         DaoItensLoja daoItensLoja
                                 = new DaoItensLoja(conn, itensLoja);
-                        
+
                         // Faz as alterações na tabela produto e itens de loja
                         if (daoProduto.update()
                                 && daoItensLoja.update(
@@ -185,7 +190,7 @@ public class ControllerProduto implements Logica {
                         session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
                                 "Não foi encontrado nenhum produto com esse"
-                                        + " nome para essa loja.");
+                                + " nome para essa loja.");
                     }
                 } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
@@ -212,7 +217,7 @@ public class ControllerProduto implements Logica {
 
                     if (digito) {
                         Model itensLoja = new ItensLoja();
-                        
+
                         // Chama a DAO passando a conexão
                         DaoItensLoja dao = new DaoItensLoja(conn);
 
@@ -265,9 +270,9 @@ public class ControllerProduto implements Logica {
                     // Pega a conexão
                     Connection conn = (Connection) request
                             .getAttribute("connection");
-                    
+
                     ItensLoja itensLoja = new ItensLoja();
-                    
+
                     DaoItensLoja daoItensLoja
                             = new DaoItensLoja(conn, itensLoja);
 
@@ -354,7 +359,80 @@ public class ControllerProduto implements Logica {
     }
 
     public String movimentar(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        return "/WEB-INF/jsp/manutencao-produto.jsp";
+        try {
+            Connection conn = (Connection) request.getAttribute("connection");
+            
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                // Classe de validação do formulário ManutencaoProduto
+                InputFilterManutencaoProduto inputFilterManutencaoProduto
+                        = new InputFilterManutencaoProduto(request.
+                                getParameterMap());
+
+                // Cria um objeto HistoricoProduto com os dados do formulário,
+                // mas sem validação
+                HistoricoProduto historicoProduto = (HistoricoProduto) inputFilterManutencaoProduto.getData();
+
+                // Faz a validação do formulário ManutençãoProduto
+                if (inputFilterManutencaoProduto.isValid()) {
+                    // Atualiza o objeto HistoricoProduto com os dados validados
+                    historicoProduto = (HistoricoProduto) inputFilterManutencaoProduto.createModel();
+
+                    
+
+                    DaoProduto daoProduto = new DaoProduto(conn);
+                    if (daoProduto.produtoExisteLoja(historicoProduto.getProduto().getNome(), 1) > 0) {
+                        DaoHistoricoProduto daoHistoricoProduto = new DaoHistoricoProduto(conn,
+                                historicoProduto);
+
+                        // A dao retorna um id válido se fizer a inserção
+                        if (daoHistoricoProduto.insert() != -1) {
+                            session.setAttribute("alert", "alert-success");
+                            session.setAttribute("alertMessage",
+                                    "Cadastro realizado com sucesso.");
+                            return "novo";
+                        }
+                    } else {
+                        // Manda para a jsp os campos inválidos e uma mensagem
+                        session.setAttribute("errorValidation",
+                                inputFilterManutencaoProduto.getErrorValidation());
+                        session.setAttribute("historicoProduto", historicoProduto);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage",
+                                "Este produto não existe para essa loja.");
+                    }
+
+                } else {
+                    // Manda para a jsp os campos inválidos e uma mensagem
+                    session.setAttribute("errorValidation",
+                            inputFilterManutencaoProduto.getErrorValidation());
+                    session.setAttribute("historicoProduto", historicoProduto);
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage",
+                            "Verifique o(s) campo(s) em vermelho.");
+                }
+            }
+            
+            Produto produto = new Produto();
+            DaoProduto daoProduto = new DaoProduto(conn);
+            List<Model> listaProdutos = daoProduto.findAll(produto);
+            
+            session.setAttribute("listaProdutos", listaProdutos);
+            
+            Loja loja = new Loja();
+            DaoLoja daoLoja = new DaoLoja(conn);
+            List<Model> listaLoja = daoLoja.findAll(loja);
+            
+            session.setAttribute("listaLoja", listaLoja);
+            
+            return "/WEB-INF/jsp/manutencao-produto.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar o cadastro.");
+            return "novo";
+        }
     }
 
     public String relatorio(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
@@ -364,28 +442,28 @@ public class ControllerProduto implements Logica {
     public String historico(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         return "/WEB-INF/jsp/historico-produto.jsp";
     }
-    
+
     /**
      * Método que gera um json com as informações comuns dos produtos
-     * 
+     *
      * @param request
      * @param response
      * @param session
-     * @return 
+     * @return
      */
     public String produtos(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         try {
-            if (request.getParameter("nome") != null 
+            if (request.getParameter("nome") != null
                     && !request.getParameter("nome").isEmpty()) {
                 String nome = request.getParameter("nome");
-                
+
                 Produto produto = new Produto();
                 DaoProduto dao = new DaoProduto((Connection) request
                         .getAttribute("connection"));
 
                 List lista = dao.findAll(produto,
                         "UPPER(nome)", "LIKE", "%" + nome.toUpperCase() + "%");
-                
+
                 if (!lista.isEmpty()) {
                     request.setAttribute("produtos", lista);
                 }
@@ -393,7 +471,7 @@ public class ControllerProduto implements Logica {
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
-        
+
         return "/WEB-INF/api/produtos.jsp";
     }
 }
