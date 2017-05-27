@@ -33,15 +33,15 @@
             <th>Valor de Venda</th>
             <th>Estoque</th>
         </tr>
-        <c:forEach items="${sessionScope.listaProdutos}" var="produto">
+        <c:forEach items="${sessionScope.listaProdutos}" var="item">
             <tr>
-                <td><c:out value="${produto.id}"></c:out></td>
-                <td><c:out value="${produto.nome}"></c:out></td>
-                <td><c:out value="${produto.categoria}"></c:out></td>
-                <td><fmt:setLocale value="pt_BR"></fmt:setLocale></td>
-                <td><fmt:formatNumber value="${produto.valorCompra}" type="number" pattern="#,##0.00" /></td>
-                <td><fmt:formatNumber value="${produto.valorVenda}" type="number" pattern="#,##0.00" /></td>
-                <td><c:out value="${produto.estoque}"></c:out></td>
+                <td><c:out value="${item.produto.id}"></c:out></td>
+                <td><c:out value="${item.produto.nome}"></c:out></td>
+                <td><c:out value="${item.produto.categoria}"></c:out></td>
+                <fmt:setLocale value="pt_BR"></fmt:setLocale>
+                <td><fmt:formatNumber value="${item.valorCompra}" type="number" pattern="#,##0.00" /></td>
+                <td><fmt:formatNumber value="${item.valorVenda}" type="number" pattern="#,##0.00" /></td>
+                <td><c:out value="${item.estoque}"></c:out></td>
             </tr>
         </c:forEach>
         <c:remove scope="session" var="listaProdutos"></c:remove>
