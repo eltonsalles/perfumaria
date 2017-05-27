@@ -23,26 +23,18 @@
  */
 package br.senac.tads.pi3a.model;
 
-import br.senac.tads.pi3a.annotation.Columm;
-import br.senac.tads.pi3a.annotation.ForeignKey;
-import br.senac.tads.pi3a.annotation.Table;
-
 /**
  *
  * @author Douglas Oliveira
  */
-@Table(name = "itens_venda")
-public class ItensVenda extends Model {
-    @ForeignKey(name = "venda_id", referenced = "Venda", referencedName = "id")
+public class ItensVenda {
+
     private Venda venda;
     
-    @ForeignKey(name = "produto_id", referenced = "Produto", referencedName = "id")
-    private Produto produto;
+    private ItensLoja itens;
     
-    @Columm(name = "qtde_item")
-    private int quantidadeItem;
+    private int quantidade;
     
-    @Columm(name = "valor_unitario")
     private float valorUnitario;
 
     public Venda getVenda() {
@@ -53,20 +45,20 @@ public class ItensVenda extends Model {
         this.venda = venda;
     }
 
-    public Produto getProduto() {
-        return produto;
+    public ItensLoja getItens() {
+        return itens;
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public void setItens(ItensLoja itens) {
+        this.itens = itens;
     }
 
-    public int getQuantidadeItem() {
-        return quantidadeItem;
+    public int getQuantidade() {
+        return quantidade;
     }
 
-    public void setQuantidadeItem(int quantidadeItem) {
-        this.quantidadeItem = quantidadeItem;
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
 
     public float getValorUnitario() {

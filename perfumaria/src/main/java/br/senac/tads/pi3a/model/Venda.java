@@ -23,38 +23,45 @@
  */
 package br.senac.tads.pi3a.model;
 
-import br.senac.tads.pi3a.annotation.Columm;
-import br.senac.tads.pi3a.annotation.ForeignKey;
-import br.senac.tads.pi3a.annotation.Table;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author Douglas Oliveira
  */
-@Table(name = "venda")
-public class Venda extends Model {
-    @Columm(name = "data_venda")
-    private Date dataVenda;
+public class Venda {
 
-    @Columm(name = "status")
+    private int id;
+
+    private Date data;
+
     private boolean status;
 
-    @ForeignKey(name = "cliente_id", referenced = "Cliente", referencedName = "id")
     private Cliente cliente;
-    
-    @ForeignKey(name = "funcionario_id", referenced = "Funcionario", referencedName = "id")
+
     private Funcionario funcionario;
-    
-    @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
+
     private Loja loja;
 
-    public Date getDataVenda() {
-        return dataVenda;
+    private List<ItensVenda> listaItensVenda;
+
+    private float valorVenda;
+
+    public int getId() {
+        return id;
     }
 
-    public void setDataVenda(Date dataVenda) {
-        this.dataVenda = dataVenda;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
     }
 
     public boolean getStatus() {
@@ -87,5 +94,21 @@ public class Venda extends Model {
 
     public void setLoja(Loja loja) {
         this.loja = loja;
+    }
+
+    public List<ItensVenda> getListaItensVenda() {
+        return listaItensVenda;
+    }
+
+    public void addListaItensVenda(ItensVenda itensVenda) {
+        this.listaItensVenda.add(itensVenda);
+    }
+
+    public float getValorVenda() {
+        return valorVenda;
+    }
+
+    public void setValorVenda(float valorVenda) {
+        this.valorVenda = valorVenda;
     }
 }
