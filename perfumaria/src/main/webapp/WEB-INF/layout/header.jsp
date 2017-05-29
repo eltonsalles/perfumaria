@@ -11,17 +11,23 @@
         <!-- Theme Bootstrap minified -->
         <link rel="stylesheet" href="assets/lib/bootstrap/3.3.7/css/bootstrap-theme.min.css">
         
+        <!-- CSS Bootstrap + Chosen -->
+        <link rel="stylesheet" href="assets/lib/chosen/1.7.0/css/bootstrap-chosen.min.css">
+        
         <!-- CSS -->
         <link rel="stylesheet" href="assets/css/style.css">
-        
-        <!-- JavaScript -->
-        <script src="assets/js/programa.js"></script>
         
         <!-- JQuery minified -->
         <script src="assets/lib/jquery/jquery-3.2.0.min.js"></script>
 
         <!-- Bootstrap minified JavaScript -->
         <script src="assets/lib/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
+        <!-- JQuery Chosen -->
+        <script src="assets/lib/chosen/1.7.0/js/chosen.jquery.min.js"></script>
+        
+        <!-- JavaScript -->
+        <script src="assets/js/programa.js"></script>
     </head>
     <body>
         <div class="container-fluid">
