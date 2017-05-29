@@ -6,7 +6,7 @@
 <div class="col-md-10 content">
     <h2>Manutenção de Produto</h2>
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
-    <form id="form-produtos" action="sistema?controller=Produto&action=movimentar" method="post">
+    <form id="movimentar-produto" action="sistema?controller=Produto&action=movimentar" method="post">
         <div class="form-group col-md-6 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
                 <label class="control-label" for="nome">Nome do Produto</label>
                 <select class="form-control" id="produto" name="produto" required>
@@ -18,7 +18,7 @@
         </div>
         <div class="form-group col-md-6 <c:if test="${errorValidation.loja eq true}">has-error</c:if>">
                 <label class="control-label" for="loja">Lista de Lojas</label>
-                <select class="form-control" id="produto" name="loja" required>
+                <select class="form-control" id="loja" name="loja" required>
                     <option value="">---</option>
                 <c:forEach items="${sessionScope.listaLoja}" var="loja">
                     <option value="<c:out value="${loja.id}"></c:out>"><c:out value="${loja.razaoSocial}"></c:out></option>
