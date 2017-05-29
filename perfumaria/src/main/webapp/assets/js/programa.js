@@ -28,6 +28,7 @@ function init() {
     configurarLista();
     carregaProdutos();
     carregarEndereco();
+    selects();
 }
 
 function configurarForm() {
@@ -271,6 +272,19 @@ function carregarEndereco() {
                     }
                 });
             }
+        });
+    }
+}
+
+function selects() {
+    var movimentarProduto = document.querySelector("#movimentar-produto");
+    
+    if (movimentarProduto !== null) {
+        $('#produto').chosen({
+            no_results_text: "Opção não encontrada:"
+        });
+        $('#loja').chosen({
+            no_results_text: "Opção não encontrada:"
         });
     }
 }
