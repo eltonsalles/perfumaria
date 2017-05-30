@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Daniel Freitas.
+ * Copyright 2017 Fillipe.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,51 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package br.senac.tads.pi3a.model;
+package br.senac.tads.pi3a.dao;
+
+import br.senac.tads.pi3a.ado.Criteria;
+import br.senac.tads.pi3a.ado.Expression;
+import br.senac.tads.pi3a.ado.Filter;
+import br.senac.tads.pi3a.ado.SqlSelect;
+import br.senac.tads.pi3a.model.ItensLoja;
+import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.model.Produto;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
- * @author Douglas Oliveira
+ * @author Fillipe
  */
-public class ItensVenda {
-
-    private Venda venda;
-    
-    private ItensLoja itens;
-    
-    private int quantidade;
-    
-    private float valorUnitario;
-
-    public Venda getVenda() {
-        return venda;
-    }
-
-    public void setVenda(Venda venda) {
-        this.venda = venda;
-    }
-
-    public ItensLoja getItens() {
-        return itens;
-    }
-
-    public void setItens(ItensLoja itens) {
-        this.itens = itens;
-    }
-
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public float getValorUnitario() {
-        return valorUnitario;
-    }
-
-    public void setValorUnitario(float valorUnitario) {
-        this.valorUnitario = valorUnitario;
-    }
+public class DaoVenda {
+   
 }
