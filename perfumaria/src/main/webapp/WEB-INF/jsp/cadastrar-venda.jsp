@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="form-group col-md-offset-7 col-md-2">
-            <button id="inserir-produto" class="btn btn-default">
+            <button type="button" id="inserir-produto" class="btn btn-default">
                 Inserir Produto&nbsp;&nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </button>
         </div>
@@ -71,9 +71,9 @@
                     </div>
                 </td>
                 <td>
-                    <a href="#" class="btn-excluir btn btn-default" role="button" title="Remover">
+                    <button type="button" class="btn-excluir btn btn-default">
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    </a>
+                    </button>
                 </td>
             </tr>
         </table>
