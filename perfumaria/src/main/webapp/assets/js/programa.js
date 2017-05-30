@@ -29,6 +29,7 @@ function init() {
     carregaProdutos();
     carregarEndereco();
     selects();
+    inserirProduto();
 }
 
 function configurarForm() {
@@ -287,4 +288,34 @@ function selects() {
             no_results_text: "Opção não encontrada:"
         });
     }
+}
+
+function inserirProduto() {
+    var btn = document.querySelector("#inserir-produto");
+    
+    if (btn !== null) {
+        btn.addEventListener("click", function () {
+            var table = document.querySelector("#lista-itens-venda tbody");
+            var tr = document.querySelector("#lista-itens-venda tr:nth-of-type(2)");
+            var clone = tr.cloneNode(true);
+
+            table.appendChild(clone);
+
+            var btns = document.querySelectorAll(".btn-excluir");
+            var index = btns.length;
+            removerProduto(btns[index - 1], index);
+        });
+    }
+}
+
+function removerProduto(btn, index) {
+    btn.addEventListener("click", function () {
+        var table = document.querySelector("#lista-itens-venda");
+        var trs = document.querySelectorAll("#lista-itens-venda tr");
+        
+        // Só deixa excluir a última linha.
+        if (trs.length - 1 === index) {
+            table.deleteRow(index);
+        }
+    });
 }
