@@ -23,6 +23,14 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoVenda;
+import br.senac.tads.pi3a.model.Venda;
+import br.senac.tads.pi3a.validation.ValidationDate;
+import java.sql.Connection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -54,6 +62,73 @@ public class ControllerVenda implements Logica {
     }
 
     public String relatorio(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        return "/WEB-INF/jsp/relatorio-vendas.jsp";
+        
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                Venda venda = new Venda();
+                DaoVenda dao = new DaoVenda(
+                        (Connection) request.getAttribute("connection"));
+                List<Venda> lista = null;
+
+                // Verifica se as datas são válidas
+                if (request.getParameter("data-inicial") != null
+                        && !request.getParameter("data-inicial").isEmpty()
+                        && request.getParameter("data-final") != null
+                        && !request.getParameter("data-final").isEmpty()) {
+                    String dataInicial = request.getParameter("data-inicial");
+                    String dataFinal = request.getParameter("data-final");
+                    
+                    ValidationDate vD = new ValidationDate();
+                    
+                    if (vD.isValid(dataInicial) && vD.isValid(dataFinal)) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        sdf.setLenient(false);
+                        
+                        Date dI = sdf.parse(dataInicial);
+                        Date dF = sdf.parse(dataFinal);
+                        
+                        // Verifica se a data final está depois da inicial e
+                        // antes de hoje
+                        if (dF.after(dI) && dF.before(new Date())) {
+                            lista = dao.findAll(
+                                    new String[]{"status", "loja_id", "data_venda", "data_venda"},
+                                    new String[]{"=", "=", ">=", "<="},
+                                    new String[]{"true", "5", dataInicial, dataFinal},
+                                    new String[]{"and", "and", "and", "and"});
+                        } else {
+                            session.setAttribute("alert", "alert-danger");
+                            session.setAttribute("alertMessage", 
+                                    "A data final não pode ser anterior a da"
+                                            + " inicial.");
+                            
+                            return "/WEB-INF/jsp/relatorio-vendas.jsp";
+                        }
+                    }
+                    
+                    if (lista != null && !lista.isEmpty()) {
+                        session.setAttribute("listaVendas", lista);
+                        return "pesquisar";
+                    } else {
+                        session.setAttribute("alert", "alert-warning");
+                        session.setAttribute("alertMessage",
+                                "A consulta não retornou nenhum resultado.");
+                    }
+                } else {
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage", 
+                            "Verifique as datas informadas.");
+                }
+            }
+
+            return "/WEB-INF/jsp/relatorio-vendas.jsp"; 
+                 
+        } catch (ParseException e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a consulta.");
+            return "pesquisar";
+        }
     }
 }
