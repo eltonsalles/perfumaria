@@ -23,6 +23,7 @@
  */
 package br.senac.tads.pi3a.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +46,10 @@ public class Venda extends Model{
     private List<ItensVenda> listaItensVenda;
 
     private float valorVenda;
+    
+    public Venda() {
+        this.listaItensVenda = new ArrayList<>();
+    }
 
     public Date getData() {
         return data;

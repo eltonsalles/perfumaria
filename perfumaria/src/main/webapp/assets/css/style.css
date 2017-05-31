@@ -76,3 +76,11 @@ body,
 .status {
     height: 59px !important;
 }
+
+#form-venda > div:nth-of-type(3) {
+    height: 59px;
+}
+
+#inserir-produto {
+    margin-top: 25px;
+}

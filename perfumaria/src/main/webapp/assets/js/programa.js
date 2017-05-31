@@ -28,8 +28,8 @@ function init() {
     configurarLista();
     carregaProdutos();
     carregarEndereco();
-    adicionarLinha();
-    removerLinha();
+    selects();
+    inserirProduto();
 }
 
 function configurarForm() {
@@ -277,67 +277,45 @@ function carregarEndereco() {
     }
 }
 
-function adicionarLinha() {
-    var cont = 2;
-    var btn = document.querySelector('#add-linha');
-    if (btn !== null) {
-        btn.addEventListener('click', function () {
-
-            var tBody = document.querySelector('#tblvenda tbody');
-            var tr = document.createElement('tr');
-            tr.setAttribute('id', "a" + cont);
-            for (var i = 0; i <= 6; i++) {
-                var td = document.createElement('td');
-                // Crie aqui os inputs que são necessários
-                if (i == 0) {
-                    td.innerHTML = '<input type="text" style="border:0;" name="codigo" maxlength="150" placeholder="ID do produto"pattern="[0-9]+$"required/>';
-                } else if (i == 1) {
-                    td.innerHTML = '<input type="text" style="border:0;" name="produto" maxlength="150" placeholder="Nome do produto"required/>';
-                } else if (i == 2) {
-                    td.innerHTML = '<input type="text" style="border:0;" name="marca" maxlength="50" placeholder="Marca"required/>';
-                } else if (i == 3) {
-                    td.innerHTML = '<input type="number" style="border:0;" name="quantidade" maxlength="3" placeholder="Quantidade" pattern="[0-9]+$"required/>'
-                } else if (i == 4) {
-                    td.innerHTML = '<input type="text" style="border:0;" name="preco-unidade" maxlength="15" placeholder="Preço Unidade" pattern="([0-9]{1,3}\.)?[0-9]{1,3},[0-9]{2}$"required/>';
-                } else if (i == 5) {
-                    td.innerHTML = '<input type="text" style="border:0;" name="preco-total" maxlength="15" placeholder="Sub-Total" pattern="([0-9]{1,3}\.)?[0-9]{1,3},[0-9]{2}$"required/>';
-                } else {
-                    td.innerHTML = '<a href="#" class="btn-excluir btn btn-default" role="button" title="Remover"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>'
-
-
-                }
-
-
-                tr.appendChild(td);
-            }
-
-            tBody.appendChild(tr);
-            cont++;
-            removerLinha();
+function selects() {
+    var movimentarProduto = document.querySelector("#movimentar-produto");
+    
+    if (movimentarProduto !== null) {
+        $('#produto').chosen({
+            no_results_text: "Opção não encontrada:"
+        });
+        $('#loja').chosen({
+            no_results_text: "Opção não encontrada:"
         });
     }
-
 }
 
-function removerLinha() {
-    var btns = document.querySelectorAll(".btn-excluir");
-
-
-//    for (var i = 0; i < btns.length; i++) {
-//        btns[i].addEventListener("click", function () {
-//            var id = "#a" + i;
-//            var tr = document.querySelector(id);
-//           
-//                tr.parentNode.removeChild(tr);
-//            
-//            
-//        })
-//    }
+function inserirProduto() {
+    var btn = document.querySelector("#inserir-produto");
     
-    btns.forEach(function (btn) {
-            var id = btn.getAttribute('id');
-            var tr = document.querySelector(id);
-           
-                tr.parentNode.removeChild(tr); 
+    if (btn !== null) {
+        btn.addEventListener("click", function () {
+            var table = document.querySelector("#lista-itens-venda tbody");
+            var tr = document.querySelector("#lista-itens-venda tr:nth-of-type(2)");
+            var clone = tr.cloneNode(true);
+
+            table.appendChild(clone);
+
+            var btns = document.querySelectorAll(".btn-excluir");
+            var index = btns.length;
+            removerProduto(btns[index - 1], index);
+        });
+    }
+}
+
+function removerProduto(btn, index) {
+    btn.addEventListener("click", function () {
+        var table = document.querySelector("#lista-itens-venda");
+        var trs = document.querySelectorAll("#lista-itens-venda tr");
+        
+        // Só deixa excluir a última linha.
+        if (trs.length - 1 === index) {
+            table.deleteRow(index);
+        }
     });
 }
