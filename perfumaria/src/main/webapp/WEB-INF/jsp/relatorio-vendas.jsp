@@ -51,14 +51,13 @@
                     <td><c:out value="${itens.quantidade}"></c:out></td>
                 </c:forEach>
                 <fmt:setLocale value="pt_BR"></fmt:setLocale>
-                <td><fmt:formatNumber value="${venda.valorVenda}" type="number" pattern="#,##0.00" /></td>
+                <td class="dinheiro"><fmt:formatNumber value="${venda.valorVenda}" type="number" pattern="#,##0.00" /></td>
                 <td>
                     <a href="sistema?controller=Venda&action=editar&id=<c:out value="${venda.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </a>
                 </td>
             </tr>
-            <c:set var="valorTotal" value="${valorTotal+venda.valorVenda}"></c:set>
         </c:forEach>
                 
         <c:remove scope="session" var="listaVendas"></c:remove>
