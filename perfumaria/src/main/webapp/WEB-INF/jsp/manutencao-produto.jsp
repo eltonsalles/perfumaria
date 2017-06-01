@@ -7,19 +7,19 @@
     <h2>Manutenção de Produto</h2>
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
     <form id="movimentar-produto" action="sistema?controller=Produto&action=movimentar" method="post">
-        <div class="form-group col-md-6 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
-                <label class="control-label" for="nome">Nome do Produto</label>
-                <select class="form-control" id="produto" name="produto" required>
-                    <option value="">---</option>
+        <div class="form-group col-md-6 <c:if test="${errorValidation.produto eq true}">has-error</c:if>">
+            <label class="control-label" for="nome">Nome do Produto</label>
+            <select class="form-control" id="produto" name="produto">
+                <option value></option>
                 <c:forEach items="${sessionScope.listaProdutos}" var="produto">
                     <option value="<c:out value="${produto.id}"></c:out>"><c:out value="${produto.nome}"></c:out></option>
                 </c:forEach>
             </select>
         </div>
         <div class="form-group col-md-6 <c:if test="${errorValidation.loja eq true}">has-error</c:if>">
-                <label class="control-label" for="loja">Lista de Lojas</label>
-                <select class="form-control" id="loja" name="loja" required>
-                    <option value="">---</option>
+            <label class="control-label" for="loja">Nome da Loja</label>
+            <select class="form-control" id="loja" name="loja">
+                <option value></option>
                 <c:forEach items="${sessionScope.listaLoja}" var="loja">
                     <option value="<c:out value="${loja.id}"></c:out>"><c:out value="${loja.razaoSocial}"></c:out></option>
                 </c:forEach>
