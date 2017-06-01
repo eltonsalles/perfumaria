@@ -358,7 +358,8 @@ public class ControllerProduto implements Logica {
         }
     }
 
-    public String movimentar(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    public String movimentar(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session) {
         try {
             Connection conn = (Connection) request.getAttribute("connection");
             
@@ -371,37 +372,74 @@ public class ControllerProduto implements Logica {
 
                 // Cria um objeto HistoricoProduto com os dados do formulário,
                 // mas sem validação
-                HistoricoProduto historicoProduto = (HistoricoProduto) inputFilterManutencaoProduto.getData();
+                HistoricoProduto historicoProduto = (HistoricoProduto)
+                        inputFilterManutencaoProduto.getData();
 
-                // Faz a validação do formulário ManutençãoProduto
+                // Faz a validação do formulário Manutenção de Produto
                 if (inputFilterManutencaoProduto.isValid()) {
                     // Atualiza o objeto HistoricoProduto com os dados validados
-                    historicoProduto = (HistoricoProduto) inputFilterManutencaoProduto.createModel();
+                    historicoProduto = (HistoricoProduto)
+                            inputFilterManutencaoProduto.createModel();
 
+                    ItensLoja itensLoja = new ItensLoja();
+                    DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
                     
-
-                    DaoProduto daoProduto = new DaoProduto(conn);
-                    if (daoProduto.produtoExisteLoja(historicoProduto.getProduto().getNome(), 1) > 0) {
-                        DaoHistoricoProduto daoHistoricoProduto = new DaoHistoricoProduto(conn,
-                                historicoProduto);
+                    List<Model> produto = daoItensLoja.findAll(itensLoja,
+                            new String[]{"produto_id", "loja_id"},
+                            new String[]{"=", "="},
+                            new String[]{String.valueOf(historicoProduto
+                                    .getProduto().getId()),
+                                String.valueOf(historicoProduto.getLoja()
+                                        .getId())},
+                            new String[]{"and", "and"});
+                    
+                    // Pega o produto se ele foi encontrado
+                    if (produto.size() == 1) {
+                        itensLoja = (ItensLoja) produto.get(0);
+                    }
+                    
+                    if (itensLoja.getProduto().getId() > 0) {
+                        DaoHistoricoProduto daoHistoricoProduto
+                                = new DaoHistoricoProduto(conn,
+                                        historicoProduto);
 
                         // A dao retorna um id válido se fizer a inserção
                         if (daoHistoricoProduto.insert() != -1) {
+                            // Faz a movimentação do produto na loja em questão
+                            switch (historicoProduto.getTipoMovimentacao()
+                                    .toLowerCase()) {
+                                case "entrada":
+                                    itensLoja.setEstoque(itensLoja.getEstoque()
+                                            + historicoProduto.getQuantidade());
+                                    break;
+                                
+                                case "saida":
+                                case "fora de linha":
+                                case "quebra":
+                                    itensLoja.setEstoque(itensLoja.getEstoque()
+                                            - historicoProduto.getQuantidade());
+                            }
+                            
+                            daoItensLoja = new DaoItensLoja(conn, itensLoja);
+                            daoItensLoja.update(itensLoja.getProduto().getId(),
+                                    historicoProduto.getLoja().getId());
+                            
                             session.setAttribute("alert", "alert-success");
                             session.setAttribute("alertMessage",
-                                    "Cadastro realizado com sucesso.");
+                                    "Movimentação realizada com sucesso.");
                             return "novo";
                         }
                     } else {
                         // Manda para a jsp os campos inválidos e uma mensagem
                         session.setAttribute("errorValidation",
-                                inputFilterManutencaoProduto.getErrorValidation());
-                        session.setAttribute("historicoProduto", historicoProduto);
+                                inputFilterManutencaoProduto
+                                        .getErrorValidation());
+                        session.setAttribute("historicoProduto",
+                                historicoProduto);
                         session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
                                 "Este produto não existe para essa loja.");
                     }
-
                 } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
                     session.setAttribute("errorValidation",
