@@ -53,20 +53,20 @@ public class InputFilterManutencaoProduto extends InputFilter {
             this.errorValidation.replace("id", false);
         }
         
-        // Validação para Loja - campo em manutencao-produto.jsp
-        if (this.allMap.containsKey("loja")) {
-            if (validationInt.isValid(this.allMap.get("loja")[0])) {
-                if (Integer.valueOf(this.allMap.get("loja")[0]) > 0) {
-                    this.errorValidation.replace("loja", false);
-                }
-            }
-        }
-        
         // Validação para Produto
         if (this.allMap.containsKey("produto")) {
             if (validationInt.isValid(this.allMap.get("produto")[0])) {
                 if (Integer.valueOf(this.allMap.get("produto")[0]) > 0) {
                     this.errorValidation.replace("produto", false);
+                }
+            }
+        }
+        
+        // Validação para Loja - campo em manutencao-produto.jsp
+        if (this.allMap.containsKey("loja")) {
+            if (validationInt.isValid(this.allMap.get("loja")[0])) {
+                if (Integer.valueOf(this.allMap.get("loja")[0]) > 0) {
+                    this.errorValidation.replace("loja", false);
                 }
             }
         }
@@ -129,6 +129,9 @@ public class InputFilterManutencaoProduto extends InputFilter {
 
             Loja loja = new Loja();
             loja.setId(Integer.valueOf(this.allMap.get("loja")[0]));
+            
+            historicoProduto.setProduto(produto);
+            historicoProduto.setLoja(loja);
         } catch (NumberFormatException e) {
             e.printStackTrace(System.err);
             historicoProduto = null;
