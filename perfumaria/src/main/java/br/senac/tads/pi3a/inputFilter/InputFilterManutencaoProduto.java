@@ -23,7 +23,6 @@
  */
 package br.senac.tads.pi3a.inputFilter;
 
-
 import br.senac.tads.pi3a.model.HistoricoProduto;
 import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
@@ -31,8 +30,6 @@ import br.senac.tads.pi3a.model.Produto;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -49,92 +46,94 @@ public class InputFilterManutencaoProduto extends InputFilter {
     @Override
     public boolean isValid() {
         ValidationTamanho validationTamanho = new ValidationTamanho();
-        ValidationString validationString = new ValidationString();
         ValidationInt validationInt = new ValidationInt();
-   
-            //Validação do ID
-            if (this.allMap.containsKey("id")) {
-                if (validationInt.isValid(this.allMap.get("id")[0])) {
-                    if (Integer.valueOf(this.allMap.get("id")[0]) > 0) {
-                        this.errorValidation.replace("id", false);
-                    }
-                }
-            }
-            //Validação para Loja - campo em manutencao-produto.jsp
-            if (this.allMap.containsKey("loja")) {
-                if (validationInt.isValid(this.allMap.get("loja")[0])) {
-                    if (Integer.valueOf(this.allMap.get("loja")[0]) > 0) {
-                        this.errorValidation.replace("loja", false);
-                    }
-                }
-            }
-            //Validação para Produto
-            if (this.allMap.containsKey("produto")) {
-                if (validationInt.isValid(this.allMap.get("produto")[0])) {
-                    if (Integer.valueOf(this.allMap.get("produto")[0]) > 0) {
-                        this.errorValidation.replace("produto", false);
-                    }
-                }
-            }
 
-            //Validar justificativa
-            if (this.allMap.containsKey("justificativa")) {
-                String justificativa = this.allMap.get("justificativa")[0];
-                if (!justificativa.isEmpty()) {
-                    if (justificativa.equalsIgnoreCase("Entrada")
-                            || justificativa.equalsIgnoreCase("Saida")
-                            || justificativa.equalsIgnoreCase("Fora de Linha")
-                            || justificativa.equalsIgnoreCase("Quebra")) {
-                        this.errorValidation.replace("justificativa", false);
-                    }
+        // Altera o status da validação do id
+        if (this.allMap.containsKey("id")) {
+            this.errorValidation.replace("id", false);
+        }
+        
+        // Validação para Loja - campo em manutencao-produto.jsp
+        if (this.allMap.containsKey("loja")) {
+            if (validationInt.isValid(this.allMap.get("loja")[0])) {
+                if (Integer.valueOf(this.allMap.get("loja")[0]) > 0) {
+                    this.errorValidation.replace("loja", false);
                 }
             }
-            //Validar quantidade
-            if (this.allMap.containsKey("quantidade")) {
-                String estoque = this.allMap.get("quantidade")[0]
-                        .replaceAll("\\D", "");
+        }
+        
+        // Validação para Produto
+        if (this.allMap.containsKey("produto")) {
+            if (validationInt.isValid(this.allMap.get("produto")[0])) {
+                if (Integer.valueOf(this.allMap.get("produto")[0]) > 0) {
+                    this.errorValidation.replace("produto", false);
+                }
+            }
+        }
 
-                if (validationInt.isValid(estoque)) {
-                    this.errorValidation.replace("quantidade", false);
-                    this.allMap.replace("quantidade", new String[]{estoque});
+        // Validar justificativa
+        if (this.allMap.containsKey("justificativa")) {
+            String justificativa = this.allMap.get("justificativa")[0];
+            
+            if (!justificativa.isEmpty()) {
+                if (justificativa.equalsIgnoreCase("Entrada")
+                        || justificativa.equalsIgnoreCase("Saida")
+                        || justificativa.equalsIgnoreCase("Fora de Linha")
+                        || justificativa.equalsIgnoreCase("Quebra")) {
+                    this.errorValidation.replace("justificativa", false);
                 }
             }
-            //Validar campo observação
-            if (this.allMap.containsKey("descricao")) {
-                validationTamanho.setTamanho(8000);
+        }
+        
+        // Validar quantidade
+        if (this.allMap.containsKey("quantidade")) {
+            String estoque = this.allMap.get("quantidade")[0]
+                    .replaceAll("\\D", "");
 
-                if (validationTamanho.isValid(this.allMap.get("descricao")[0])
-                        && validationString.isValid(this.allMap
-                                .get("descricao")[0])) {
-                    this.errorValidation.replace("descricao", false);
-                }
+            if (validationInt.isValid(estoque)) {
+                this.errorValidation.replace("quantidade", false);
+                this.allMap.replace("quantidade", new String[]{estoque});
             }
+        }
+        
+        // Validar campo observação
+        if (this.allMap.containsKey("descricao")) {
+            ValidationString validationString = new ValidationString();
+            
+            validationTamanho.setTamanho(8000);
+
+            if (validationTamanho.isValid(this.allMap.get("descricao")[0])
+                    && validationString.isValid(this.allMap
+                            .get("descricao")[0])) {
+                this.errorValidation.replace("descricao", false);
+            }
+        }
+        
         return this.errorStatus();
     }
 
     @Override
     protected Model getModel() {
         HistoricoProduto historicoProduto = new HistoricoProduto();
-        Loja loja = new Loja();
-        Produto produto = new Produto();
-        try{
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date dataMovimentacao = new Date(sdf.parse(this.allMap
-                    .get("data-movimentacao")[0]).getTime());
-            
-            historicoProduto.setDataMovimentacao(dataMovimentacao);
-            historicoProduto.setTipoMovimentacao(this.allMap
-                    .get("tipo-movimentacao")[0]);
+
+        try {
+            historicoProduto.setDataMovimentacao(new Date());
+            historicoProduto.setTipoMovimentacao(
+                    this.allMap.get("justificativa")[0]);
             historicoProduto.setDescricao(this.allMap.get("descricao")[0]);
-            historicoProduto.setQuantidade(Integer.valueOf(this.allMap
-                    .get("quantidade")[0]));
-            
+            historicoProduto.setQuantidade(
+                    Integer.valueOf(this.allMap.get("quantidade")[0]));
+
+            Produto produto = new Produto();
             produto.setId(Integer.valueOf(this.allMap.get("produto")[0]));
+
+            Loja loja = new Loja();
             loja.setId(Integer.valueOf(this.allMap.get("loja")[0]));
-        }catch(NumberFormatException | ParseException e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace(System.err);
             historicoProduto = null;
         }
+
         return historicoProduto;
     }
 }
