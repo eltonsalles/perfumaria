@@ -37,7 +37,6 @@ import br.senac.tads.pi3a.model.Produto;
 import br.senac.tads.pi3a.validation.ValidationDate;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -485,7 +484,7 @@ public class ControllerProduto implements Logica {
                 ItensLoja itensLoja = new ItensLoja();
                 DaoItensLoja dao = new DaoItensLoja(
                         (Connection) request.getAttribute("connection"));
-                List<Model> lista = null;
+                List<Model> lista;
 
                 // Verifica se as datas são válidas
                 if (request.getParameter("data-inicial") != null
@@ -508,9 +507,11 @@ public class ControllerProduto implements Logica {
                         // antes de hoje
                         if (dF.after(dI) && dF.before(new Date())) {
                             lista = dao.findAll(itensLoja,
-                                    new String[]{"status", "loja_id", "data_cadastro", "data_cadastro"},
+                                    new String[]{"status", "loja_id",
+                                        "data_cadastro", "data_cadastro"},
                                     new String[]{"=", "=", ">=", "<="},
-                                    new String[]{"true", "1", dataInicial, dataFinal},
+                                    new String[]{"true", "1", // #MOCK
+                                        dataInicial, dataFinal},
                                     new String[]{"and", "and", "and", "and"});
                         } else {
                             session.setAttribute("alert", "alert-danger");
@@ -520,6 +521,12 @@ public class ControllerProduto implements Logica {
                             
                             return "/WEB-INF/jsp/relatorio-estoque.jsp";
                         }
+                    } else {
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage", 
+                            "A data final não pode ser após a data de hoje.");
+                        
+                        return "/WEB-INF/jsp/relatorio-estoque.jsp";
                     }
                     
                     if (lista != null && !lista.isEmpty()) {
