@@ -170,31 +170,31 @@ public class ControllerLoja implements Logica {
                             "Verifique os campo em vermelho.");
                 }
 
-            }
-            if (request.getParameter("id") != null) {
-                String id = request.getParameter("id");
-                boolean digito = true;
+            } else {
+                if (request.getParameter("id") != null) {
+                    String id = request.getParameter("id");
+                    boolean digito = true;
 
-                for (int i = 0; i < id.length(); i++) {
-                    if (!Character.isDigit(id.charAt(i))) {
-                        digito = false;
-                        break;
+                    for (int i = 0; i < id.length(); i++) {
+                        if (!Character.isDigit(id.charAt(i))) {
+                            digito = false;
+                            break;
+                        }
                     }
-                }
 
-                if (digito) {
-                    Model loja = new Loja();
-                    DaoLoja dao = new DaoLoja(
-                            (Connection) request.getAttribute("connection"));
-                    loja = dao.findOne(loja, Integer.valueOf(request
-                            .getParameter("id")));
+                    if (digito) {
+                        Model loja = new Loja();
+                        DaoLoja dao = new DaoLoja(
+                                (Connection) request.getAttribute("connection"));
+                        loja = dao.findOne(loja, Integer.valueOf(request
+                                .getParameter("id")));
 
-                    session.setAttribute("loja", loja);
+                        session.setAttribute("loja", loja);
+                    }
                 }
             }
 
             return "/WEB-INF/jsp/cadastrar-loja.jsp";
-
         } catch (Exception e) {
 
             e.printStackTrace(System.err);
@@ -282,8 +282,8 @@ public class ControllerLoja implements Logica {
                     if (digito && pesquisar.length() == 14) {
                         lista = dao.findAll(loja, "cnpj", "=", pesquisar);
                     } else {
-                        lista = dao.findAll(loja, "nome_fantasia", "LIKE",
-                                "%" + pesquisar + "%");
+                        lista = dao.findAll(loja, "UPPER(nome_fantasia)", "LIKE",
+                                "%" + pesquisar.toUpperCase() + "%");
                     }
 
                 } else {
