@@ -278,14 +278,30 @@ function carregarEndereco() {
 }
 
 function selects() {
-    var movimentarProduto = document.querySelector("#movimentar-produto");
+    var movimentarProduto = $("#movimentar-produto");
     
     if (movimentarProduto !== null) {
-        $('#produto').chosen({
-            no_results_text: "Opção não encontrada:"
+        var produto = $("#produto");
+        var loja = $("#loja");
+        
+        // Verifica se existe algo selecionado nos campos produto e loja
+        $(movimentarProduto).submit(function() {
+            // Se os campos estiverem vazios, então não subimete p formulário
+            if (produto.val() === "" || loja.val() === "") {
+                return false;
+            }
         });
-        $('#loja').chosen({
-            no_results_text: "Opção não encontrada:"
+        
+        produto.chosen({
+            placeholder_text_single: "Escolha um produto",
+            no_results_text: "Opção não encontrada:",
+            max_shown_results: 5
+        });
+        
+        loja.chosen({
+            placeholder_text_single: "Escolha uma loja",
+            no_results_text: "Opção não encontrada:",
+            max_shown_results: 5
         });
     }
 }
