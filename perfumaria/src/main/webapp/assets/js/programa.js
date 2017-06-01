@@ -155,6 +155,9 @@ function incluirDataDoDia(field) {
 function configurarLista() {
     var cpfs = document.querySelectorAll('.cpfs');
     var cnpjs = document.querySelectorAll('.cnpjs');
+    var dinheiro = document.querySelectorAll('.dinheiro');
+    var dataInicial = document.querySelector('#data-inicial');
+    var dataFinal = document.querySelector('#data-final');
     
     if (cpfs !== null) {
         cpfs.forEach(function (td){
@@ -166,6 +169,26 @@ function configurarLista() {
         cnpjs.forEach(function (td){
            td.textContent = formatarCnpj(td.textContent);
         });
+    }
+    
+    if (dinheiro !== null) {
+        dinheiro.forEach(function (td) {
+            td.textContent = "R$ " + formatarDinheiro(td.textContent);
+        });
+    }
+    
+    if (dataInicial !== null) {
+        if (dataInicial.value === '') {
+            incluirDataDoDia(dataInicial);
+            var data = dataInicial.value.split("-");
+            dataInicial.value = data[0] + "-" + data[1] + "-01";
+        }
+    }
+    
+    if (dataFinal !== null) {
+        if (dataFinal.value === '') {
+            incluirDataDoDia(dataFinal);
+        }
     }
 }
 
