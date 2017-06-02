@@ -1,4 +1,4 @@
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
@@ -21,46 +21,46 @@
                     </button>
                 </span>
             </div>
-            <div class="form-group col-md-offset-12 col-md-2 <c:if test="${errorValidation eq true}">has-error</c:if>">
-                    <label class="control-label" for="vendas-ativas">Total Vendido</label>
-                    <input type="text" value="" class="form-control" name="vendas-ativas">
+            <div class="form-group col-md-offset-12 col-md-2">
+                <label class="control-label" for="vendas-ativas">Total Vendido</label>
+                <input type="text" value="" class="form-control" name="vendas-ativas" readonly="readonly">
             </div>
-            </div>
-        </form>
-        <br>
-        <table class="table table-striped">
-            <tr>
-                <th>Código</th>
-                <th>Status</th>
-                <th>Cliente</th>
-                <th>Data</th>
-                <th>Produtos</th>
-                <th>Quantidade</th>
-                <th>Valor da Venda</th>
-                <th>Ações</th>
-            </tr>
-        <c:set var="valorTotal" value="${0}"></c:set>
-        <c:forEach items="${sessionScope.listaVendas}" var="venda">
-            <tr>
-                <td><c:out value="${venda.id}"></c:out></td>
-                <td><c:out value="${venda.status eq true ? 'Ativa' : 'Cancelada'}"></c:out></td>
-                <td><c:out value="${venda.cliente.nome}"></c:out></td>
-                <td><fmt:formatDate pattern="dd/MM/yyyy" value="${venda.data}"/></td>
-                <c:forEach items="${venda.listaItensVenda}" var="itens">
-                    <td><c:out value="${itens.itens.produto.nome}"></c:out></td>
-                    <td><c:out value="${itens.quantidade}"></c:out></td>
-                </c:forEach>
-                <fmt:setLocale value="pt_BR"></fmt:setLocale>
-                <td class="dinheiro"><fmt:formatNumber value="${venda.valorVenda}" type="number" pattern="#,##0.00" /></td>
-                <td>
-                    <a href="sistema?controller=Venda&action=editar&id=<c:out value="${venda.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                    </a>
-                </td>
-            </tr>
-        </c:forEach>
-                
-        <c:remove scope="session" var="listaVendas"></c:remove>
-        </table>
-    </div><!-- content -->
+        </div>
+    </form>
+    <br>
+    <table class="table table-striped">
+        <tr>
+            <th>Código</th>
+            <th>Status</th>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Produtos</th>
+            <th>Quantidade</th>
+            <th>Valor da Venda</th>
+            <th>Ações</th>
+        </tr>
+    <c:set var="valorTotal" value="${0}"></c:set>
+    <c:forEach items="${sessionScope.listaVendas}" var="venda">
+        <tr>
+            <td><c:out value="${venda.id}"></c:out></td>
+            <td><c:out value="${venda.status eq true ? 'Ativa' : 'Cancelada'}"></c:out></td>
+            <td><c:out value="${venda.cliente.nome}"></c:out></td>
+            <td><fmt:formatDate pattern="dd/MM/yyyy" value="${venda.data}"/></td>
+            <c:forEach items="${venda.listaItensVenda}" var="itens">
+                <td><c:out value="${itens.itens.produto.nome}"></c:out></td>
+                <td><c:out value="${itens.quantidade}"></c:out></td>
+            </c:forEach>
+            <fmt:setLocale value="pt_BR"></fmt:setLocale>
+            <td class="dinheiro"><fmt:formatNumber value="${venda.valorVenda}" type="number" pattern="#,##0.00" /></td>
+            <td>
+                <a href="sistema?controller=Venda&action=editar&id=<c:out value="${venda.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </a>
+            </td>
+        </tr>
+    </c:forEach>
+
+    <c:remove scope="session" var="listaVendas"></c:remove>
+    </table>
+</div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>
