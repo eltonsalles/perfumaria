@@ -155,6 +155,9 @@ function incluirDataDoDia(field) {
 function configurarLista() {
     var cpfs = document.querySelectorAll('.cpfs');
     var cnpjs = document.querySelectorAll('.cnpjs');
+    var dinheiro = document.querySelectorAll('.dinheiro');
+    var dataInicial = document.querySelector('#data-inicial');
+    var dataFinal = document.querySelector('#data-final');
     
     if (cpfs !== null) {
         cpfs.forEach(function (td){
@@ -166,6 +169,26 @@ function configurarLista() {
         cnpjs.forEach(function (td){
            td.textContent = formatarCnpj(td.textContent);
         });
+    }
+    
+    if (dinheiro !== null) {
+        dinheiro.forEach(function (td) {
+            td.textContent = "R$ " + formatarDinheiro(td.textContent);
+        });
+    }
+    
+    if (dataInicial !== null) {
+        if (dataInicial.value === '') {
+            incluirDataDoDia(dataInicial);
+            var data = dataInicial.value.split("-");
+            dataInicial.value = data[0] + "-" + data[1] + "-01";
+        }
+    }
+    
+    if (dataFinal !== null) {
+        if (dataFinal.value === '') {
+            incluirDataDoDia(dataFinal);
+        }
     }
 }
 
@@ -278,14 +301,30 @@ function carregarEndereco() {
 }
 
 function selects() {
-    var movimentarProduto = document.querySelector("#movimentar-produto");
+    var movimentarProduto = $("#movimentar-produto");
     
     if (movimentarProduto !== null) {
-        $('#produto').chosen({
-            no_results_text: "Opção não encontrada:"
+        var produto = $("#produto");
+        var loja = $("#loja");
+        
+        // Verifica se existe algo selecionado nos campos produto e loja
+        $(movimentarProduto).submit(function() {
+            // Se os campos estiverem vazios, então não subimete p formulário
+            if (produto.val() === "" || loja.val() === "") {
+                return false;
+            }
         });
-        $('#loja').chosen({
-            no_results_text: "Opção não encontrada:"
+        
+        produto.chosen({
+            placeholder_text_single: "Escolha um produto",
+            no_results_text: "Opção não encontrada:",
+            max_shown_results: 5
+        });
+        
+        loja.chosen({
+            placeholder_text_single: "Escolha uma loja",
+            no_results_text: "Opção não encontrada:",
+            max_shown_results: 5
         });
     }
 }

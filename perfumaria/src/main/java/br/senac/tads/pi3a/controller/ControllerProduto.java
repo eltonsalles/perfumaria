@@ -34,7 +34,10 @@ import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
+import br.senac.tads.pi3a.validation.ValidationDate;
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -358,7 +361,8 @@ public class ControllerProduto implements Logica {
         }
     }
 
-    public String movimentar(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    public String movimentar(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session) {
         try {
             Connection conn = (Connection) request.getAttribute("connection");
             
@@ -371,37 +375,74 @@ public class ControllerProduto implements Logica {
 
                 // Cria um objeto HistoricoProduto com os dados do formulário,
                 // mas sem validação
-                HistoricoProduto historicoProduto = (HistoricoProduto) inputFilterManutencaoProduto.getData();
+                HistoricoProduto historicoProduto = (HistoricoProduto)
+                        inputFilterManutencaoProduto.getData();
 
-                // Faz a validação do formulário ManutençãoProduto
+                // Faz a validação do formulário Manutenção de Produto
                 if (inputFilterManutencaoProduto.isValid()) {
                     // Atualiza o objeto HistoricoProduto com os dados validados
-                    historicoProduto = (HistoricoProduto) inputFilterManutencaoProduto.createModel();
+                    historicoProduto = (HistoricoProduto)
+                            inputFilterManutencaoProduto.createModel();
 
+                    ItensLoja itensLoja = new ItensLoja();
+                    DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
                     
-
-                    DaoProduto daoProduto = new DaoProduto(conn);
-                    if (daoProduto.produtoExisteLoja(historicoProduto.getProduto().getNome(), 1) > 0) {
-                        DaoHistoricoProduto daoHistoricoProduto = new DaoHistoricoProduto(conn,
-                                historicoProduto);
+                    List<Model> produto = daoItensLoja.findAll(itensLoja,
+                            new String[]{"produto_id", "loja_id"},
+                            new String[]{"=", "="},
+                            new String[]{String.valueOf(historicoProduto
+                                    .getProduto().getId()),
+                                String.valueOf(historicoProduto.getLoja()
+                                        .getId())},
+                            new String[]{"and", "and"});
+                    
+                    // Pega o produto se ele foi encontrado
+                    if (produto.size() == 1) {
+                        itensLoja = (ItensLoja) produto.get(0);
+                    }
+                    
+                    if (itensLoja.getProduto().getId() > 0) {
+                        DaoHistoricoProduto daoHistoricoProduto
+                                = new DaoHistoricoProduto(conn,
+                                        historicoProduto);
 
                         // A dao retorna um id válido se fizer a inserção
                         if (daoHistoricoProduto.insert() != -1) {
+                            // Faz a movimentação do produto na loja em questão
+                            switch (historicoProduto.getTipoMovimentacao()
+                                    .toLowerCase()) {
+                                case "entrada":
+                                    itensLoja.setEstoque(itensLoja.getEstoque()
+                                            + historicoProduto.getQuantidade());
+                                    break;
+                                
+                                case "saida":
+                                case "fora de linha":
+                                case "quebra":
+                                    itensLoja.setEstoque(itensLoja.getEstoque()
+                                            - historicoProduto.getQuantidade());
+                            }
+                            
+                            daoItensLoja = new DaoItensLoja(conn, itensLoja);
+                            daoItensLoja.update(itensLoja.getProduto().getId(),
+                                    historicoProduto.getLoja().getId());
+                            
                             session.setAttribute("alert", "alert-success");
                             session.setAttribute("alertMessage",
-                                    "Cadastro realizado com sucesso.");
+                                    "Movimentação realizada com sucesso.");
                             return "novo";
                         }
                     } else {
                         // Manda para a jsp os campos inválidos e uma mensagem
                         session.setAttribute("errorValidation",
-                                inputFilterManutencaoProduto.getErrorValidation());
-                        session.setAttribute("historicoProduto", historicoProduto);
+                                inputFilterManutencaoProduto
+                                        .getErrorValidation());
+                        session.setAttribute("historicoProduto",
+                                historicoProduto);
                         session.setAttribute("alert", "alert-danger");
                         session.setAttribute("alertMessage",
                                 "Este produto não existe para essa loja.");
                     }
-
                 } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
                     session.setAttribute("errorValidation",
@@ -435,8 +476,82 @@ public class ControllerProduto implements Logica {
         }
     }
 
-    public String relatorio(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        return "/WEB-INF/jsp/relatorio-estoque.jsp";
+    public String relatorio(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session) {
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                ItensLoja itensLoja = new ItensLoja();
+                DaoItensLoja dao = new DaoItensLoja(
+                        (Connection) request.getAttribute("connection"));
+                List<Model> lista;
+
+                // Verifica se as datas são válidas
+                if (request.getParameter("data-inicial") != null
+                        && !request.getParameter("data-inicial").isEmpty()
+                        && request.getParameter("data-final") != null
+                        && !request.getParameter("data-final").isEmpty()) {
+                    String dataInicial = request.getParameter("data-inicial");
+                    String dataFinal = request.getParameter("data-final");
+                    
+                    ValidationDate vD = new ValidationDate();
+                    
+                    if (vD.isValid(dataInicial) && vD.isValid(dataFinal)) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        sdf.setLenient(false);
+                        
+                        Date dI = sdf.parse(dataInicial);
+                        Date dF = sdf.parse(dataFinal);
+                        
+                        // Verifica se a data final está depois da inicial e
+                        // antes de hoje
+                        if (dF.after(dI) && dF.before(new Date())) {
+                            lista = dao.findAll(itensLoja,
+                                    new String[]{"status", "loja_id",
+                                        "data_cadastro", "data_cadastro"},
+                                    new String[]{"=", "=", ">=", "<="},
+                                    new String[]{"true", "1", // #MOCK
+                                        dataInicial, dataFinal},
+                                    new String[]{"and", "and", "and", "and"});
+                        } else {
+                            session.setAttribute("alert", "alert-danger");
+                            session.setAttribute("alertMessage", 
+                                    "A data final não pode ser anterior a da"
+                                            + " inicial.");
+                            
+                            return "/WEB-INF/jsp/relatorio-estoque.jsp";
+                        }
+                    } else {
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage", 
+                            "A data final não pode ser após a data de hoje.");
+                        
+                        return "/WEB-INF/jsp/relatorio-estoque.jsp";
+                    }
+                    
+                    if (lista != null && !lista.isEmpty()) {
+                        session.setAttribute("listaProdutos", lista);
+                        return "pesquisar";
+                    } else {
+                        session.setAttribute("alert", "alert-warning");
+                        session.setAttribute("alertMessage",
+                                "A consulta não retornou nenhum resultado.");
+                    }
+                } else {
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage", 
+                            "Verifique as datas informadas.");
+                }
+            }
+
+            return "/WEB-INF/jsp/relatorio-estoque.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a consulta.");
+            return "pesquisar";
+        }
     }
 
     public String historico(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
