@@ -54,6 +54,15 @@ public class ControllerProduto implements Logica {
     public String novo(HttpServletRequest request, HttpServletResponse response,
             HttpSession session) throws Exception {
         try {
+            // Pega a conexão com o banco de dados
+                    Connection conn = (Connection) request
+                            .getAttribute("connection");
+                    
+                     Loja loja = new Loja();
+            DaoLoja daoLoja = new DaoLoja(conn);
+            List<Model> listaLoja = daoLoja.findAll(loja);
+            
+            session.setAttribute("listaLoja", listaLoja);
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 // Classe de validação do formulário de produto
@@ -68,9 +77,7 @@ public class ControllerProduto implements Logica {
                     // Atualiza o objeto itens loja com os dados validados
                     itensLoja = (ItensLoja) inputFilterProduto.createModel();
 
-                    // Pega a conexão com o banco de dados
-                    Connection conn = (Connection) request
-                            .getAttribute("connection");
+                    
 
                     // Chama a DAO de produto passando a conexão e o objeto
                     // a ser inserido
@@ -81,7 +88,7 @@ public class ControllerProduto implements Logica {
                     // Garante que o produto ainda não existe na loja
                     // que está se cadastrando
                     if (daoProduto.produtoExisteLoja(itensLoja.getProduto()
-                            .getNome().toUpperCase(), 1) == -1) {
+                            .getNome().toUpperCase(), Integer.parseInt(request.getParameter("loja"))) == -1) {
 
                         List listaPorNome = daoProduto.findAll(itensLoja
                                 .getProduto(), "UPPER(nome)", "=", itensLoja
