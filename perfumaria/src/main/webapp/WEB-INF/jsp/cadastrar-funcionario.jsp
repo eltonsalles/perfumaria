@@ -7,22 +7,18 @@
     <h2><c:out value="${sessionScope.funcionario.id > 0 ? 'Alterar' : 'Cadastrar'}"></c:out> Funcionário</h2>
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
     <form action="sistema?controller=Funcionario&action=<c:out value="${sessionScope.funcionario.id > 0 ? 'editar' : 'novo'}"></c:out>" method="post">
-        <div class="form-group col-md-12">
-            <input type="hidden" class="form-control" id="id" name="id" value="<c:out value="${sessionScope.funcionario.id > 0 ? sessionScope.funcionario.id : ''}"></c:out>">
+        <div class="col-md-12">
+            <div class="row">
+            <div class="form-group col-md-3 <c:if test="${errorValidation.loja eq true}">has-error</c:if>">
+            <label class="control-label" for="loja">Nome da Loja</label>
+            <select class="form-control" id="loja" name="loja">
+                <option value></option>
+                <c:forEach items="${sessionScope.listaLoja}" var="loja">
+                    <option value="<c:out value="${loja.id}"></c:out>" <c:if test="${sessionScope.funcionario.loja.id == loja.id}">selected</c:if>><c:out value="${loja.razaoSocial}"></c:out></option>
+                </c:forEach>
+            </select> 
         </div>
-        <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
-            <label class="control-label" for="nome">Nome</label>
-            <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú])([a-zA-Zà-úÀ-Ú]|\.|\s)+$" value="<c:out value="${sessionScope.funcionario.nome}"></c:out>">
-        </div>
-        <div class="form-group col-md-3 <c:if test="${errorValidation.dataNascimento eq true}">has-error</c:if>"> 
-            <label class="control-label" for="data-nascimento">Data de Nascimento</label>
-            <input type="date" class="form-control" id="data-nascimento" name="data-nascimento" required min="1900-01-01" max="2100-12-31" value="<fmt:formatDate pattern="yyyy-MM-dd" value="${funcionario.dataNascimento}" />">
-        </div>
-        <div class="form-group col-md-2 <c:if test="${errorValidation.cpf eq true}">has-error</c:if>">
-            <label class="control-label" for="cpf">CPF</label>
-            <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required pattern="^\d{3}.\d{3}.\d{3}-\d{2}$" value="<c:out value="${sessionScope.funcionario.cpf}"></c:out>" <c:if test="${sessionScope.funcionario.id > 0}">readonly</c:if>>
-        </div>
-        <div class="form-group col-md-2 status">
+            <div class="form-group col-md-offset-10 status">
             <label>Status</label><br>
             <label class="radio-inline">
                 <input type="radio" id="ativo" value="true" name="status" checked required>Ativo
@@ -30,6 +26,23 @@
             <label class="radio-inline">
                 <input type="radio" id="inativo" value="false" name="status" required <c:if test="${sessionScope.funcionario.status eq false}">checked</c:if>>Inativo
             </label>
+        </div>
+        </div>
+        </div>
+        <div class="form-group col-md-12">
+            <input type="hidden" class="form-control" id="id" name="id" value="<c:out value="${sessionScope.funcionario.id > 0 ? sessionScope.funcionario.id : ''}"></c:out>">
+        </div>
+        <div class="form-group col-md-6 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
+            <label class="control-label" for="nome">Nome</label>
+            <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú])([a-zA-Zà-úÀ-Ú]|\.|\s)+$" value="<c:out value="${sessionScope.funcionario.nome}"></c:out>">
+        </div>
+        <div class="form-group col-md-3 <c:if test="${errorValidation.dataNascimento eq true}">has-error</c:if>"> 
+            <label class="control-label" for="data-nascimento">Data de Nascimento</label>
+            <input type="date" class="form-control" id="data-nascimento" name="data-nascimento" required min="1900-01-01" max="2100-12-31" value="<fmt:formatDate pattern="yyyy-MM-dd" value="${funcionario.dataNascimento}" />">
+        </div>
+        <div class="form-group col-md-3 <c:if test="${errorValidation.cpf eq true}">has-error</c:if>">
+            <label class="control-label" for="cpf">CPF</label>
+            <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required pattern="^\d{3}.\d{3}.\d{3}-\d{2}$" value="<c:out value="${sessionScope.funcionario.cpf}"></c:out>" <c:if test="${sessionScope.funcionario.id > 0}">readonly</c:if>>
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.dataAdmissao eq true}">has-error</c:if>">
             <label class="control-label" for="data-admissao">Data de Admissão</label>
@@ -68,7 +81,9 @@
                 <input type="radio" id="masculino" value="M" name="sexo" required <c:if test="${sessionScope.funcionario.sexo == 'M'.charAt(0)}">checked</c:if>>Masculino
             </label>
         </div>
-        <div class="form-group col-md-5 <c:if test="${errorValidation.email eq true}">has-error</c:if>">
+
+
+        <div class="form-group col-md-6 <c:if test="${errorValidation.email eq true}">has-error</c:if>">
             <label class="control-label" for="email">E-mail</label>
             <input type="email" class="form-control" id="email" placeholder="email@exemplo.com.br" name="email" maxlength="150" required value="<c:out value="${sessionScope.funcionario.email}"></c:out>">
         </div>
@@ -86,7 +101,7 @@
                     <label class="control-label" for="cep">CEP</label>
                     <input type="text" class="form-control" id="cep" placeholder="xxxxx-xxx" name="cep" maxlength="9" required pattern="\d{5}-\d{3}$" value="<c:out value="${sessionScope.funcionario.cep}"></c:out>">
                 </div>
-                <div class="form-group col-md-5 <c:if test="${errorValidation.logradouro eq true}">has-error</c:if>">
+                <div class="form-group col-md-4 <c:if test="${errorValidation.logradouro eq true}">has-error</c:if>">
                     <label class="control-label" for="logradouro">Logradouro</label>
                     <input type="text" class="form-control" id="logradouro" placeholder="Rua, Avenida..." name="logradouro" maxlength="150" required  pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.funcionario.logradouro}"></c:out>">
                 </div>
@@ -94,7 +109,7 @@
                     <label class="control-label" for="numero">Número</label>
                     <input type="text" class="form-control" id="numero" placeholder="xxx" name="numero" maxlength="10" required pattern="^\d+$" value="<c:out value="${sessionScope.funcionario.numero}"></c:out>">
                 </div>
-                <div class="form-group col-md-3 <c:if test="${errorValidation.complemento eq true}">has-error</c:if>">
+                <div class="form-group col-md-4 <c:if test="${errorValidation.complemento eq true}">has-error</c:if>">
                     <label for="complemento">Complemento</label>
                     <input type="text" class="form-control" id="complemento" placeholder="Bloco, sala..." name="complemento" maxlength="50" pattern="^([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.funcionario.complemento}"></c:out>">
                 </div>

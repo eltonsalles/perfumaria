@@ -57,12 +57,12 @@ public class InputFilterFuncionario extends InputFilter {
         ValidationTamanho validationTamanho = new ValidationTamanho();
         ValidationString validationString = new ValidationString();
         ValidationAlpha validationAlpha = new ValidationAlpha();
-
+        ValidationInt validationInt = new ValidationInt();
         // Garante que o id do formulário funcionário está vazio ou que é um 
         // inteiro maior que 0
         if (this.allMap.containsKey("id")) {
             if (!this.allMap.get("id")[0].isEmpty()) {
-                ValidationInt validationInt = new ValidationInt();
+                
                 if (validationInt.isValid(this.allMap.get("id")[0])) {
                     if (Integer.valueOf(this.allMap.get("id")[0]) > 0) {
                         this.errorValidation.replace("id", false);
@@ -70,6 +70,13 @@ public class InputFilterFuncionario extends InputFilter {
                 }
             } else {
                 this.errorValidation.replace("id", false);
+            }
+        }
+         if (this.allMap.containsKey("loja")) {
+            if (validationInt.isValid(this.allMap.get("loja")[0])) {
+                if (Integer.valueOf(this.allMap.get("loja")[0]) > 0) {
+                    this.errorValidation.replace("loja", false);
+                }
             }
         }
 
@@ -326,7 +333,7 @@ public class InputFilterFuncionario extends InputFilter {
 
             // #MOCK
             Loja loja = new Loja();
-            loja.setId(1);
+            loja.setId(Integer.parseInt(this.allMap.get("loja")[0]));
             funcionario.setLoja(loja);
 
         } catch (NumberFormatException | ParseException e) {
