@@ -23,8 +23,10 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoFuncionario;
 import br.senac.tads.pi3a.dao.DaoUsuario;
 import br.senac.tads.pi3a.inputFilter.InputFilterUsuario;
+import br.senac.tads.pi3a.model.Funcionario;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Usuario;
 import java.sql.Connection;
@@ -43,6 +45,7 @@ public class ControllerUsuario implements Logica {
     public String novo(HttpServletRequest request, HttpServletResponse response,
             HttpSession session) throws Exception {
         try {
+            Connection conn = (Connection) request.getAttribute("connection");
             if (request.getMethod().equalsIgnoreCase("post")) {
                 //classe de validação do formulário usuário
                 InputFilterUsuario inputFilterUsuario
@@ -86,7 +89,11 @@ public class ControllerUsuario implements Logica {
                             "Verifique o(s) campo(s) em vermelho.");
                 }
             }
-
+            Funcionario funcionario = new Funcionario();
+            DaoFuncionario daoFuncionario = new DaoFuncionario(conn);
+            List<Model> listaFuncionarios = daoFuncionario.findAll(funcionario);
+            
+            session.setAttribute("listaFuncionarios", listaFuncionarios);
             return "/WEB-INF/jsp/cadastrar-usuario.jsp";
         } catch (Exception e) {
             e.printStackTrace(System.err);
