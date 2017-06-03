@@ -23,19 +23,12 @@
  */
 package br.senac.tads.pi3a.inputFilter;
 
-import br.senac.tads.pi3a.model.Cliente;
-import br.senac.tads.pi3a.model.Funcionario;
-import br.senac.tads.pi3a.model.ItensVenda;
-import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
-import br.senac.tads.pi3a.model.Venda;
+import br.senac.tads.pi3a.validation.ValidationAlpha;
 import br.senac.tads.pi3a.validation.ValidationCpf;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -62,122 +55,101 @@ public class InputFilterVenda extends InputFilter {
     public boolean isValid() {
         ValidationTamanho validationTamanho = new ValidationTamanho();
         ValidationString validationString = new ValidationString();
-        ValidationInt validationInt = new ValidationInt();
-        // Verifica se o cpf informado no formulário cliente é válido
+        
+        // Verifica se o cpf informado no formulário é válido
         if (this.allMap.containsKey("cpf")) {
             // Deixa só os digitos
             String cpf = this.allMap.get("cpf")[0].replaceAll("\\D", "");
-
+            
             ValidationCpf validationCpf = new ValidationCpf();
-
+            
             if (validationCpf.isValid(cpf)) {
                 this.errorValidation.replace("cpf", false);
                 this.allMap.replace("cpf", new String[]{cpf});
             }
         }
+        
+        // Verifica se existe id de cliente
+        if (this.allMap.containsKey("id-cliente")) {            
+            ValidationInt validationInt = new ValidationInt();
 
-        // Garante que o id do formulário produto está vazio ou que é um inteiro
-        // maior que 0
-        if (this.allMap.containsKey("id")) {
-            if (!this.allMap.get("id")[0].isEmpty()) {
-
-                if (validationInt.isValid(this.allMap.get("id")[0])) {
-                    if (Integer.valueOf(this.allMap.get("id")[0]) > 0) {
-                        this.errorValidation.replace("id", false);
+            if (validationInt.isValid(this.allMap.get("id-cliente")[0])) {
+                if (Integer.valueOf(this.allMap.get("id-cliente")[0]) > 0) {
+                    this.errorValidation.replace("id-cliente", false);
+                }
+            }
+        }
+        
+        // Verifica se o id do produto é um número válido
+        if (this.allMap.containsKey("codigo")) {
+            ValidationInt validationInt = new ValidationInt();
+            boolean error = true;
+            
+            for (int i = 0; i < this.allMap.get("codigo").length; i++) {
+                if (validationInt.isValid(this.allMap.get("codigo")[i])) {
+                    if (Integer.valueOf(this.allMap.get("codigo")[i]) > 0) {
+                        error = false;
+                    } else {
+                        error = true;
+                        break;
                     }
                 }
-            } else {
-                this.errorValidation.replace("id", false);
             }
+            
+            this.errorValidation.replace("codigo", error);
         }
+        
+        // Verifica se o nome do produto é um válido válido
+        if (this.allMap.containsKey("produto")) {
+            boolean error = true;
+            
+            for (int i = 0; i < this.allMap.get("produto").length; i++) {
+                validationTamanho.setTamanho(150);
 
-        // Validar nome produto
-        if (this.allMap.containsKey("nome")) {
-            validationTamanho.setTamanho(150);
-
-            if (validationTamanho.isValid(this.allMap.get("nome")[0])
-                    && validationString.isValid(this.allMap.get("nome")[0])) {
-                this.errorValidation.replace("nome", false);
+                if (validationTamanho.isValid(this.allMap.get("produto")[0])
+                        && validationString.isValid(this.allMap
+                                .get("produto")[0])) {
+                    error = false;
+                } else {
+                    error = true;
+                    break;
+                }
             }
+            
+            this.errorValidation.replace("produto", error);
         }
-        // Validar marca
-        if (this.allMap.containsKey("marca")) {
-            validationTamanho.setTamanho(50);
-
-            if (validationTamanho.isValid(this.allMap.get("marca")[0])
-                    && validationString.isValid(this.allMap.get("marca")[0])) {
-                this.errorValidation.replace("marca", false);
-            }
-        }
-        // Validar quantidade
+        
+        // Verifica se a quantidade é um número válido
         if (this.allMap.containsKey("quantidade")) {
-            String estoque = this.allMap.get("quantidade")[0]
-                    .replaceAll("\\D", "");
-
-            if (validationInt.isValid(estoque)) {
-                this.errorValidation.replace("quantidade", false);
-                this.allMap.replace("quantidade", new String[]{estoque});
+            ValidationInt validationInt = new ValidationInt();
+            boolean error = true;
+            
+            for (int i = 0; i < this.allMap.get("quantidade").length; i++) {
+                if (validationInt.isValid(this.allMap.get("quantidade")[i])) {
+                    if (Integer.valueOf(this.allMap.get("quantidade")[i]) > 0) {
+                        error = false;
+                    } else {
+                        error = true;
+                        break;
+                    }
+                }
             }
-
+            
+            this.errorValidation.replace("quantidade", error);
         }
+        
+        // Muda o status desses campos para a validação passar. Esses campos
+        // são preenchidos de maneira automatica
+        this.errorValidation.replace("nome", false);
+        this.errorValidation.replace("marca", false);
+        this.errorValidation.replace("preco-unidade", false);
+        this.errorValidation.replace("preco-total", false);
+        
         return this.errorStatus();
-
     }
 
     @Override
     protected Model getModel() {
-        Venda venda = new Venda();
-        Cliente cliente = new Cliente();
-        Funcionario funcionario = new Funcionario();
-        Loja loja = new Loja();
-        ItensVenda itensVenda = new ItensVenda();
-
-        try {
-
-            //VENDA
-            if (!this.allMap.get("id")[0].isEmpty()) {
-                venda.setId(Integer.valueOf(this.allMap.get("id")[0]));
-            }
-
-            //INSERIR DATA ATUAL DO CADASTRO DA VENDA
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date dataCadastro = new Date(sdf.parse(this.allMap
-                    .get("data-cadastro")[0]).getTime());
-            venda.setData(dataCadastro);
-            //valor-venda-total
-             String valorVenda = this.allMap.get("preco-venda")[0]
-                    .replaceAll("\\.", "")
-                    .replaceAll(",", ".");
-
-            venda.setValorVenda(Float.valueOf(valorVenda));
-            
-            //CLIENTE
-            if (!this.allMap.get("id-cliente")[0].isEmpty()) {
-                cliente.setId(Integer.valueOf(this.allMap.get("id-cliente")[0]));
-            }
-            cliente.setCpf(this.allMap.get("cpf")[0]);
-            
-            //FUNCIONARIO
-            if (!this.allMap.get("id")[0].isEmpty()) {
-                funcionario.setId(Integer.valueOf(this.allMap.get("id")[0]));
-            }
-            
-            //Loja
-            if (!this.allMap.get("id")[0].isEmpty()) {
-                loja.setId(Integer.valueOf(this.allMap.get("id")[0]));
-            }
-            
-            //Itens_Venda
-            itensVenda.setVenda(venda);
-            
-            //#MOCK
-            loja.setId(1);
-            funcionario.setId(1);
-            
-        } catch (NumberFormatException | ParseException e) {
-            e.printStackTrace(System.err);
-            itensVenda= null;
-        }
-        return venda;
+        return null;
     }
 }

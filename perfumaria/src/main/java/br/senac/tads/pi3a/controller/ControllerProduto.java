@@ -34,6 +34,7 @@ import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
+import br.senac.tads.pi3a.model.Usuario;
 import br.senac.tads.pi3a.validation.ValidationDate;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
@@ -629,5 +630,47 @@ public class ControllerProduto implements Logica {
         }
 
         return "/WEB-INF/api/produtos.jsp";
+    }
+    
+    /**
+     * Método que gera um json com as informações de produto para a venda
+     *
+     * @param request
+     * @param response
+     * @param session
+     * @return
+     */
+    public String produto(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session) {
+        try {
+            if (request.getParameter("id") != null
+                    && !request.getParameter("id").isEmpty()) {
+                Usuario usuario = (Usuario) session
+                        .getAttribute("usuarioLogado");
+                
+                String idProduto = request.getParameter("id");
+                String idLoja = String.valueOf(usuario.getFuncionario()
+                        .getLoja().getId());
+                
+                Connection conn = (Connection) request
+                        .getAttribute("connection");
+                
+                ItensLoja itensLoja = new ItensLoja();
+                DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
+                List lista = daoItensLoja.findAll(itensLoja,
+                        new String[]{"produto_id", "loja_id"},
+                        new String[]{"=", "="},
+                        new String[]{idProduto, idLoja},
+                        new String[]{"and", "and"});
+
+                if (lista.size() == 1) {
+                    request.setAttribute("itensLoja", lista.get(0));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+
+        return "/WEB-INF/api/produto.jsp";
     }
 }

@@ -61,21 +61,33 @@ public class ControllerVenda implements Logica {
         try {
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
-                int idCliente = 1;
-                Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
-                float valorVenda = 10;
-                int[] idItem = {1};
-                int[] quantidadeItem = {1};
-                float[] valorUnitario = {10};
-                Venda venda = this.manterVenda(request, idCliente, usuario, valorVenda, idItem, quantidadeItem, valorUnitario);
-                if (venda == null) {
-                    return null;
+                // Classe de validação do formulário cliente
+                InputFilterVenda inputFilterVenda
+                        = new InputFilterVenda(request.getParameterMap());
+                
+                // getData
+                
+                if (inputFilterVenda.isValid()) {
+                    
+                } else {
+                    // Manda para a jsp os campos inválidos e uma mensagem
+                    session.setAttribute("errorValidation",
+                            inputFilterVenda.getErrorValidation());
+                    // Depois que arrumar o getData colocar o session faltante
+                    session.setAttribute("alert", "alert-danger");
+                    session.setAttribute("alertMessage",
+                            "Verifique o(s) campo(s) em vermelho.");
                 }
             }
-        } catch (Exception e) {
             
+            return "WEB-INF/jsp/cadastrar-venda.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar o cadastro.");
+            return "novo";
         }
-        return "WEB-INF/jsp/cadastrar-venda.jsp";
     }
     
     @Override
@@ -186,7 +198,8 @@ public class ControllerVenda implements Logica {
             venda.setLoja(loja);
             venda.setValorVenda(valorVenda);
             for (int i = 0; i < idItem.length; i++) {
-            venda.addListaItensVenda(this.preencherItensVenda(request, venda, idItem[i], quantidadeItem[i], valorUnitario[i], loja));
+                ItensVenda itensVenda = this.preencherItensVenda(request, venda, idItem[i], quantidadeItem[i], valorUnitario[i], loja);
+            venda.addListaItensVenda(itensVenda);
             }
             return venda;
         } catch (Exception e) {
@@ -214,7 +227,7 @@ public class ControllerVenda implements Logica {
                 List<Model> lista = daoItensLoja.findAll(itensLoja, new String[]{"produto_id", "loja_id"}, new String[]{"=", "="},
                         new String[]{String.valueOf(idItem), String.valueOf(loja.getId())}, new String[]{"and", "and"});
                 if (lista.size() == 1) {
-                    itensVenda.setItens(itensLoja);
+                    itensVenda.setItens((ItensLoja) lista.get(0));
                 }
                 return itensVenda;   
             
