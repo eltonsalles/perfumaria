@@ -110,13 +110,13 @@ public class InputFilterVenda extends InputFilter {
             }
         }
         // Validar quantidade
-        if (this.allMap.containsKey("estoque")) {
-            String estoque = this.allMap.get("estoque")[0]
+        if (this.allMap.containsKey("quantidade")) {
+            String estoque = this.allMap.get("quantidade")[0]
                     .replaceAll("\\D", "");
 
             if (validationInt.isValid(estoque)) {
-                this.errorValidation.replace("estoque", false);
-                this.allMap.replace("estoque", new String[]{estoque});
+                this.errorValidation.replace("quantidade", false);
+                this.allMap.replace("quantidade", new String[]{estoque});
             }
 
         }

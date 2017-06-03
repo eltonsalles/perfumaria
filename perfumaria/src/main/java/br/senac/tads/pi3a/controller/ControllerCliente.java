@@ -24,9 +24,11 @@
 package br.senac.tads.pi3a.controller;
 
 import br.senac.tads.pi3a.dao.DaoCliente;
+import br.senac.tads.pi3a.dao.DaoVenda;
 import br.senac.tads.pi3a.inputFilter.InputFilterCliente;
 import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.model.Venda;
 import java.sql.Connection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -215,15 +217,27 @@ public class ControllerCliente implements Logica {
                 }
 
                 if (digito) {
+                    Connection conn = (Connection) request
+                            .getAttribute("connection");
+                    
                     Cliente cliente = new Cliente();
-                    DaoCliente dao = new DaoCliente(
-                            (Connection) request.getAttribute("connection"),
-                            cliente);
+                    DaoCliente dao = new DaoCliente(conn, cliente);
+                    
+                    DaoVenda daoVenda = new DaoVenda(conn);
+                    List<Venda> lista =  daoVenda.findAll("cliente_id", "=",
+                            id);
 
-                    if (dao.delete(Integer.valueOf(id))) {
-                        session.setAttribute("alert", "alert-warning");
-                        session.setAttribute("alertMessage",
-                                "Cadastro excluído com sucesso.");
+                    if (lista.isEmpty()) {
+                        if (dao.delete(Integer.valueOf(id))) {
+                            session.setAttribute("alert", "alert-warning");
+                            session.setAttribute("alertMessage",
+                                    "Cadastro excluído com sucesso.");
+                            return "excluir";
+                        }
+                    } else {
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage", "O cliente não"
+                                + " pode ser excluído, pois possui venda(s).");
                         return "excluir";
                     }
                 }

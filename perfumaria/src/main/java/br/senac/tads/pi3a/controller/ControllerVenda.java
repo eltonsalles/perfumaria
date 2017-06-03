@@ -23,7 +23,22 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoCliente;
+import br.senac.tads.pi3a.dao.DaoFuncionario;
+import br.senac.tads.pi3a.dao.DaoItensLoja;
+import br.senac.tads.pi3a.dao.DaoLoja;
+import br.senac.tads.pi3a.dao.DaoProduto;
 import br.senac.tads.pi3a.dao.DaoVenda;
+import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
+import br.senac.tads.pi3a.inputFilter.InputFilterVenda;
+import br.senac.tads.pi3a.model.Cliente;
+import br.senac.tads.pi3a.model.Funcionario;
+import br.senac.tads.pi3a.model.ItensLoja;
+import br.senac.tads.pi3a.model.ItensVenda;
+import br.senac.tads.pi3a.model.Loja;
+import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.model.Produto;
+import br.senac.tads.pi3a.model.Usuario;
 import br.senac.tads.pi3a.model.Venda;
 import br.senac.tads.pi3a.validation.ValidationDate;
 import java.sql.Connection;
@@ -40,27 +55,44 @@ import javax.servlet.http.HttpSession;
  * @author Elton
  */
 public class ControllerVenda implements Logica {
-
+    
     @Override
     public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        return "/WEB-INF/jsp/cadastrar-venda.jsp";
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                int idCliente = 1;
+                Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+                float valorVenda = 10;
+                int[] idItem = {1};
+                int[] quantidadeItem = {1};
+                float[] valorUnitario = {10};
+                Venda venda = this.manterVenda(request, idCliente, usuario, valorVenda, idItem, quantidadeItem, valorUnitario);
+                if (venda == null) {
+                    return null;
+                }
+            }
+        } catch (Exception e) {
+            
+        }
+        return "WEB-INF/jsp/cadastrar-venda.jsp";
     }
-
+    
     @Override
     public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         return "/WEB-INF/jsp/cancelar-venda.jsp";
     }
-
+    
     public String relatorio(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         
         try {
@@ -87,7 +119,7 @@ public class ControllerVenda implements Logica {
                         
                         Date dI = sdf.parse(dataInicial);
                         Date dF = sdf.parse(dataFinal);
-                        
+
                         // Verifica se a data final está depois da inicial e
                         // antes de hoje
                         if (dF.after(dI) && dF.before(new Date())) {
@@ -98,9 +130,9 @@ public class ControllerVenda implements Logica {
                                     new String[]{"and", "and", "and", "and"});
                         } else {
                             session.setAttribute("alert", "alert-danger");
-                            session.setAttribute("alertMessage", 
+                            session.setAttribute("alertMessage",
                                     "A data final não pode ser anterior a da"
-                                            + " inicial.");
+                                    + " inicial.");
                             
                             return "/WEB-INF/jsp/relatorio-vendas.jsp";
                         }
@@ -116,13 +148,13 @@ public class ControllerVenda implements Logica {
                     }
                 } else {
                     session.setAttribute("alert", "alert-danger");
-                    session.setAttribute("alertMessage", 
+                    session.setAttribute("alertMessage",
                             "Verifique as datas informadas.");
                 }
             }
-
-            return "/WEB-INF/jsp/relatorio-vendas.jsp"; 
-                 
+            
+            return "/WEB-INF/jsp/relatorio-vendas.jsp";
+            
         } catch (ParseException e) {
             e.printStackTrace(System.err);
             session.setAttribute("alert", "alert-danger");
@@ -130,5 +162,67 @@ public class ControllerVenda implements Logica {
                     "Não foi possível realizar a consulta.");
             return "pesquisar";
         }
+    }
+    
+    private Venda manterVenda(HttpServletRequest request, int idCliente, Usuario usuario, float valorVenda, int[] idItem, int[] quantidadeItem, float[] valorUnitario) {
+        try {
+            Connection conn = (Connection) request.getAttribute("connection");
+            
+            Cliente cliente = new Cliente();
+            DaoCliente daoCliente = new DaoCliente(conn);
+            cliente = (Cliente) daoCliente.findOne(cliente, idCliente);
+            
+            Funcionario funcionario = new Funcionario();
+            DaoFuncionario daoFuncionario = new DaoFuncionario(conn);
+            funcionario = (Funcionario) daoFuncionario.findOne(funcionario, usuario.getFuncionario().getId());
+            
+            Loja loja = new Loja();
+            DaoLoja daoLoja = new DaoLoja(conn);
+            loja = (Loja) daoLoja.findOne(loja, usuario.getFuncionario().getLoja().getId());
+            
+            Venda venda = new Venda();
+            venda.setCliente(cliente);
+            venda.setFuncionario(funcionario);
+            venda.setLoja(loja);
+            venda.setValorVenda(valorVenda);
+            for (int i = 0; i < idItem.length; i++) {
+            venda.addListaItensVenda(this.preencherItensVenda(request, venda, idItem[i], quantidadeItem[i], valorUnitario[i], loja));
+            }
+            return venda;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return null;
+        }
+        
+    }
+    
+    private ItensVenda preencherItensVenda(HttpServletRequest request, Venda venda,
+            int idItem, int quantidadeItem, float valorUnitario, Loja loja
+    ) {
+        
+        try {
+            
+            Connection conn = (Connection) request.getAttribute("connection");
+            
+                ItensVenda itensVenda = new ItensVenda();
+                itensVenda.setVenda(venda);
+                itensVenda.setQuantidade(quantidadeItem);
+                itensVenda.setValorUnitario(valorUnitario);
+                
+                ItensLoja itensLoja = new ItensLoja();
+                DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
+                List<Model> lista = daoItensLoja.findAll(itensLoja, new String[]{"produto_id", "loja_id"}, new String[]{"=", "="},
+                        new String[]{String.valueOf(idItem), String.valueOf(loja.getId())}, new String[]{"and", "and"});
+                if (lista.size() == 1) {
+                    itensVenda.setItens(itensLoja);
+                }
+                return itensVenda;   
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return null;
+        }
+     
     }
 }

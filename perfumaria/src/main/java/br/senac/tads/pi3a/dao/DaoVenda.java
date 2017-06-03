@@ -57,6 +57,110 @@ public class DaoVenda {
      * @param field
      * @param criteria
      * @param value
+     * @return 
+     */
+    public List<Venda> findAll(String field, String criteria, String value) {
+        List<Venda> listaVenda = new ArrayList<>();
+        
+        try {
+            PreparedStatement stmtVenda;
+            ResultSet resultSetVenda;
+            
+            Criteria c = new Criteria();
+            c.add(new Filter(field, criteria, "?"));
+            
+            SqlSelect sqlVenda = new SqlSelect();
+            sqlVenda.setEntity("venda");
+            sqlVenda.addColumn("*");
+            sqlVenda.setCriteria(c);
+
+            stmtVenda = this.conn.prepareStatement(sqlVenda.getInstruction());
+            
+            stmtVenda.setObject(1, value);
+            
+            resultSetVenda = stmtVenda.executeQuery();
+
+            while (resultSetVenda.next()) {
+                // Objeto venda
+                Venda venda = new Venda();
+                venda.setId(resultSetVenda.getInt("id"));
+                venda.setData(resultSetVenda.getDate("data_venda"));
+                venda.setStatus(resultSetVenda.getBoolean("status"));
+                venda.setValorVenda(resultSetVenda.getFloat("valor_venda"));
+                
+                DaoCliente daoCliente = new DaoCliente(conn);
+                venda.setCliente((Cliente) daoCliente.findOne(new Cliente(),
+                        resultSetVenda.getInt("cliente_id")));
+                
+                DaoFuncionario daoFuncionario = new DaoFuncionario(conn);
+                venda.setFuncionario((Funcionario) daoFuncionario.findOne(
+                        new Funcionario(), resultSetVenda
+                                .getInt("funcionario_id")));
+
+                DaoLoja daoLoja = new DaoLoja(conn);
+                venda.setLoja((Loja) daoLoja.findOne(new Loja(),
+                        resultSetVenda.getInt("loja_id")));                
+                
+                // Onjeto itens da venda
+                Criteria criteriaItensVenda = new Criteria();
+                criteriaItensVenda.add(new Filter("venda_id", "=", "?"));
+                
+                SqlSelect sqlSelectItensVenda = new SqlSelect();
+                sqlSelectItensVenda.setEntity("itens_venda");
+                sqlSelectItensVenda.addColumn("*");
+                sqlSelectItensVenda.setCriteria(criteriaItensVenda);
+                
+                PreparedStatement stmtItensVenda;
+                ResultSet resultSetItensVenda;
+                
+                stmtItensVenda = this.conn.prepareStatement(sqlSelectItensVenda
+                        .getInstruction());
+                stmtItensVenda.setInt(1, resultSetVenda.getInt("id"));
+                
+                resultSetItensVenda = stmtItensVenda.executeQuery();
+                
+                while (resultSetItensVenda.next()) {
+                    ItensVenda itensVenda = new ItensVenda();
+                    itensVenda.setVenda(venda);
+                    itensVenda.setQuantidade(resultSetItensVenda
+                            .getInt("qtde_item"));
+                    itensVenda.setValorUnitario(resultSetItensVenda
+                            .getFloat("valor_unitario"));
+                    
+                    DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
+                    List<Model> item = daoItensLoja.findAll(new ItensLoja(),
+                            new String[]{"produto_id", "loja_id"},
+                            new String[]{"=", "="},
+                            new String[]{String.valueOf(resultSetItensVenda
+                                    .getInt("produto_id")),
+                                String.valueOf(venda.getLoja().getId())},
+                            new String[]{"and", "and"});
+                    
+                    // A consulta só retorna um produto
+                    if (item.size() == 1) {
+                        itensVenda.setItens((ItensLoja) item.get(0));
+                    }
+                    
+                    venda.addListaItensVenda(itensVenda);
+                }
+                
+                listaVenda.add(venda);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return null;
+        }
+        
+        return listaVenda;
+    }
+    
+    /**
+     * Faz uma consulta na tabela de venda conforme os critérios informados
+     * 
+     * @param field
+     * @param criteria
+     * @param value
      * @param operator
      * @return 
      */

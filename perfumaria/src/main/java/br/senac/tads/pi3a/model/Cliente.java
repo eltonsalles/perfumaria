@@ -81,9 +81,6 @@ public class Cliente extends Model {
     
     @Columm(name = "uf")
     private String uf;
-    
-    @ForeignKey(name = "loja_id", referenced = "Loja", referencedName = "id")
-    private Loja loja;
 
     public boolean getStatus() {
         return status;
@@ -211,13 +208,5 @@ public class Cliente extends Model {
 
     public void setUf(String uf) {
         this.uf = uf;
-    }
-    
-    public Loja getLoja() {
-        return loja;
-    }
-
-    public void setLoja(Loja loja) {
-        this.loja = loja;
     }
 }

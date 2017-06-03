@@ -326,11 +326,6 @@ public class InputFilterCliente extends InputFilter {
             cliente.setCep(this.allMap.get("cep")[0]);
             cliente.setCidade(this.allMap.get("cidade")[0]);
             cliente.setUf(this.allMap.get("uf")[0]);
-
-            // #MOCK
-            Loja loja = new Loja();
-            loja.setId(1);
-            cliente.setLoja(loja);
         } catch (NumberFormatException | ParseException e) {
             e.printStackTrace(System.err);
             cliente = null;
