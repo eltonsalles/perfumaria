@@ -77,7 +77,7 @@ public class InputFilterFuncionario extends InputFilter {
         // deixando apenas caracteres válidos na string
         if (this.allMap.containsKey("nome")) {
             validationTamanho.setTamanho(150);
-            if (validationTamanho.isValid(this.allMap.get("nome")[0])
+            if (validationTamanho.isValid(this.allMap.get("nome")[0].trim())
                     && validationAlpha.isValid(this.allMap.get("nome")[0])) {
                 this.errorValidation.replace("nome", false);
             }
@@ -143,7 +143,7 @@ public class InputFilterFuncionario extends InputFilter {
         if (this.allMap.containsKey("email")) {
             ValidationEmail validationEmail = new ValidationEmail();
             validationTamanho.setTamanho(150);
-            if (validationTamanho.isValid(this.allMap.get("email")[0])
+            if (validationTamanho.isValid(this.allMap.get("email")[0].trim())
                     && validationEmail.isValid(this.allMap.get("email")[0])) {
                 this.errorValidation.replace("email", false);
             }
@@ -201,7 +201,7 @@ public class InputFilterFuncionario extends InputFilter {
         // deixando apenas caracteres válidos na string
         if (this.allMap.containsKey("logradouro")) {
             validationTamanho.setTamanho(150);
-            if (validationTamanho.isValid(this.allMap.get("logradouro")[0])
+            if (validationTamanho.isValid(this.allMap.get("logradouro")[0].trim())
                     && validationString.isValid(this.allMap
                             .get("logradouro")[0])) {
                 this.errorValidation.replace("logradouro", false);
@@ -238,7 +238,7 @@ public class InputFilterFuncionario extends InputFilter {
         if (this.allMap.containsKey("bairro")) {
             if (!this.allMap.get("bairro")[0].isEmpty()) {
                 validationTamanho.setTamanho(50);
-                if (validationTamanho.isValid(this.allMap.get("bairro")[0])
+                if (validationTamanho.isValid(this.allMap.get("bairro")[0].trim())
                         && validationString.isValid(this.allMap
                                 .get("bairro")[0])) {
                     this.errorValidation.replace("bairro", false);
@@ -250,7 +250,7 @@ public class InputFilterFuncionario extends InputFilter {
         // deixando apenas caracteres válidos na string
         if (this.allMap.containsKey("cidade")) {
             validationTamanho.setTamanho(50);
-            if (validationTamanho.isValid(this.allMap.get("cidade")[0])
+            if (validationTamanho.isValid(this.allMap.get("cidade")[0].trim())
                     && validationAlpha.isValid(this.allMap
                             .get("cidade")[0])) {
                 this.errorValidation.replace("cidade", false);

@@ -89,7 +89,7 @@ public class InputFilterCliente extends InputFilter {
             
             validationTamanho.setTamanho(150);
             
-            if (validationTamanho.isValid(this.allMap.get("nome")[0]) &&
+            if (validationTamanho.isValid(this.allMap.get("nome")[0].trim()) &&
                     validationAlpha.isValid(this.allMap.get("nome")[0])) {
                 this.errorValidation.replace("nome", false);
             }
@@ -134,7 +134,7 @@ public class InputFilterCliente extends InputFilter {
             
             validationTamanho.setTamanho(150);
             
-            if (validationTamanho.isValid(this.allMap.get("email")[0])
+            if (validationTamanho.isValid(this.allMap.get("email")[0].trim())
                     && validationEmail.isValid(this.allMap.get("email")[0])) {
                 this.errorValidation.replace("email", false);
             }
@@ -197,7 +197,7 @@ public class InputFilterCliente extends InputFilter {
         if (this.allMap.containsKey("logradouro")) {
             validationTamanho.setTamanho(150);
             
-            if (validationTamanho.isValid(this.allMap.get("logradouro")[0]) &&
+            if (validationTamanho.isValid(this.allMap.get("logradouro")[0].trim()) &&
                     validationString.isValid(this.allMap
                             .get("logradouro")[0])) {
                 this.errorValidation.replace("logradouro", false);
@@ -222,7 +222,7 @@ public class InputFilterCliente extends InputFilter {
             if (!this.allMap.get("complemento")[0].isEmpty()) {
                 validationTamanho.setTamanho(50);
                 
-                if (validationTamanho.isValid(this.allMap.get("complemento")[0])
+                if (validationTamanho.isValid(this.allMap.get("complemento")[0].trim())
                         && validationString.isValid(this.allMap
                                 .get("complemento")[0])) {
                     this.errorValidation.replace("complemento", false);
@@ -237,7 +237,7 @@ public class InputFilterCliente extends InputFilter {
         if (this.allMap.containsKey("bairro")) {
             validationTamanho.setTamanho(50);
             
-            if (validationTamanho.isValid(this.allMap.get("bairro")[0]) &&
+            if (validationTamanho.isValid(this.allMap.get("bairro")[0].trim()) &&
                     validationString.isValid(this.allMap
                             .get("bairro")[0])) {
                 this.errorValidation.replace("bairro", false);
@@ -251,7 +251,7 @@ public class InputFilterCliente extends InputFilter {
             
             validationTamanho.setTamanho(50);
             
-            if (validationTamanho.isValid(this.allMap.get("cidade")[0]) &&
+            if (validationTamanho.isValid(this.allMap.get("cidade")[0].trim()) &&
                     validationAlpha.isValid(this.allMap
                             .get("cidade")[0])) {
                 this.errorValidation.replace("cidade", false);
