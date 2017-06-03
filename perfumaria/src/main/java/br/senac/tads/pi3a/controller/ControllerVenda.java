@@ -68,7 +68,7 @@ public class ControllerVenda implements Logica {
                 // getData
                 
                 if (inputFilterVenda.isValid()) {
-                    
+                    // teste
                 } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
                     session.setAttribute("errorValidation",
