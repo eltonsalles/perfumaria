@@ -10,7 +10,7 @@
          <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
             <label for="pesquisar">Pesquisar</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o código ou o nome do produto" name="pesquisar" maxlength="150" pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$">
+                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o código do produto" name="pesquisar" maxlength="150" pattern="\d+$">
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -32,15 +32,16 @@
         </tr>
         <c:forEach items="${sessionScope.listaProdutos}" var="item">
             <tr>
-                <td><c:out value="${item.historicoProduto.id}"></c:out></td>
+                <td><c:out value="${item.id}"></c:out></td>
                 <td><c:out value="${item.produto.nome}"></c:out></td>
-                <td><c:out value="${item.loja.nome}"></c:out>"</td>
-                <td><c:out value="${item.historicoProduto.tipoMovimentacao}"></c:out></td>
-                <td><c:out value="${item.historicoProduto.quantidade}"></c:out></td>
-                <td><c:out value="${item.historicoProduto.dataMovimentacao}"></c:out>"</td>
-                <td><c:out value="${item.historiaProduto.descricao}"></c:out></td>
+                <td><c:out value="${item.loja.razaoSocial}"></c:out></td>
+                <td><c:out value="${item.tipoMovimentacao}"></c:out></td>
+                <td><c:out value="${item.quantidade}"></c:out></td>
+                <td><fmt:formatDate pattern="dd/MM/yyyy" value="${item.dataMovimentacao}"/></td>
+                <td><c:out value="${item.descricao}"></c:out></td>
             </tr>
         </c:forEach>
     </table>
+    <c:remove scope="session" var="listaProdutos"></c:remove>
 </div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>
