@@ -11,7 +11,12 @@
         </div>
         <div class="form-group col-md-12 <c:if test="${errorValidation.funcionario eq true}">has-error</c:if>">
             <label class="control-label" for="funcionario">Código do Funcionário</label>
-            <input type="text" class="form-control" id="funcionario" placeholder="Código do Funcionário" name="funcionario" maxlength="10" required pattern="^\d+$" value="<c:out value="${sessionScope.usuario.funcionario.id}"></c:out>" <c:if test="${sessionScope.usuario.id > 0}">readonly</c:if>>
+            <select class="form-control" id="funcionario" name="funcionario">
+                <option value></option>
+                <c:forEach items="${sessionScope.listaFuncionarios}" var="funcionario">
+                    <option value="<c:out value="${funcionario.id}"></c:out>"<c:if test="${sessionScope.usuario.id > 0}">selected</c:if>><c:out value="${funcionario.nome}"></c:out></option>
+                </c:forEach>
+            </select>
         </div>
         <div class="form-group col-md-12 <c:if test="${errorValidation.login eq true}">has-error</c:if>">
             <label class="control-label" for="login">Login</label>
