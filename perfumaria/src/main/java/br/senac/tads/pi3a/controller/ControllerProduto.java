@@ -310,6 +310,8 @@ public class ControllerProduto implements Logica {
             HttpServletResponse response, HttpSession session)
             throws Exception {
         try {
+            
+            Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 ItensLoja itensLoja = new ItensLoja();
@@ -330,21 +332,33 @@ public class ControllerProduto implements Logica {
                             break;
                         }
                     }
+                    if(user.getNivelUsuario().getId() == 5 || user.getNivelUsuario().getId() ==8){
                     if (digito) {
                         lista = dao.findAll(itensLoja,
                                 new String[]{"produto_id", "loja_id"},
                                 new String[]{"=", "="},
-                                new String[]{pesquisar, "1"},
+                                new String[]{pesquisar, Integer.toString(user.getFuncionario().getLoja().getId())},
                                 new String[]{"and", "and"});
                     } else {
                         lista = dao.findAllPorNome(
-                                "%" + pesquisar.toUpperCase() + "%", 1);
+                                "%" + pesquisar.toUpperCase() + "%",  user.getFuncionario().getLoja().getId());
                     }
-
+                    }else{
+                         if (digito) {
+                        lista = dao.findAll(itensLoja,"produto_id","=",pesquisar);
+                    } else {
+                        lista = dao.findAllPorNome(
+                                "%" + pesquisar.toUpperCase() + "%");
+                    }
+                    }
                 } else {
-                    // #MOCK - id da loja
+                    if(user.getNivelUsuario().getId() == 5 || user.getNivelUsuario().getId() ==8){
                     // Traz todos os produtos da loja informada
-                    lista = dao.findAll(itensLoja, "loja_id", "=", "1");
+                    lista = dao.findAll(itensLoja, "loja_id", "=",
+                            Integer.toString(user.getFuncionario().getLoja().getId()));
+                    }else{
+                       lista = dao.findAll(itensLoja);
+                    }
                 }
 
                 if (lista != null && !lista.isEmpty()) {
