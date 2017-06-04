@@ -239,13 +239,13 @@ public class ControllerProduto implements Logica {
                             new String[]{"=", "="},
                             new String[]{id, Integer.toString(user.getFuncionario().getLoja().getId())},
                             new String[]{"and", "and"});
-
-                    if (lista.size() == 1) {
+                    
+                    // ARRUMAR AQUI 
+                    if (lista.size() == user.getFuncionario().getLoja().getId()) {
                         session.setAttribute("itensLoja", lista.get(0));
                     }
                 }
             }
-
             return "/WEB-INF/jsp/cadastrar-produto.jsp";
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -285,8 +285,10 @@ public class ControllerProduto implements Logica {
                     DaoItensLoja daoItensLoja
                             = new DaoItensLoja(conn, itensLoja);
 
-                    // #MOCK - id da loja
-                    if (daoItensLoja.delete(Integer.valueOf(id), 1)) {
+                     Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
+                     
+                    if (daoItensLoja.delete(Integer.valueOf(id),
+                            user.getFuncionario().getLoja().getId())) {
                         session.setAttribute("alert", "alert-warning");
                         session.setAttribute("alertMessage",
                                 "Produto excluído com sucesso.");

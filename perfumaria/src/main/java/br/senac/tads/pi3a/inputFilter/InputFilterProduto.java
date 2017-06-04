@@ -258,7 +258,7 @@ public class InputFilterProduto extends InputFilter {
 
             itensLoja.setProduto(produto);
 
-            // #MOCK
+           
             Loja loja = new Loja();
             loja.setId(Integer.parseInt(this.allMap.get("loja")[0]));
             itensLoja.setLoja(loja);
