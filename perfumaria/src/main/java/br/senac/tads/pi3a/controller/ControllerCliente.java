@@ -24,9 +24,14 @@
 package br.senac.tads.pi3a.controller;
 
 import br.senac.tads.pi3a.dao.DaoCliente;
+import br.senac.tads.pi3a.dao.DaoProduto;
+import br.senac.tads.pi3a.dao.DaoVenda;
 import br.senac.tads.pi3a.inputFilter.InputFilterCliente;
 import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.model.Produto;
+import br.senac.tads.pi3a.model.Venda;
+import br.senac.tads.pi3a.validation.ValidationCpf;
 import java.sql.Connection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -215,15 +220,27 @@ public class ControllerCliente implements Logica {
                 }
 
                 if (digito) {
+                    Connection conn = (Connection) request
+                            .getAttribute("connection");
+                    
                     Cliente cliente = new Cliente();
-                    DaoCliente dao = new DaoCliente(
-                            (Connection) request.getAttribute("connection"),
-                            cliente);
+                    DaoCliente dao = new DaoCliente(conn, cliente);
+                    
+                    DaoVenda daoVenda = new DaoVenda(conn);
+                    List<Venda> lista =  daoVenda.findAll("cliente_id", "=",
+                            id);
 
-                    if (dao.delete(Integer.valueOf(id))) {
-                        session.setAttribute("alert", "alert-warning");
-                        session.setAttribute("alertMessage",
-                                "Cadastro excluído com sucesso.");
+                    if (lista.isEmpty()) {
+                        if (dao.delete(Integer.valueOf(id))) {
+                            session.setAttribute("alert", "alert-warning");
+                            session.setAttribute("alertMessage",
+                                    "Cadastro excluído com sucesso.");
+                            return "excluir";
+                        }
+                    } else {
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage", "O cliente não"
+                                + " pode ser excluído, pois possui venda(s).");
                         return "excluir";
                     }
                 }
@@ -293,5 +310,41 @@ public class ControllerCliente implements Logica {
                     "Não foi possível realizar a consulta.");
             return "pesquisar";
         }
+    }
+    
+    /**
+     * Método que gera um json com as informações dos clientes para a venda
+     *
+     * @param request
+     * @param response
+     * @param session
+     * @return
+     */
+    public String cliente(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session) {
+        try {
+            if (request.getParameter("cpf") != null
+                    && !request.getParameter("cpf").isEmpty()) {
+                String cpf = request.getParameter("cpf").replaceAll("\\D", "");
+                
+                ValidationCpf validationCpf = new ValidationCpf();
+                
+                if (validationCpf.isValid(cpf)) {
+                    Cliente cliente  = new Cliente();
+                    DaoCliente dao = new DaoCliente((Connection) request
+                            .getAttribute("connection"));
+
+                    List lista = dao.findAll(cliente, "cpf", "=", cpf);
+
+                    if (lista.size() == 1) {
+                        request.setAttribute("cliente", lista.get(0));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+
+        return "/WEB-INF/api/cliente.jsp";
     }
 }

@@ -26,10 +26,12 @@ window.addEventListener('load', init);
 function init() {
     configurarForm();
     configurarLista();
-    carregaProdutos();
+    carregarProdutos();
     carregarEndereco();
     selects();
     inserirProduto();
+    carregarCliente();
+    carregarProduto();
 }
 
 function configurarForm() {
@@ -197,7 +199,7 @@ function configurarLista() {
  * 
  * @returns
  */
-function carregaProdutos() {
+function carregarProdutos() {
     var produtos = document.querySelector("#form-produtos");
     
     if (produtos !== null) {
@@ -343,6 +345,9 @@ function inserirProduto() {
             var btns = document.querySelectorAll(".btn-excluir");
             var index = btns.length;
             removerProduto(btns[index - 1], index);
+            
+            var codigos = document.querySelectorAll(".codigo");
+            buscarProdutoVenda(codigos[index - 1], index - 1);
         });
     }
 }
@@ -355,6 +360,107 @@ function removerProduto(btn, index) {
         // Só deixa excluir a última linha.
         if (trs.length - 1 === index) {
             table.deleteRow(index);
+        }
+    });
+}
+
+/**
+ * Carrega as informações do cliente para a venda
+ * 
+ * @returns
+ */
+function carregarCliente() {
+    var venda = document.querySelector("#form-venda");
+    
+    if (venda !== null) {
+        var cpf = document.querySelector("#cpf");
+
+        cpf.addEventListener('keyup', function () {
+            var nome = document.querySelector("#nome");
+            var id = document.querySelector("#id-cliente");
+                        
+            if (this.value.length === 11 || this.value.length === 14) {
+                $.ajax({
+                    url : location.origin + '/perfumaria/sistema?controller=Cliente&action=cliente&cpf=' + this.value,
+                    dataType : 'json',
+                    contentType:"application/json",
+                    error : function() {
+                        alert("Error");
+                    },
+                    success : function(data) {                        
+                        nome.value = data.nome;
+                        id.value = data.id;
+                    }
+                });
+            } else {
+                nome.value = "";
+                id.value = "";
+            }
+        });
+    }
+}
+
+/**
+ * Carrega as informações do produto para a venda
+ * 
+ * @returns
+ */
+function carregarProduto() {
+    var venda = document.querySelector("#form-venda");
+    
+    if (venda !== null) {
+        var codigo = document.querySelectorAll(".codigo")[0];
+        buscaProdutoVenda(codigo, 0);
+        
+        var quantidade = document.querySelectorAll(".quantidade")[0];
+        quantidade.addEventListener("click", function () {
+            var precoUnidade = document.querySelectorAll(".preco-unidade")[0];
+            var precoTotal = document.querySelectorAll(".preco-total")[0];
+            
+            console.log(this.value);
+            console.log(precoUnidade.value);
+            
+            precoTotal.value = (this.value * precoUnidade.value.replace(",", ".")).toLocaleString("pt-BR", {minimumFractionDigits: 2});
+        });
+    }
+}
+
+/**
+ * Quando adicionado mais itens na 
+ * 
+ * @param {type} field
+ * @param {type} i
+ * @returns {undefined}
+ */
+function buscarProdutoVenda(field, i) {
+    field.addEventListener('keyup', function () {
+        var produto = document.querySelectorAll(".produto")[i];
+        var marca = document.querySelectorAll(".marca")[i];
+        var precoUnitario = document.querySelectorAll(".preco-unidade")[i];
+
+        var pattern = /^[0-9]+$/i;
+
+        if (pattern.test(this.value)) {
+            $.ajax({
+                url : location.origin + '/perfumaria/sistema?controller=Produto&action=produto&id=' + this.value,
+                dataType : 'json',
+                contentType:"application/json",
+                error : function() {
+                    alert("Error");
+                },
+                success : function(data) {
+                    produto.value = data.nome;
+                    marca.value = data.marca;
+                    precoUnitario.value = data.valorVenda.toLocaleString("pt-BR", {minimumFractionDigits: 2});
+                }
+            });
+        } else {
+            var precoTotal = document.querySelectorAll(".preco-total")[i];
+
+            produto.value = "";
+            marca.value = "";
+            precoUnitario.value = "";
+            precoTotal.value = "";
         }
     });
 }

@@ -34,6 +34,7 @@ import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
+import br.senac.tads.pi3a.model.Usuario;
 import br.senac.tads.pi3a.validation.ValidationDate;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
@@ -84,7 +85,7 @@ public class ControllerProduto implements Logica {
 
                         List listaPorNome = daoProduto.findAll(itensLoja
                                 .getProduto(), "UPPER(nome)", "=", itensLoja
-                                        .getProduto().getNome().toUpperCase());
+                                .getProduto().getNome().toUpperCase());
 
                         int idProduto;
                         if (listaPorNome.isEmpty()) {
@@ -204,9 +205,8 @@ public class ControllerProduto implements Logica {
                     session.setAttribute("alertMessage",
                             "Verifique o(s) campo(s) em vermelho.");
                 }
-            } else {
-                // Verifica se existe o parâmetro id
-                if (request.getParameter("id") != null) {
+            } else // Verifica se existe o parâmetro id
+             if (request.getParameter("id") != null) {
                     String id = request.getParameter("id");
                     boolean digito = true;
 
@@ -238,7 +238,6 @@ public class ControllerProduto implements Logica {
                         }
                     }
                 }
-            }
 
             return "/WEB-INF/jsp/cadastrar-produto.jsp";
         } catch (Exception e) {
@@ -365,7 +364,7 @@ public class ControllerProduto implements Logica {
             HttpServletResponse response, HttpSession session) {
         try {
             Connection conn = (Connection) request.getAttribute("connection");
-            
+
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 // Classe de validação do formulário ManutencaoProduto
@@ -375,32 +374,30 @@ public class ControllerProduto implements Logica {
 
                 // Cria um objeto HistoricoProduto com os dados do formulário,
                 // mas sem validação
-                HistoricoProduto historicoProduto = (HistoricoProduto)
-                        inputFilterManutencaoProduto.getData();
+                HistoricoProduto historicoProduto = (HistoricoProduto) inputFilterManutencaoProduto.getData();
 
                 // Faz a validação do formulário Manutenção de Produto
                 if (inputFilterManutencaoProduto.isValid()) {
                     // Atualiza o objeto HistoricoProduto com os dados validados
-                    historicoProduto = (HistoricoProduto)
-                            inputFilterManutencaoProduto.createModel();
+                    historicoProduto = (HistoricoProduto) inputFilterManutencaoProduto.createModel();
 
                     ItensLoja itensLoja = new ItensLoja();
                     DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
-                    
+
                     List<Model> produto = daoItensLoja.findAll(itensLoja,
                             new String[]{"produto_id", "loja_id"},
                             new String[]{"=", "="},
                             new String[]{String.valueOf(historicoProduto
-                                    .getProduto().getId()),
+                                        .getProduto().getId()),
                                 String.valueOf(historicoProduto.getLoja()
                                         .getId())},
                             new String[]{"and", "and"});
-                    
+
                     // Pega o produto se ele foi encontrado
                     if (produto.size() == 1) {
                         itensLoja = (ItensLoja) produto.get(0);
                     }
-                    
+
                     if (itensLoja.getProduto().getId() > 0) {
                         DaoHistoricoProduto daoHistoricoProduto
                                 = new DaoHistoricoProduto(conn,
@@ -415,18 +412,18 @@ public class ControllerProduto implements Logica {
                                     itensLoja.setEstoque(itensLoja.getEstoque()
                                             + historicoProduto.getQuantidade());
                                     break;
-                                
+
                                 case "saida":
                                 case "fora de linha":
                                 case "quebra":
                                     itensLoja.setEstoque(itensLoja.getEstoque()
                                             - historicoProduto.getQuantidade());
                             }
-                            
+
                             daoItensLoja = new DaoItensLoja(conn, itensLoja);
                             daoItensLoja.update(itensLoja.getProduto().getId(),
                                     historicoProduto.getLoja().getId());
-                            
+
                             session.setAttribute("alert", "alert-success");
                             session.setAttribute("alertMessage",
                                     "Movimentação realizada com sucesso.");
@@ -436,7 +433,7 @@ public class ControllerProduto implements Logica {
                         // Manda para a jsp os campos inválidos e uma mensagem
                         session.setAttribute("errorValidation",
                                 inputFilterManutencaoProduto
-                                        .getErrorValidation());
+                                .getErrorValidation());
                         session.setAttribute("historicoProduto",
                                 historicoProduto);
                         session.setAttribute("alert", "alert-danger");
@@ -453,19 +450,19 @@ public class ControllerProduto implements Logica {
                             "Verifique o(s) campo(s) em vermelho.");
                 }
             }
-            
+
             Produto produto = new Produto();
             DaoProduto daoProduto = new DaoProduto(conn);
             List<Model> listaProdutos = daoProduto.findAll(produto);
-            
+
             session.setAttribute("listaProdutos", listaProdutos);
-            
+
             Loja loja = new Loja();
             DaoLoja daoLoja = new DaoLoja(conn);
             List<Model> listaLoja = daoLoja.findAll(loja);
-            
+
             session.setAttribute("listaLoja", listaLoja);
-            
+
             return "/WEB-INF/jsp/manutencao-produto.jsp";
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -493,16 +490,16 @@ public class ControllerProduto implements Logica {
                         && !request.getParameter("data-final").isEmpty()) {
                     String dataInicial = request.getParameter("data-inicial");
                     String dataFinal = request.getParameter("data-final");
-                    
+
                     ValidationDate vD = new ValidationDate();
-                    
+
                     if (vD.isValid(dataInicial) && vD.isValid(dataFinal)) {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                         sdf.setLenient(false);
-                        
+
                         Date dI = sdf.parse(dataInicial);
                         Date dF = sdf.parse(dataFinal);
-                        
+
                         // Verifica se a data final está depois da inicial e
                         // antes de hoje
                         if (dF.after(dI) && dF.before(new Date())) {
@@ -515,20 +512,20 @@ public class ControllerProduto implements Logica {
                                     new String[]{"and", "and", "and", "and"});
                         } else {
                             session.setAttribute("alert", "alert-danger");
-                            session.setAttribute("alertMessage", 
+                            session.setAttribute("alertMessage",
                                     "A data final não pode ser anterior a da"
-                                            + " inicial.");
-                            
+                                    + " inicial.");
+
                             return "/WEB-INF/jsp/relatorio-estoque.jsp";
                         }
                     } else {
                         session.setAttribute("alert", "alert-danger");
-                        session.setAttribute("alertMessage", 
-                            "A data final não pode ser após a data de hoje.");
-                        
+                        session.setAttribute("alertMessage",
+                                "A data final não pode ser após a data de hoje.");
+
                         return "/WEB-INF/jsp/relatorio-estoque.jsp";
                     }
-                    
+
                     if (lista != null && !lista.isEmpty()) {
                         session.setAttribute("listaProdutos", lista);
                         return "pesquisar";
@@ -539,7 +536,7 @@ public class ControllerProduto implements Logica {
                     }
                 } else {
                     session.setAttribute("alert", "alert-danger");
-                    session.setAttribute("alertMessage", 
+                    session.setAttribute("alertMessage",
                             "Verifique as datas informadas.");
                 }
             }
@@ -555,7 +552,52 @@ public class ControllerProduto implements Logica {
     }
 
     public String historico(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        return "/WEB-INF/jsp/historico-produto.jsp";
+        try {
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                HistoricoProduto historicoProduto = new HistoricoProduto();
+                DaoHistoricoProduto dao = new DaoHistoricoProduto(
+                        (Connection) request.getAttribute("connection"));
+                List<Model> lista;
+
+                if (request.getParameter("pesquisar") != null
+                        && !request.getParameter("pesquisar").isEmpty()) {
+                    String pesquisar = request.getParameter("pesquisar");
+
+                    // Verifica por onde a consulta é feita por id ou nome
+                    boolean digito = true;
+                    for (int i = 0; i < pesquisar.length(); i++) {
+                        if (!Character.isDigit(pesquisar.charAt(i))) {
+                            digito = false;
+                            break;
+                        }
+                    }
+
+                    if (digito) {
+                        lista = dao.findAll(historicoProduto,
+                                "produto_id", "=", pesquisar);
+                        if (lista != null & !lista.isEmpty()) {
+                            session.setAttribute("listaProdutos", lista);
+                            return "pesquisar";
+                        } else {
+                            session.setAttribute("alert", "alert-warning");
+                            session.setAttribute("alertMessage",
+                                    "A consulta não retornou nenhum resultado.");
+                        }
+                    }
+                } else {
+                    session.setAttribute("alert", "alert-warning");
+                    session.setAttribute("alertMessage",
+                            "Informe o código do produto.");
+                }
+            }
+            return "/WEB-INF/jsp/historico-produto.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a consulta.");
+            return "historico";
+        }
     }
 
     /**
@@ -588,5 +630,47 @@ public class ControllerProduto implements Logica {
         }
 
         return "/WEB-INF/api/produtos.jsp";
+    }
+    
+    /**
+     * Método que gera um json com as informações de produto para a venda
+     *
+     * @param request
+     * @param response
+     * @param session
+     * @return
+     */
+    public String produto(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session) {
+        try {
+            if (request.getParameter("id") != null
+                    && !request.getParameter("id").isEmpty()) {
+                Usuario usuario = (Usuario) session
+                        .getAttribute("usuarioLogado");
+                
+                String idProduto = request.getParameter("id");
+                String idLoja = String.valueOf(usuario.getFuncionario()
+                        .getLoja().getId());
+                
+                Connection conn = (Connection) request
+                        .getAttribute("connection");
+                
+                ItensLoja itensLoja = new ItensLoja();
+                DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
+                List lista = daoItensLoja.findAll(itensLoja,
+                        new String[]{"produto_id", "loja_id"},
+                        new String[]{"=", "="},
+                        new String[]{idProduto, idLoja},
+                        new String[]{"and", "and"});
+
+                if (lista.size() == 1) {
+                    request.setAttribute("itensLoja", lista.get(0));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+
+        return "/WEB-INF/api/produto.jsp";
     }
 }
