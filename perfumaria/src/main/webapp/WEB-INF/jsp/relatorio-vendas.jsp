@@ -46,10 +46,16 @@
             <td><c:out value="${venda.status eq true ? 'Ativa' : 'Cancelada'}"></c:out></td>
             <td><c:out value="${venda.cliente.nome}"></c:out></td>
             <td><fmt:formatDate pattern="dd/MM/yyyy" value="${venda.data}"/></td>
+            <td>
             <c:forEach items="${venda.listaItensVenda}" var="itens">
-                <td><c:out value="${itens.itens.produto.nome}"></c:out></td>
-                <td><c:out value="${itens.quantidade}"></c:out></td>
+                <c:out value="${itens.itens.produto.nome}"></c:out><br>
             </c:forEach>
+            </td>
+            <td>
+            <c:forEach items="${venda.listaItensVenda}" var="itens">
+                <c:out value="${itens.quantidade}"></c:out><br>
+            </c:forEach>
+            </td>
             <fmt:setLocale value="pt_BR"></fmt:setLocale>
             <td class="dinheiro"><fmt:formatNumber value="${venda.valorVenda}" type="number" pattern="#,##0.00" /></td>
             <td>
