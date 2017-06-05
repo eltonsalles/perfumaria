@@ -23,7 +23,14 @@
  */
 package br.senac.tads.pi3a.inputFilter;
 
+import br.senac.tads.pi3a.model.Cliente;
+import br.senac.tads.pi3a.model.Funcionario;
+import br.senac.tads.pi3a.model.ItensLoja;
+import br.senac.tads.pi3a.model.ItensVenda;
+import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.model.Produto;
+import br.senac.tads.pi3a.model.Venda;
 import br.senac.tads.pi3a.validation.ValidationCpf;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
@@ -75,7 +82,7 @@ public class InputFilterVenda extends InputFilter {
 
             if (validationInt.isValid(this.allMap.get("id-cliente")[0])) {
                 if (Integer.valueOf(this.allMap.get("id-cliente")[0]) > 0) {
-                    this.errorValidation.replace("id-cliente", false);
+                    this.errorValidation.replace("idCliente", false);
                 }
             }
         }
@@ -142,23 +149,74 @@ public class InputFilterVenda extends InputFilter {
         // são preenchidos de maneira automatica
         this.errorValidation.replace("nome", false);
         this.errorValidation.replace("marca", false);
-        this.errorValidation.replace("preco-unidade", false);
-        this.errorValidation.replace("preco-total", false);
+        this.errorValidation.replace("precoUnidade", false);
+        this.errorValidation.replace("precoTotal", false);
+        this.errorValidation.replace("total", false);
         
         return this.errorStatus();
     }
 
     @Override
     protected Model getModel() {
-        return null;
+        try {
+            Venda venda = new Venda();
+        
+            Cliente cliente = new Cliente();
+            cliente.setId(Integer.valueOf(this.allMap.get("id-cliente")[0]));
+
+            venda.setCliente(cliente);
+            venda.setFuncionario(new Funcionario());
+            venda.setLoja(new Loja());
+
+            String total = this.allMap.get("total")[0]
+                        .replaceAll("\\.", "")
+                        .replaceAll(",", ".");
+
+            venda.setValorVenda(Float.valueOf(total));
+
+            for (int i = 0; i < this.allMap.get("codigo").length; i++) {
+                ItensVenda itensVenda = new ItensVenda();
+                itensVenda.setVenda(venda);
+                itensVenda.setQuantidade(Integer.valueOf(this.allMap.get("quantidade")[i]));
+
+                String precoUnidade = this.allMap.get("preco-unidade")[0]
+                        .replaceAll("\\.", "")
+                        .replaceAll(",", ".");
+                
+                itensVenda.setValorUnitario(Float.valueOf(precoUnidade));
+
+                Produto produto = new Produto();
+                produto.setId(Integer.valueOf(this.allMap.get("codigo")[i]));
+                produto.setNome(this.allMap.get("produto")[i]);
+                produto.setMarca(this.allMap.get("marca")[i]);
+
+                ItensLoja itensLoja = new ItensLoja();
+                itensLoja.setProduto(produto);
+
+                itensVenda.setItens(itensLoja);
+
+                venda.addListaItensVenda(itensVenda);
+            }
+
+            return venda;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return null;
+        }
     }
     
+    /**
+     * Retorna os dados do formulário para exibição caso seja necessário
+     * 
+     * @return 
+     */
     public Map<String, Object[]> getDataForm() {
         Map<String, Object[]> dados = new LinkedHashMap<>();
         
         dados.put("cpf", new Object[]{this.allMap.get("cpf")[0]});
         dados.put("nome", new Object[]{this.allMap.get("nome")[0]});
         dados.put("idCliente", new Object[]{this.allMap.get("id-cliente")[0]});
+        dados.put("total", new Object[]{this.allMap.get("total")[0]});
         
         Object[] codigos = new Object[this.allMap.get("codigo").length];
         for (int i = 0; i < codigos.length; i++) {
