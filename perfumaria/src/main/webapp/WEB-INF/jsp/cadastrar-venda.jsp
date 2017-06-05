@@ -7,21 +7,21 @@
         <div class="form-group col-md-12">
             <div class="form-group col-md-2 <c:if test="${errorValidation.cpf eq true}">has-error</c:if>">
                 <label class="control-label" for="cpf">CPF</label>
-                <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required pattern="^\d{3}.\d{3}.\d{3}-\d{2}$" value="<c:out value="${requestScope.cpf}"></c:out>">
+                <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required pattern="^\d{3}.\d{3}.\d{3}-\d{2}$" value="<c:out value="${sessionScope.data.cpf[0]}"></c:out>">
             </div>
             <div class="form-group col-md-6">
                 <label class="control-label" for="nome">Nome</label>
-                <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú])([a-zA-Zà-úÀ-Ú]|\.|\s)+$" value="<c:out value="${requestScope.nome}"></c:out>" readonly="readonly">
+                <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú])([a-zA-Zà-úÀ-Ú]|\.|\s)+$" value="<c:out value="${sessionScope.data.nome[0]}"></c:out>" readonly="readonly">
             </div>
             <div class="form-group col-md-1">
-                <input type="hidden" class="form-control" id="id-cliente" name="id-cliente" value="">
+                <input type="hidden" class="form-control" id="id-cliente" name="id-cliente" value="<c:out value="${sessionScope.data.idCliente[0]}"></c:out>">
             </div>
         </div>
         <div class="form-group col-md-3">
             <label class="control-label" for="total">Total</label>
             <div class="input-group">
                 <div class="input-group-addon">R$</div>
-                <input type="text" class="form-control" id="total" placeholder="x.xxx,xx" name="total" maxLength="12" required readonly="readonly" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" value="0">
+                <input type="text" class="form-control" id="total" placeholder="x.xxx,xx" name="total" maxLength="12" required readonly="readonly" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" value="<c:out value="${sessionScope.data.total[0]}"></c:out>">
             </div>
         </div>
         <div class="form-group col-md-offset-7 col-md-2">
@@ -42,32 +42,32 @@
             <tr>
                 <td>
                     <div class="form-grupo <c:if test="${errorValidation.codigo eq true}">has-error</c:if>">
-                        <input type="text" class="form-control codigo" name="codigo" maxlength="10" placeholder="ID do produto" required pattern="^\d+$" value=""/>
+                        <input type="text" class="form-control codigo" name="codigo" maxlength="10" placeholder="ID do produto" required pattern="^\d+$" value="<c:out value="${sessionScope.data.codigo[0]}"></c:out>"/>
                     </div>
                 </td>
                 <td>
                     <div class="form-group <c:if test="${errorValidation.produto eq true}">has-error</c:if>">
-                        <input type="text" class="form-control produto" name="produto" maxlength="150" placeholder="Nome do produto" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value=""/>
+                        <input type="text" class="form-control produto" name="produto" maxlength="150" placeholder="Nome do produto" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.data.produto[0]}"></c:out>"/>
                     </div>
                 </td>
                 <td>
                     <div class="form-group">
-                        <input type="text" class="form-control marca" name="marca" maxlength="150" placeholder="Marca" required readonly="readonly"/>
+                        <input type="text" class="form-control marca" name="marca" maxlength="150" placeholder="Marca" required readonly="readonly" value="<c:out value="${sessionScope.data.marca[0]}"></c:out>"/>
                     </div>
                 </td>
                 <td>
                     <div class="form-group <c:if test="${errorValidation.quantidade eq true}">has-error</c:if>">
-                        <input type="number" class="form-control quantidade" name="quantidade" maxlength="10" placeholder="Quantidade" min="0" required pattern="^\d+$" value=""/>
+                        <input type="number" class="form-control quantidade" name="quantidade" maxlength="10" placeholder="Quantidade" min="0" required pattern="^\d+$" value="<c:out value="${sessionScope.data.quantidade[0]}"></c:out>"/>
                     </div>
                 </td>
                 <td>
                     <div class="form-group">
-                        <input type="text" class="form-control preco-unidade" name="preco-unidade" maxlength="12" placeholder="Preço Unidade" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" required readonly="readonly" value=""/>
+                        <input type="text" class="form-control preco-unidade" name="preco-unidade" maxlength="12" placeholder="Preço Unidade" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" required readonly="readonly" value="<c:out value="${sessionScope.data.precoUnidade[0]}"></c:out>"/>
                     </div>
                 </td>
                 <td>
                     <div class="form-group">
-                        <input type="text" class="form-control preco-total" name="preco-total" maxlength="12" placeholder="Sub-Total" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" required readonly="readonly" value=""/>
+                        <input type="text" class="form-control preco-total" name="preco-total" maxlength="12" placeholder="Sub-Total" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" required readonly="readonly" value="<c:out value="${sessionScope.data.precoTotal[0]}"></c:out>"/>
                     </div>
                 </td>
                 <td>
@@ -76,6 +76,48 @@
                     </button>
                 </td>
             </tr>
+            <c:set var="i" value="1"></c:set>
+            <c:forEach begin="1" end="${sessionScope.data.cont[0]}" varStatus="loop">
+            <tr>
+                <td>
+                    <div class="form-grupo <c:if test="${errorValidation.codigo eq true}">has-error</c:if>">
+                        <input type="text" class="form-control codigo" name="codigo" maxlength="10" placeholder="ID do produto" required pattern="^\d+$" value="<c:out value="${sessionScope.data.codigo[i]}"></c:out>"/>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group <c:if test="${errorValidation.produto eq true}">has-error</c:if>">
+                        <input type="text" class="form-control produto" name="produto" maxlength="150" placeholder="Nome do produto" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.data.produto[i]}"></c:out>"/>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <input type="text" class="form-control marca" name="marca" maxlength="150" placeholder="Marca" required readonly="readonly" value="<c:out value="${sessionScope.data.marca[i]}"></c:out>"/>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group <c:if test="${errorValidation.quantidade eq true}">has-error</c:if>">
+                        <input type="number" class="form-control quantidade" name="quantidade" maxlength="10" placeholder="Quantidade" min="0" required pattern="^\d+$" value="<c:out value="${sessionScope.data.quantidade[i]}"></c:out>"/>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <input type="text" class="form-control preco-unidade" name="preco-unidade" maxlength="12" placeholder="Preço Unidade" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" required readonly="readonly" value="<c:out value="${sessionScope.data.precoUnidade[i]}"></c:out>"/>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <input type="text" class="form-control preco-total" name="preco-total" maxlength="12" placeholder="Sub-Total" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" required readonly="readonly" value="<c:out value="${sessionScope.data.precoTotal[i]}"></c:out>"/>
+                    </div>
+                </td>
+                <td>
+                    <button type="button" class="btn-excluir btn btn-default">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                </td>
+            </tr>
+            <c:set var="i" value="${i + 1}"></c:set>
+            </c:forEach>
+        <c:remove scope="session" var="data"></c:remove>
         </table>
         <div class="form-group col-md-offset-9 col-md-3">
             <c:if test="${sessionScope.venda.id > 0}">
