@@ -21,9 +21,12 @@
                     </button>
                 </span>
             </div>
-            <div class="form-group col-md-offset-12 col-md-2">
+            <div class="form-group col-md-offset-11 col-md-3">
                 <label class="control-label" for="vendas-ativas">Total Vendido</label>
-                <input type="text" value="" class="form-control" name="vendas-ativas" readonly="readonly">
+                <div class="input-group">
+                    <div class="input-group-addon">R$</div>
+                    <input type="text" value="" class="form-control" name="vendas-ativas" readonly="readonly" id="vendas-ativas">
+                </div>
             </div>
         </div>
     </form>
@@ -37,13 +40,13 @@
             <th>Produtos</th>
             <th>Quantidade</th>
             <th>Valor da Venda</th>
-            <th>Ações</th>
+            <th>Loja</th>
         </tr>
     <c:set var="valorTotal" value="${0}"></c:set>
     <c:forEach items="${sessionScope.listaVendas}" var="venda">
         <tr>
             <td><c:out value="${venda.id}"></c:out></td>
-            <td><c:out value="${venda.status eq true ? 'Ativa' : 'Cancelada'}"></c:out></td>
+            <td class="status"><c:out value="${venda.status eq true ? 'Ativa' : 'Cancelada'}"></c:out></td>
             <td><c:out value="${venda.cliente.nome}"></c:out></td>
             <td><fmt:formatDate pattern="dd/MM/yyyy" value="${venda.data}"/></td>
             <td>
@@ -58,11 +61,7 @@
             </td>
             <fmt:setLocale value="pt_BR"></fmt:setLocale>
             <td class="dinheiro"><fmt:formatNumber value="${venda.valorVenda}" type="number" pattern="#,##0.00" /></td>
-            <td>
-                <a href="sistema?controller=Venda&action=editar&id=<c:out value="${venda.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                </a>
-            </td>
+            <td><c:out value="${venda.loja.razaoSocial}"></c:out></td>
         </tr>
     </c:forEach>
 

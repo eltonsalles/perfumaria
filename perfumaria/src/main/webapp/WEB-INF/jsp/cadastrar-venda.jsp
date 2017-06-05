@@ -22,7 +22,7 @@
             <label class="control-label" for="total">Total</label>
             <div class="input-group">
                 <div class="input-group-addon">R$</div>
-                <input type="text" class="form-control" id="total" placeholder="x.xxx,xx" name="total" maxLength="12" required readonly="readonly" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" value="<c:out value="${sessionScope.data.total[0]}"></c:out>">
+                <input type="text" class="form-control" id="total" placeholder="x.xxx,xx" name="total" maxLength="12" required readonly="readonly" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" value="<c:out value="${sessionScope.data.total[0] > 0 ? sessionScope.data.total[0] : '0,00'}"></c:out>">
             </div>
         </div>
         <div class="form-group col-md-offset-7 col-md-2">
