@@ -46,6 +46,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -65,7 +66,7 @@ public class ControllerVenda implements Logica {
                 InputFilterVenda inputFilterVenda
                         = new InputFilterVenda(request.getParameterMap());
                 
-                // getData
+                Map<String, Object[]> data = inputFilterVenda.getDataForm();
                 
                 if (inputFilterVenda.isValid()) {
                     // teste
@@ -73,7 +74,7 @@ public class ControllerVenda implements Logica {
                     // Manda para a jsp os campos inválidos e uma mensagem
                     session.setAttribute("errorValidation",
                             inputFilterVenda.getErrorValidation());
-                    // Depois que arrumar o getData colocar o session faltante
+                    session.setAttribute("data", data);
                     session.setAttribute("alert", "alert-danger");
                     session.setAttribute("alertMessage",
                             "Verifique o(s) campo(s) em vermelho.");
