@@ -4,4 +4,5 @@
     <json:property name="nome" value="${requestScope.itensLoja.produto.nome}"/>
     <json:property name="marca" value="${requestScope.itensLoja.produto.marca}"/>
     <json:property name="valorVenda" value="${requestScope.itensLoja.valorVenda}"/>
+    <json:property name="quantidade" value="${requestScope.itensLoja.estoque}"/>
 </json:object>
