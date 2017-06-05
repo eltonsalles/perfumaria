@@ -24,11 +24,11 @@
 package br.senac.tads.pi3a.inputFilter;
 
 import br.senac.tads.pi3a.model.Model;
-import br.senac.tads.pi3a.validation.ValidationAlpha;
 import br.senac.tads.pi3a.validation.ValidationCpf;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -106,9 +106,9 @@ public class InputFilterVenda extends InputFilter {
             for (int i = 0; i < this.allMap.get("produto").length; i++) {
                 validationTamanho.setTamanho(150);
 
-                if (validationTamanho.isValid(this.allMap.get("produto")[0])
+                if (validationTamanho.isValid(this.allMap.get("produto")[i])
                         && validationString.isValid(this.allMap
-                                .get("produto")[0])) {
+                                .get("produto")[i])) {
                     error = false;
                 } else {
                     error = true;
@@ -151,5 +151,53 @@ public class InputFilterVenda extends InputFilter {
     @Override
     protected Model getModel() {
         return null;
+    }
+    
+    public Map<String, Object[]> getDataForm() {
+        Map<String, Object[]> dados = new LinkedHashMap<>();
+        
+        dados.put("cpf", new Object[]{this.allMap.get("cpf")[0]});
+        dados.put("nome", new Object[]{this.allMap.get("nome")[0]});
+        dados.put("idCliente", new Object[]{this.allMap.get("id-cliente")[0]});
+        
+        Object[] codigos = new Object[this.allMap.get("codigo").length];
+        for (int i = 0; i < codigos.length; i++) {
+            codigos[i] = this.allMap.get("codigo")[i];
+        }
+        dados.put("codigo", codigos);
+        
+        Object[] produtos = new Object[this.allMap.get("produto").length];
+        for (int i = 0; i < produtos.length; i++) {
+            produtos[i] = this.allMap.get("produto")[i];
+        }
+        dados.put("produto", produtos);
+        
+        Object[] marcas = new Object[this.allMap.get("marca").length];
+        for (int i = 0; i < marcas.length; i++) {
+            marcas[i] = this.allMap.get("marca")[i];
+        }
+        dados.put("marca", marcas);
+        
+        Object[] quantidades = new Object[this.allMap.get("quantidade").length];
+        for (int i = 0; i < quantidades.length; i++) {
+            quantidades[i] = this.allMap.get("quantidade")[i];
+        }
+        dados.put("quantidade", quantidades);
+        
+        Object[] precosUnidades = new Object[this.allMap.get("preco-unidade").length];
+        for (int i = 0; i < precosUnidades.length; i++) {
+            precosUnidades[i] = this.allMap.get("preco-unidade")[i];
+        }
+        dados.put("precoUnidade", precosUnidades);
+        
+        Object[] precosTotais = new Object[this.allMap.get("preco-total").length];
+        for (int i = 0; i < precosTotais.length; i++) {
+            precosTotais[i] = this.allMap.get("preco-total")[i];
+        }
+        dados.put("precoTotal", precosTotais);
+        
+        dados.put("cont", new Object[]{codigos.length - 1});
+        
+        return dados;
     }
 }
