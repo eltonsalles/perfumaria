@@ -410,15 +410,12 @@ function carregarProduto() {
     
     if (venda !== null) {
         var codigo = document.querySelectorAll(".codigo")[0];
-        buscaProdutoVenda(codigo, 0);
+        buscarProdutoVenda(codigo, 0);
         
         var quantidade = document.querySelectorAll(".quantidade")[0];
         quantidade.addEventListener("click", function () {
             var precoUnidade = document.querySelectorAll(".preco-unidade")[0];
             var precoTotal = document.querySelectorAll(".preco-total")[0];
-            
-            console.log(this.value);
-            console.log(precoUnidade.value);
             
             precoTotal.value = (this.value * precoUnidade.value.replace(",", ".")).toLocaleString("pt-BR", {minimumFractionDigits: 2});
         });
