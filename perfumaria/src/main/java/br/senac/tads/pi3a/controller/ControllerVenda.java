@@ -23,21 +23,8 @@
  */
 package br.senac.tads.pi3a.controller;
 
-import br.senac.tads.pi3a.dao.DaoCliente;
-import br.senac.tads.pi3a.dao.DaoFuncionario;
-import br.senac.tads.pi3a.dao.DaoItensLoja;
-import br.senac.tads.pi3a.dao.DaoLoja;
-import br.senac.tads.pi3a.dao.DaoProduto;
 import br.senac.tads.pi3a.dao.DaoVenda;
-import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
 import br.senac.tads.pi3a.inputFilter.InputFilterVenda;
-import br.senac.tads.pi3a.model.Cliente;
-import br.senac.tads.pi3a.model.Funcionario;
-import br.senac.tads.pi3a.model.ItensLoja;
-import br.senac.tads.pi3a.model.ItensVenda;
-import br.senac.tads.pi3a.model.Loja;
-import br.senac.tads.pi3a.model.Model;
-import br.senac.tads.pi3a.model.Produto;
 import br.senac.tads.pi3a.model.Usuario;
 import br.senac.tads.pi3a.model.Venda;
 import br.senac.tads.pi3a.validation.ValidationDate;
@@ -58,7 +45,8 @@ import javax.servlet.http.HttpSession;
 public class ControllerVenda implements Logica {
     
     @Override
-    public String novo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String novo(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session) throws Exception {
         try {
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
@@ -66,10 +54,39 @@ public class ControllerVenda implements Logica {
                 InputFilterVenda inputFilterVenda
                         = new InputFilterVenda(request.getParameterMap());
                 
+                // Cria um variável com os dados do formulário,
+                // mas sem validação
                 Map<String, Object[]> data = inputFilterVenda.getDataForm();
                 
+                // Faz a validação do formulário de venda
                 if (inputFilterVenda.isValid()) {
-                    // teste
+                    // Pega a conexão
+                    Connection conn = (Connection) request
+                            .getAttribute("connection");
+                    
+                    // Pega os dados do usuário logado
+                    Usuario usuario = (Usuario) session
+                            .getAttribute("usuarioLogado");
+                    
+                    // Cria um objeto venda com os dados válidos do formulário
+                    Venda venda = (Venda) inputFilterVenda.createModel();
+                    
+                    // Seta as infomações do usuário
+                    venda.getFuncionario().setId(usuario.getFuncionario()
+                            .getId());
+                    venda.getLoja().setId(usuario.getFuncionario().getLoja()
+                            .getId());
+                    
+                    // Chama a daoVenda
+                    DaoVenda daoVenda = new DaoVenda(conn);
+                    
+                    // Faz a inserção
+                    if (daoVenda.insert(venda) > 0) {
+                        session.setAttribute("alert", "alert-success");
+                        session.setAttribute("alertMessage",
+                                    "Cadastro realizado com sucesso.");
+                        return "novo";
+                    }
                 } else {
                     // Manda para a jsp os campos inválidos e uma mensagem
                     session.setAttribute("errorValidation",
@@ -92,26 +109,36 @@ public class ControllerVenda implements Logica {
     }
     
     @Override
-    public String editar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String editar(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
-    public String excluir(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String excluir(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
-    public String pesquisar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    public String pesquisar(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session)
+            throws Exception {
         return "/WEB-INF/jsp/cancelar-venda.jsp";
     }
     
-    public String relatorio(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    public String relatorio(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session) {
         
         try {
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
-                Venda venda = new Venda();
+                // Pega os dados do usuário logado
+                Usuario usuario = (Usuario) session
+                        .getAttribute("usuarioLogado");
+                
                 DaoVenda dao = new DaoVenda(
                         (Connection) request.getAttribute("connection"));
                 List<Venda> lista = null;
@@ -136,11 +163,28 @@ public class ControllerVenda implements Logica {
                         // Verifica se a data final está depois da inicial e
                         // antes de hoje
                         if (dF.after(dI) && dF.before(new Date())) {
-                            lista = dao.findAll(
-                                    new String[]{"status", "loja_id", "data_venda", "data_venda"},
-                                    new String[]{"=", "=", ">=", "<="},
-                                    new String[]{"true", "5", dataInicial, dataFinal},
-                                    new String[]{"and", "and", "and", "and"});
+                            // 5 = gerente de vendas
+                            if (usuario.getNivelUsuario().getId() == 5) {
+                                String idLoja = String.valueOf(usuario
+                                        .getFuncionario().getLoja().getId());
+                                
+                                lista = dao.findAll(
+                                        new String[]{"status", "loja_id",
+                                            "data_venda", "data_venda"},
+                                        new String[]{"=", "=", ">=", "<="},
+                                        new String[]{"true", idLoja,
+                                            dataInicial, dataFinal},
+                                        new String[]{"and", "and",
+                                            "and", "and"});
+                            } else {
+                                lista = dao.findAll(
+                                        new String[]{"status", "data_venda",
+                                            "data_venda"},
+                                        new String[]{"=", ">=", "<="},
+                                        new String[]{"true", dataInicial,
+                                            dataFinal},
+                                        new String[]{"and", "and", "and"});
+                            }
                         } else {
                             session.setAttribute("alert", "alert-danger");
                             session.setAttribute("alertMessage",
@@ -175,68 +219,5 @@ public class ControllerVenda implements Logica {
                     "Não foi possível realizar a consulta.");
             return "pesquisar";
         }
-    }
-    
-    private Venda manterVenda(HttpServletRequest request, int idCliente, Usuario usuario, float valorVenda, int[] idItem, int[] quantidadeItem, float[] valorUnitario) {
-        try {
-            Connection conn = (Connection) request.getAttribute("connection");
-            
-            Cliente cliente = new Cliente();
-            DaoCliente daoCliente = new DaoCliente(conn);
-            cliente = (Cliente) daoCliente.findOne(cliente, idCliente);
-            
-            Funcionario funcionario = new Funcionario();
-            DaoFuncionario daoFuncionario = new DaoFuncionario(conn);
-            funcionario = (Funcionario) daoFuncionario.findOne(funcionario, usuario.getFuncionario().getId());
-            
-            Loja loja = new Loja();
-            DaoLoja daoLoja = new DaoLoja(conn);
-            loja = (Loja) daoLoja.findOne(loja, usuario.getFuncionario().getLoja().getId());
-            
-            Venda venda = new Venda();
-            venda.setCliente(cliente);
-            venda.setFuncionario(funcionario);
-            venda.setLoja(loja);
-            venda.setValorVenda(valorVenda);
-            for (int i = 0; i < idItem.length; i++) {
-                ItensVenda itensVenda = this.preencherItensVenda(request, venda, idItem[i], quantidadeItem[i], valorUnitario[i], loja);
-            venda.addListaItensVenda(itensVenda);
-            }
-            return venda;
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            return null;
-        }
-        
-    }
-    
-    private ItensVenda preencherItensVenda(HttpServletRequest request, Venda venda,
-            int idItem, int quantidadeItem, float valorUnitario, Loja loja
-    ) {
-        
-        try {
-            
-            Connection conn = (Connection) request.getAttribute("connection");
-            
-                ItensVenda itensVenda = new ItensVenda();
-                itensVenda.setVenda(venda);
-                itensVenda.setQuantidade(quantidadeItem);
-                itensVenda.setValorUnitario(valorUnitario);
-                
-                ItensLoja itensLoja = new ItensLoja();
-                DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
-                List<Model> lista = daoItensLoja.findAll(itensLoja, new String[]{"produto_id", "loja_id"}, new String[]{"=", "="},
-                        new String[]{String.valueOf(idItem), String.valueOf(loja.getId())}, new String[]{"and", "and"});
-                if (lista.size() == 1) {
-                    itensVenda.setItens((ItensLoja) lista.get(0));
-                }
-                return itensVenda;   
-            
-            
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            return null;
-        }
-     
     }
 }
