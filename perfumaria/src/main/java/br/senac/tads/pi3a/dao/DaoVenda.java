@@ -25,6 +25,7 @@ package br.senac.tads.pi3a.dao;
 
 import br.senac.tads.pi3a.ado.Criteria;
 import br.senac.tads.pi3a.ado.Filter;
+import br.senac.tads.pi3a.ado.SqlInsert;
 import br.senac.tads.pi3a.ado.SqlSelect;
 import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Funcionario;
@@ -36,6 +37,7 @@ import br.senac.tads.pi3a.model.Venda;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +51,64 @@ public class DaoVenda {
 
     public DaoVenda(Connection conn) {
         this.conn = conn;
+    }
+    
+    public int insert(Venda venda) {
+        int id = -1;
+        
+        try {
+            SqlInsert sqlVenda = new SqlInsert();
+            sqlVenda.setEntity("venda");
+            sqlVenda.setRowData("valor_venda", "?");
+            sqlVenda.setRowData("cliente_id", "?");
+            sqlVenda.setRowData("funcionario_id", "?");
+            sqlVenda.setRowData("loja_id", "?");
+            
+            PreparedStatement stmtVenda = this.conn.prepareStatement(
+                    sqlVenda.getInstruction(),
+                    Statement.RETURN_GENERATED_KEYS);
+            
+            stmtVenda.setFloat(1, venda.getValorVenda());
+            stmtVenda.setInt(2, venda.getCliente().getId());
+            stmtVenda.setInt(3, venda.getFuncionario().getId());
+            stmtVenda.setInt(4, venda.getLoja().getId());
+            
+            stmtVenda.execute();
+            ResultSet resultSetVenda = stmtVenda.getGeneratedKeys();
+            
+            if (resultSetVenda.next()) {
+                id = resultSetVenda.getInt(1); // id
+                
+                SqlInsert sqlItensVenda = new SqlInsert();
+                sqlItensVenda.setEntity("itens_venda");
+                sqlItensVenda.setRowData("venda_id", "?");
+                sqlItensVenda.setRowData("produto_id", "?");
+                sqlItensVenda.setRowData("qtde_item", "?");
+                sqlItensVenda.setRowData("valor_unitario", "?");
+                
+                PreparedStatement stmtItensVenda = this.conn.prepareStatement(
+                        sqlItensVenda.getInstruction());
+                
+                for (int i = 0; i < venda.getListaItensVenda().size(); i++) {
+                    stmtItensVenda.setInt(1, id);
+                    stmtItensVenda.setInt(2, venda.getListaItensVenda().get(i)
+                            .getItens().getProduto().getId());
+                    stmtItensVenda.setInt(3, venda.getListaItensVenda().get(i)
+                            .getQuantidade());
+                    stmtItensVenda.setFloat(4, venda.getListaItensVenda().get(i)
+                            .getValorUnitario());
+                    
+                    stmtItensVenda.execute();
+                }
+                
+                return id;
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return -1;
+        }
+        
+        return id;
     }
 
     /**
