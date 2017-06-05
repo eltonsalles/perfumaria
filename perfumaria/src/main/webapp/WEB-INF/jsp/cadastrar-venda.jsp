@@ -3,6 +3,7 @@
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
     <h2>Cadastrar Venda</h2>
+    <jsp:include page="/WEB-INF/layout/message.jsp"/>
     <form id="form-venda" action="sistema?controller=Venda&action=novo" method="post">
         <div class="form-group col-md-12">
             <div class="form-group col-md-2 <c:if test="${errorValidation.cpf eq true}">has-error</c:if>">
