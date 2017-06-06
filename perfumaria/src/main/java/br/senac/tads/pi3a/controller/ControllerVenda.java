@@ -23,6 +23,7 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoItensLoja;
 import br.senac.tads.pi3a.dao.DaoVenda;
 import br.senac.tads.pi3a.inputFilter.InputFilterVenda;
 import br.senac.tads.pi3a.model.Usuario;
@@ -68,14 +69,47 @@ public class ControllerVenda implements Logica {
                     Usuario usuario = (Usuario) session
                             .getAttribute("usuarioLogado");
                     
+                    int idLoja = usuario.getFuncionario().getLoja().getId();
+                    
                     // Cria um objeto venda com os dados válidos do formulário
                     Venda venda = (Venda) inputFilterVenda.createModel();
                     
                     // Seta as infomações do usuário
                     venda.getFuncionario().setId(usuario.getFuncionario()
                             .getId());
-                    venda.getLoja().setId(usuario.getFuncionario().getLoja()
-                            .getId());
+                    venda.getLoja().setId(idLoja);
+                    
+                    // Monta um vetor com os ids dos produtos da venda
+                    int[] idsProdutos = new int[venda.getListaItensVenda()
+                            .size()];
+                    for (int i = 0; i < idsProdutos.length; i++) {
+                        idsProdutos[i] = venda.getListaItensVenda().get(i)
+                                .getItens().getProduto().getId();
+                    }
+                    
+                    // Faz uma consulta trazendo o estoque de cada
+                    // produto da venda
+                    DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
+                    List<Object[]> listaEstoque = daoItensLoja.findAllEstoque(
+                            idsProdutos, idLoja);
+                    
+                    // Verifica se o produto possui a quantidade para
+                    // realizar a venda
+                    for (int i = 0; i < idsProdutos.length; i++) {
+                        if (venda.getListaItensVenda().get(i).getQuantidade()
+                                > (int) listaEstoque.get(i)[2]) {
+                            // A quantidade que está sendo vendida é maior
+                            // que o estoque
+                            session.setAttribute("data", data);
+                            session.setAttribute("alert", "alert-danger");
+                            session.setAttribute("alertMessage",
+                                    "O produto com código " + idsProdutos[i]
+                                            + " não possui a quantidade em"
+                                            + " estoque requerida na venda.");
+                            
+                            return "WEB-INF/jsp/cadastrar-venda.jsp";
+                        }
+                    }
                     
                     // Chama a daoVenda
                     DaoVenda daoVenda = new DaoVenda(conn);
