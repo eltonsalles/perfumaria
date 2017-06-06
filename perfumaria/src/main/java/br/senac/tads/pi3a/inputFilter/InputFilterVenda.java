@@ -179,7 +179,7 @@ public class InputFilterVenda extends InputFilter {
                 itensVenda.setVenda(venda);
                 itensVenda.setQuantidade(Integer.valueOf(this.allMap.get("quantidade")[i]));
 
-                String precoUnidade = this.allMap.get("preco-unidade")[0]
+                String precoUnidade = this.allMap.get("preco-unidade")[i]
                         .replaceAll("\\.", "")
                         .replaceAll(",", ".");
                 
