@@ -226,4 +226,50 @@ public class DaoItensLoja extends AbstractDao {
             throw new Exception(e.getMessage());
         }
     }
+    
+    public List<Object[]> findAllEstoque(int[] idsProdutos, int idLoja) {
+        List<Object[]> lista = new ArrayList<>();
+        
+        try {
+            Criteria criteria = new Criteria();
+            for (int i = 0; i < idsProdutos.length; i++) {
+                criteria.add(new Filter("produto_id", "=", "?"),
+                        Expression.OR_OPERATOR);
+            }
+            criteria.add(new Filter("loja_id", "=", "?"),
+                    Expression.AND_OPERATOR);
+            
+            SqlSelect sql = new SqlSelect();
+            sql.setEntity("itens_loja");
+            sql.addColumn("loja_id");
+            sql.addColumn("produto_id");
+            sql.addColumn("estoque");
+            sql.setCriteria(criteria);
+            
+            PreparedStatement stmt = this.getConnection()
+                    .prepareStatement(sql.getInstruction());
+            
+            for (int i = 0; i < idsProdutos.length; i++) {
+                stmt.setInt(i + 1, idsProdutos[i]);
+            }
+            stmt.setInt(idsProdutos.length + 1, idLoja);
+            
+            ResultSet resultSet = stmt.executeQuery();
+            
+            while (resultSet.next()) {
+                Object[] object = new Object[3];
+                
+                object[0] = resultSet.getInt("loja_id");
+                object[1] = resultSet.getInt("produto_id");
+                object[2] = resultSet.getInt("estoque");
+                
+                lista.add(object);
+            }
+            
+            return lista;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return null;
+        }
+    }
 }
