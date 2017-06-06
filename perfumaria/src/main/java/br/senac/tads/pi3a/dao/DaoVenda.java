@@ -27,6 +27,7 @@ import br.senac.tads.pi3a.ado.Criteria;
 import br.senac.tads.pi3a.ado.Filter;
 import br.senac.tads.pi3a.ado.SqlInsert;
 import br.senac.tads.pi3a.ado.SqlSelect;
+import br.senac.tads.pi3a.ado.SqlUpdate;
 import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Funcionario;
 import br.senac.tads.pi3a.model.ItensLoja;
@@ -39,7 +40,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -109,6 +112,38 @@ public class DaoVenda {
         }
         
         return id;
+    }
+    
+    /**
+     * Esse update serve para cancelar uma venda alterando apenas o status
+     * 
+     * @param id
+     * @return
+     * @throws Exception 
+     */
+    public boolean update(int id) throws Exception {
+        try {
+            Criteria criteria = new Criteria();
+            criteria.add(new Filter("id", "=", "?"));
+            
+            SqlUpdate sql = new SqlUpdate();
+            sql.setEntity("venda");
+            sql.setRowData("status", "?");
+            sql.setCriteria(criteria);
+
+            PreparedStatement stmt = this.conn.prepareStatement(
+                    sql.getInstruction());
+
+            stmt.setBoolean(1, false);
+            stmt.setInt(2, id);
+
+            stmt.execute();
+            
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return false;
+        }
     }
 
     /**
@@ -331,5 +366,187 @@ public class DaoVenda {
         }
         
         return listaVenda;
+    }
+    
+    /**
+     * Retorna os dados de uma venda
+     * 
+     * @param idVenda
+     * @return 
+     */
+    public List<Map<String, Object[]>> findOne(int idVenda) {
+        List<Map<String, Object[]>> listaVendas = new ArrayList<>();
+        
+        try {
+            List<Venda> lista = findAll("id", "=", String.valueOf(idVenda));
+
+            if (!lista.isEmpty()) {
+                Venda venda = lista.get(0);
+                listaVendas.add(this.montarVenda(venda));
+                
+                return listaVendas;
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Retorna os dados de uma venda de uma determinada loja
+     * 
+     * @param idVenda
+     * @param idLoja
+     * @return 
+     */
+    public List<Map<String, Object[]>> findOne(int idVenda, int idLoja) {
+        List<Map<String, Object[]>> listaVendas = new ArrayList<>();
+        
+        try {
+            List<Venda> lista = findAll(
+                    new String[]{"id", "loja_id"},
+                    new String[]{"=", "="},
+                    new String[]{String.valueOf(idVenda),
+                        String.valueOf(idLoja)},
+                    new String[]{"and", "and"});
+
+            if (!lista.isEmpty()) {
+                Venda venda = lista.get(0);
+                listaVendas.add(this.montarVenda(venda));
+                
+                return listaVendas;
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Retorna os dados das vendas dos clientes
+     * 
+     * @param clientes
+     * @return 
+     */
+    public List<Map<String, Object[]>> findAll(List<Model> clientes) {
+        List<Map<String, Object[]>> listaVendas = new ArrayList<>();
+        
+        try {
+            String[] fields = new String[clientes.size()];
+            String[] criterias = new String[clientes.size()];
+            String[] values = new String[clientes.size()];
+            String[] operetors = new String[clientes.size()];
+            for (int i = 0; i < fields.length; i++) {
+                fields[i] = "cliente_id";
+                criterias[i] = "=";
+                values[i] = String.valueOf(clientes.get(i).getId());
+                operetors[i] = "or";
+            }
+            
+            List<Venda> lista = findAll(fields, criterias, values, operetors);
+
+            for (int i = 0; i < lista.size(); i++) {
+                Venda venda = lista.get(i);
+                listaVendas.add(this.montarVenda(venda));
+            }
+            
+            return listaVendas;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Retorna os dados das vendas dos clientes de uma determinada loja
+     * 
+     * @param clientes
+     * @param idLoja
+     * @return 
+     */
+    public List<Map<String, Object[]>> findAll(List<Model> clientes,
+            int idLoja) {
+        List<Map<String, Object[]>> listaVendas = new ArrayList<>();
+        
+        try {
+            String[] fields = new String[clientes.size() + 1];
+            String[] criterias = new String[clientes.size() + 1];
+            String[] values = new String[clientes.size() + 1];
+            String[] operetors = new String[clientes.size() + 1];
+            int i;
+            for (i = 0; i < fields.length - 1; i++) {
+                fields[i] = "cliente_id";
+                criterias[i] = "=";
+                values[i] = String.valueOf(clientes.get(i).getId());
+                operetors[i] = "or";
+            }
+            fields[i] = "loja_id";
+            criterias[i] = "=";
+            values[i] = String.valueOf(idLoja);
+            operetors[i] = "and";
+            
+            List<Venda> lista = findAll(fields, criterias, values, operetors);
+
+            for (i = 0; i < lista.size(); i++) {
+                Venda venda = lista.get(i);
+                listaVendas.add(this.montarVenda(venda));
+            }
+            
+            return listaVendas;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Monta uma venda conforme o necessário para exibir na view
+     * 
+     * @param venda
+     * @return 
+     */
+    private Map<String, Object[]> montarVenda(Venda venda) {
+        Map<String, Object[]> dados = new LinkedHashMap<>();
+
+        dados.put("venda", new Object[]{venda.getId()});
+        dados.put("status", new Object[]{venda.getStatus()});
+        dados.put("dataCadastro", new Object[]{venda.getData()});
+        dados.put("cpf", new Object[]{venda.getCliente().getCpf()});
+        dados.put("nome", new Object[]{venda.getCliente().getNome()});
+        dados.put("idCliente", new Object[]{venda.getCliente().getId()});
+        dados.put("total", new Object[]{venda.getValorVenda()});
+
+        Object[] codigos = new Object[venda.getListaItensVenda().size()];
+        Object[] produtos = new Object[codigos.length];
+        Object[] marcas = new Object[codigos.length];
+        Object[] quantidades = new Object[codigos.length];
+        Object[] precosUnidades = new Object[codigos.length];
+        Object[] precosTotais = new Object[codigos.length];
+        for (int i = 0; i < codigos.length; i++) {
+            codigos[i] = venda.getListaItensVenda().get(i).getItens()
+                    .getProduto().getId();
+            produtos[i] = venda.getListaItensVenda().get(i).getItens()
+                    .getProduto().getNome();
+            marcas[i] = venda.getListaItensVenda().get(i).getItens()
+                    .getProduto().getMarca();
+            quantidades[i] = venda.getListaItensVenda().get(i).getQuantidade();
+            precosUnidades[i] = venda.getListaItensVenda().get(i)
+                    .getValorUnitario();
+            precosTotais[i] = (int) quantidades[i] * (float) precosUnidades[i];
+        }
+
+        dados.put("codigo", codigos);
+        dados.put("produto", produtos);
+        dados.put("marca", marcas);
+        dados.put("quantidade", quantidades);
+        dados.put("precoUnidade", precosUnidades);
+        dados.put("precoTotal", precosTotais);
+        dados.put("cont", new Object[]{codigos.length});
+        
+        return dados;
     }
 }
