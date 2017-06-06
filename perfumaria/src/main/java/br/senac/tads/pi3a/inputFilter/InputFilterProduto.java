@@ -215,14 +215,14 @@ public class InputFilterProduto extends InputFilter {
             if (!this.allMap.get("id")[0].isEmpty()) {
                 produto.setId(Integer.valueOf(this.allMap.get("id")[0]));
             }
-            produto.setNome(this.allMap.get("nome")[0]);
-            produto.setMarca(this.allMap.get("marca")[0]);
-            produto.setCategoria(this.allMap.get("categoria")[0]);
+            produto.setNome(this.allMap.get("nome")[0].trim());
+            produto.setMarca(this.allMap.get("marca")[0].trim());
+            produto.setCategoria(this.allMap.get("categoria")[0].trim());
             produto.setValorUnidadeMedida(Integer.valueOf(this.allMap
                     .get("valor-unidade-medida")[0]));
             produto.setUnidadeMedida(this.allMap.get("unidade-medida")[0]);
             produto.setGenero(this.allMap.get("genero")[0]);
-            produto.setDescricao(this.allMap.get("descricao")[0]);
+            produto.setDescricao(this.allMap.get("descricao")[0].trim());
 
             if (!this.allMap.get("id")[0].isEmpty()) {
                 itensLoja.setId(Integer.valueOf(this.allMap.get("id")[0]));
