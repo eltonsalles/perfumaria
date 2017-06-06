@@ -23,9 +23,12 @@
  */
 package br.senac.tads.pi3a.controller;
 
+import br.senac.tads.pi3a.dao.DaoCliente;
 import br.senac.tads.pi3a.dao.DaoItensLoja;
 import br.senac.tads.pi3a.dao.DaoVenda;
 import br.senac.tads.pi3a.inputFilter.InputFilterVenda;
+import br.senac.tads.pi3a.model.Cliente;
+import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Usuario;
 import br.senac.tads.pi3a.model.Venda;
 import br.senac.tads.pi3a.validation.ValidationDate;
@@ -153,14 +156,126 @@ public class ControllerVenda implements Logica {
     public String excluir(HttpServletRequest request,
             HttpServletResponse response, HttpSession session)
             throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (request.getParameter("id") != null) {
+                String id = request.getParameter("id");
+                boolean digito = true;
+
+                for (int i = 0; i < id.length(); i++) {
+                    if (!Character.isDigit(id.charAt(i))) {
+                        digito = false;
+                        break;
+                    }
+                }
+
+                if (digito) {
+                    Connection conn = (Connection) request
+                            .getAttribute("connection");
+                    
+                    DaoVenda daoVenda = new DaoVenda(conn);
+                    List<Venda> lista =  daoVenda.findAll("id", "=", id);
+
+                    if (!lista.isEmpty()) {
+                        // O update é para alterar o status da venda para false
+                        if (daoVenda.update(Integer.valueOf(id))) {
+                            session.setAttribute("alert", "alert-warning");
+                            session.setAttribute("alertMessage",
+                                    "Venda cancelada com sucesso.");
+                            return "pesquisar";
+                        }
+                    } else {
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage", "Número de venda"
+                                + " não encontrado.");
+                        return "pesquisar";
+                    }
+                }
+            }
+
+            return "/WEB-INF/jsp/cancelar-venda.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a exclusão.");
+            return "pesquisar";
+        }
     }
     
     @Override
     public String pesquisar(HttpServletRequest request,
             HttpServletResponse response, HttpSession session)
             throws Exception {
-        return "/WEB-INF/jsp/cancelar-venda.jsp";
+        try {
+            // Se o formulário for submetido por post então entra aqui
+            if (request.getMethod().equalsIgnoreCase("post")) {
+                Usuario usuario = (Usuario) session
+                        .getAttribute("usuarioLogado");
+                
+                int idLoja = usuario.getFuncionario().getLoja().getId();
+                
+                Connection conn = (Connection) request
+                        .getAttribute("connection");
+                
+                DaoVenda daoVenda = new DaoVenda(conn);
+                List<Map<String, Object[]>> data;
+
+                // Se não houver valor para pesquisar então retorna tudo
+                if (request.getParameter("pesquisar") != null
+                        && !request.getParameter("pesquisar").isEmpty()) {
+                    String pesquisar = request.getParameter("pesquisar");
+
+                    // Verifica por onde a consulta será feita por cpf ou nome
+                    boolean digito = true;
+                    for (int i = 0; i < pesquisar.length(); i++) {
+                        if (!Character.isDigit(pesquisar.charAt(i))) {
+                            digito = false;
+                            break;
+                        }
+                    }
+                    if (digito) {
+                        // 5 = gerente de vendas
+                        if (usuario.getNivelUsuario().getId() == 5) {
+                            data = daoVenda.findOne(Integer.valueOf(pesquisar),
+                                    idLoja);
+                        } else {
+                            data = daoVenda.findOne(Integer.valueOf(pesquisar));
+                        }
+                    } else {
+                        Cliente cliente = new Cliente();
+                        DaoCliente daoCliente = new DaoCliente(conn);
+                        
+                        List<Model> listaClientes = daoCliente.findAll(cliente,
+                                "UPPER(nome)", "LIKE",
+                                "%" + pesquisar.toUpperCase() + "%");
+                        
+                        // 5 = gerente de vendas
+                        if (usuario.getNivelUsuario().getId() == 5) {
+                            data = daoVenda.findAll(listaClientes, idLoja);
+                        } else {
+                            data = daoVenda.findAll(listaClientes);
+                        }
+                    }
+                    
+                    if (data != null && !data.isEmpty()) {
+                        session.setAttribute("data", data);
+                        return "pesquisar";
+                    } else {
+                        session.setAttribute("alert", "alert-warning");
+                        session.setAttribute("alertMessage",
+                                "A consulta não retornou nenhum resultado.");
+                    }
+                }
+            }
+
+            return "/WEB-INF/jsp/cancelar-venda.jsp";
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            session.setAttribute("alert", "alert-danger");
+            session.setAttribute("alertMessage",
+                    "Não foi possível realizar a consulta.");
+            return "pesquisar";
+        }
     }
     
     public String relatorio(HttpServletRequest request,
