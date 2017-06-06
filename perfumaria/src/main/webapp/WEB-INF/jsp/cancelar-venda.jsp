@@ -9,7 +9,7 @@
         <div class="form-group col-md-6">
             <label class="control-label" for="pesquisar">Pesquisar</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o código da venda" name="pesquisar" maxlength="150" pattern="^([a-zA-Zà-úÀ-Ú0-9]{1,})|([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$">
+                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o código da venda ou o nome do cliente" name="pesquisar" maxlength="150" pattern="^([a-zA-Zà-úÀ-Ú0-9]{1,})|([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$">
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -31,49 +31,49 @@
             <th>Valor da Venda</th>
             <th>Ações</th>
         </tr>
-        <c:if test="${not empty sessionScope.data.venda[0]}">
+        <c:forEach items="${sessionScope.data}" var="dados">
         <tr>
-            <td><c:out value="${sessionScope.data.venda[0]}"></c:out></td>
-            <td><c:out value="${sessionScope.data.status[0] eq true ? 'Ativa' : 'Cancelada'}"></c:out></td>
-            <td><c:out value="${sessionScope.data.nome[0]}"></c:out></td>
-            <td><fmt:formatDate pattern="dd/MM/yyyy" value="${sessionScope.data.dataCadastro[0]}" /></td>
+            <td><c:out value="${dados.venda[0]}"></c:out></td>
+            <td><c:out value="${dados.status[0] eq true ? 'Ativa' : 'Cancelada'}"></c:out></td>
+            <td><c:out value="${dados.nome[0]}"></c:out></td>
+            <td><fmt:formatDate pattern="dd/MM/yyyy" value="${dados.dataCadastro[0]}" /></td>
             <td>
             <c:set var="i" value="0"></c:set>
-            <c:forEach begin="0" end="${sessionScope.data.cont[0]}" varStatus="loop">
-                <c:out value="${sessionScope.data.produto[i]}"></c:out><br>
+            <c:forEach begin="0" end="${dados.cont[0]}" varStatus="loop">
+                <c:out value="${dados.produto[i]}"></c:out><br>
             <c:set var="i" value="${i + 1}"></c:set>
             </c:forEach>
             </td>
             <td>
             <c:set var="i" value="0"></c:set>
-            <c:forEach begin="0" end="${sessionScope.data.cont[0]}" varStatus="loop">
-                <c:out value="${sessionScope.data.quantidade[i]}"></c:out><br>
+            <c:forEach begin="0" end="${dados.cont[0]}" varStatus="loop">
+                <c:out value="${dados.quantidade[i]}"></c:out><br>
             <c:set var="i" value="${i + 1}"></c:set>
             </c:forEach>
             </td>
             <fmt:setLocale value="pt_BR"></fmt:setLocale>
             <td>
             <c:set var="i" value="0"></c:set>
-            <c:forEach begin="0" end="${sessionScope.data.cont[0]}" varStatus="loop">
-                <fmt:formatNumber value="${sessionScope.data.precoUnidade[i]}" type="currency" /><br>
+            <c:forEach begin="0" end="${dados.cont[0]}" varStatus="loop">
+                <fmt:formatNumber value="${dados.precoUnidade[i]}" type="currency" /><br>
             <c:set var="i" value="${i + 1}"></c:set>
             </c:forEach>
             </td>
             <td>
             <c:set var="i" value="0"></c:set>
-            <c:forEach begin="0" end="${sessionScope.data.cont[0]}" varStatus="loop">
-                <fmt:formatNumber value="${sessionScope.data.precoTotal[i]}" type="currency" /><br>
+            <c:forEach begin="0" end="${dados.cont[0]}" varStatus="loop">
+                <fmt:formatNumber value="${dados.precoTotal[i]}" type="currency" /><br>
             <c:set var="i" value="${i + 1}"></c:set>
             </c:forEach>
             </td>
-            <td><fmt:formatNumber value="${sessionScope.data.total[0]}" type="currency" /></td>
+            <td><fmt:formatNumber value="${dados.total[0]}" type="currency" /></td>
             <td>
-                <a href="sistema?controller=Venda&action=excluir&id=<c:out value="${sessionScope.data.venda[0]}"></c:out>" class="btn btn-default" role="button" title="Cancelar">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                <a href="sistema?controller=Venda&action=excluir&id=<c:out value="${dados.venda[0]}"></c:out>" class="btn btn-default" role="button" title="Cancelar">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 </a>
             </td>
         </tr>
-        </c:if>
+        </c:forEach>
         <c:remove scope="session" var="data"></c:remove>
     </table>
 </div><!-- content -->
