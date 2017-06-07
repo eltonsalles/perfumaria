@@ -27,7 +27,6 @@ import br.senac.tads.pi3a.model.Funcionario;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.NivelUsuario;
 import br.senac.tads.pi3a.model.Usuario;
-import br.senac.tads.pi3a.validation.ValidationAlpha;
 import br.senac.tads.pi3a.validation.ValidationAlphaNumerico;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
@@ -144,7 +143,7 @@ public class InputFilterUsuario extends InputFilter {
                     .get("nivel-usuario")[0]));
             usuario.setNivelUsuario(nivelUsuario);
 
-            usuario.setLogin(this.allMap.get("login")[0]);
+            usuario.setLogin(this.allMap.get("login")[0].trim());
             usuario.setSenha(this.allMap.get("senha")[0]);
 
         } catch (NumberFormatException e) {

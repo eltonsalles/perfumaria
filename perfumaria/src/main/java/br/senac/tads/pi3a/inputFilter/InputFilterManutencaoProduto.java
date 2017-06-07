@@ -120,7 +120,7 @@ public class InputFilterManutencaoProduto extends InputFilter {
             historicoProduto.setDataMovimentacao(new Date());
             historicoProduto.setTipoMovimentacao(
                     this.allMap.get("justificativa")[0]);
-            historicoProduto.setDescricao(this.allMap.get("descricao")[0]);
+            historicoProduto.setDescricao(this.allMap.get("descricao")[0].trim());
             historicoProduto.setQuantidade(
                     Integer.valueOf(this.allMap.get("quantidade")[0]));
 

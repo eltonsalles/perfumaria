@@ -244,20 +244,20 @@ public class InputFilterLoja extends InputFilter {
             if (!this.allMap.get("id")[0].isEmpty()) {
                 loja.setId(Integer.valueOf(this.allMap.get("id")[0]));
             }
-            loja.setRazaoSocial(this.allMap.get("razao-social")[0]);
+            loja.setRazaoSocial(this.allMap.get("razao-social")[0].trim());
             loja.setCnpj(this.allMap.get("cnpj")[0]);
             loja.setStatus(Boolean.valueOf(this.allMap.get("status")[0]));
-            loja.setNomeFantasia(this.allMap.get("nome-fantasia")[0]);
+            loja.setNomeFantasia(this.allMap.get("nome-fantasia")[0].trim());
             loja.setTelefone(this.allMap.get("telefone")[0]);
             loja.setEmail(this.allMap.get("email")[0]);
-            loja.setLogradouro(this.allMap.get("logradouro")[0]);
+            loja.setLogradouro(this.allMap.get("logradouro")[0].trim());
             loja.setNumero(this.allMap.get("numero")[0]);
 
             if (!this.allMap.get("complemento")[0].isEmpty()) {
-                loja.setComplemento(this.allMap.get("complemento")[0]);
+                loja.setComplemento(this.allMap.get("complemento")[0].trim());
             }
-            loja.setBairro(this.allMap.get("bairro")[0]);
-            loja.setCidade(this.allMap.get("cidade")[0]);
+            loja.setBairro(this.allMap.get("bairro")[0].trim());
+            loja.setCidade(this.allMap.get("cidade")[0].trim());
             loja.setUf(this.allMap.get("uf")[0]);
             loja.setCep(this.allMap.get("cep")[0]);
         } catch (NumberFormatException e) {

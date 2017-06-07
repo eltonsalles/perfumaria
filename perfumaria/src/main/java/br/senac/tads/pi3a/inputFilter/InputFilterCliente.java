@@ -24,7 +24,6 @@
 package br.senac.tads.pi3a.inputFilter;
 
 import br.senac.tads.pi3a.model.Cliente;
-import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.validation.ValidationAlpha;
 import br.senac.tads.pi3a.validation.ValidationBoolean;
@@ -89,7 +88,7 @@ public class InputFilterCliente extends InputFilter {
             
             validationTamanho.setTamanho(150);
             
-            if (validationTamanho.isValid(this.allMap.get("nome")[0].trim()) &&
+            if (validationTamanho.isValid(this.allMap.get("nome")[0]) &&
                     validationAlpha.isValid(this.allMap.get("nome")[0])) {
                 this.errorValidation.replace("nome", false);
             }
@@ -134,7 +133,7 @@ public class InputFilterCliente extends InputFilter {
             
             validationTamanho.setTamanho(150);
             
-            if (validationTamanho.isValid(this.allMap.get("email")[0].trim())
+            if (validationTamanho.isValid(this.allMap.get("email")[0])
                     && validationEmail.isValid(this.allMap.get("email")[0])) {
                 this.errorValidation.replace("email", false);
             }
@@ -197,7 +196,7 @@ public class InputFilterCliente extends InputFilter {
         if (this.allMap.containsKey("logradouro")) {
             validationTamanho.setTamanho(150);
             
-            if (validationTamanho.isValid(this.allMap.get("logradouro")[0].trim()) &&
+            if (validationTamanho.isValid(this.allMap.get("logradouro")[0]) &&
                     validationString.isValid(this.allMap
                             .get("logradouro")[0])) {
                 this.errorValidation.replace("logradouro", false);
@@ -222,7 +221,7 @@ public class InputFilterCliente extends InputFilter {
             if (!this.allMap.get("complemento")[0].isEmpty()) {
                 validationTamanho.setTamanho(50);
                 
-                if (validationTamanho.isValid(this.allMap.get("complemento")[0].trim())
+                if (validationTamanho.isValid(this.allMap.get("complemento")[0])
                         && validationString.isValid(this.allMap
                                 .get("complemento")[0])) {
                     this.errorValidation.replace("complemento", false);
@@ -237,7 +236,7 @@ public class InputFilterCliente extends InputFilter {
         if (this.allMap.containsKey("bairro")) {
             validationTamanho.setTamanho(50);
             
-            if (validationTamanho.isValid(this.allMap.get("bairro")[0].trim()) &&
+            if (validationTamanho.isValid(this.allMap.get("bairro")[0]) &&
                     validationString.isValid(this.allMap
                             .get("bairro")[0])) {
                 this.errorValidation.replace("bairro", false);
@@ -251,7 +250,7 @@ public class InputFilterCliente extends InputFilter {
             
             validationTamanho.setTamanho(50);
             
-            if (validationTamanho.isValid(this.allMap.get("cidade")[0].trim()) &&
+            if (validationTamanho.isValid(this.allMap.get("cidade")[0]) &&
                     validationAlpha.isValid(this.allMap
                             .get("cidade")[0])) {
                 this.errorValidation.replace("cidade", false);
@@ -303,7 +302,7 @@ public class InputFilterCliente extends InputFilter {
             }
             cliente.setStatus(Boolean.valueOf(this.allMap.get("status")[0]));
             cliente.setCpf(this.allMap.get("cpf")[0]);
-            cliente.setNome(this.allMap.get("nome")[0]);
+            cliente.setNome(this.allMap.get("nome")[0].trim());
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dataNascimento = new Date(sdf.parse(this.allMap
@@ -315,16 +314,16 @@ public class InputFilterCliente extends InputFilter {
             cliente.setCelular(this.allMap.get("celular")[0]);
             cliente.setTelefone(this.allMap.get("telefone")[0]);
             cliente.setEmail(this.allMap.get("email")[0]);
-            cliente.setLogradouro(this.allMap.get("logradouro")[0]);
+            cliente.setLogradouro(this.allMap.get("logradouro")[0].trim());
             cliente.setNumero(this.allMap.get("numero")[0]);
             
             if (!this.allMap.get("complemento")[0].isEmpty()) {
-                cliente.setComplemento(this.allMap.get("complemento")[0]);
+                cliente.setComplemento(this.allMap.get("complemento")[0].trim());
             }
             
-            cliente.setBairro(this.allMap.get("bairro")[0]);
-            cliente.setCep(this.allMap.get("cep")[0]);
-            cliente.setCidade(this.allMap.get("cidade")[0]);
+            cliente.setBairro(this.allMap.get("bairro")[0].trim());
+            cliente.setCep(this.allMap.get("cep")[0].trim());
+            cliente.setCidade(this.allMap.get("cidade")[0].trim());
             cliente.setUf(this.allMap.get("uf")[0]);
         } catch (NumberFormatException | ParseException e) {
             e.printStackTrace(System.err);
