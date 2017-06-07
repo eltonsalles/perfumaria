@@ -24,6 +24,7 @@
 package br.senac.tads.pi3a.dao;
 
 import br.senac.tads.pi3a.ado.Criteria;
+import br.senac.tads.pi3a.ado.Expression;
 import br.senac.tads.pi3a.ado.Filter;
 import br.senac.tads.pi3a.ado.SqlInsert;
 import br.senac.tads.pi3a.ado.SqlSelect;
@@ -104,7 +105,12 @@ public class DaoVenda {
                     stmtItensVenda.execute();
                 }
                 
-                return id;
+                // Dá baixa dos produtos no estoque
+                if (this.baixarEstoque(venda.getListaItensVenda())) {
+                    return id;
+                } else {
+                    return -1;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -117,11 +123,11 @@ public class DaoVenda {
     /**
      * Esse update serve para cancelar uma venda alterando apenas o status
      * 
-     * @param id
+     * @param venda
      * @return
      * @throws Exception 
      */
-    public boolean update(int id) throws Exception {
+    public boolean update(Venda venda) throws Exception {
         try {
             Criteria criteria = new Criteria();
             criteria.add(new Filter("id", "=", "?"));
@@ -135,15 +141,19 @@ public class DaoVenda {
                     sql.getInstruction());
 
             stmt.setBoolean(1, false);
-            stmt.setInt(2, id);
+            stmt.setInt(2, venda.getId());
 
             stmt.execute();
             
-            return true;
+            // Retorna os produtos ao estoque
+            if (this.retornarEstoque(venda.getListaItensVenda())) {
+                return true;
+            }
         } catch (Exception e) {
             e.printStackTrace(System.err);
-            return false;
         }
+        
+        return false;
     }
 
     /**
@@ -548,5 +558,130 @@ public class DaoVenda {
         dados.put("cont", new Object[]{codigos.length});
         
         return dados;
+    }
+    
+    /**
+     * Método para retirar os produtos do estoque quando uma venda for realizada
+     * 
+     * @param listaItensVenda
+     * @return 
+     */
+    private boolean baixarEstoque(List<ItensVenda> listaItensVenda) {
+        try {
+            for (ItensVenda itensVenda : listaItensVenda) {
+                Criteria criteriaSelect = new Criteria();
+                criteriaSelect.add(new Filter("produto_id", "=", "?"),
+                        Expression.AND_OPERATOR);
+                criteriaSelect.add(new Filter("loja_id", "=", "?"),
+                        Expression.AND_OPERATOR);
+
+                SqlSelect sqlSelect = new SqlSelect();
+                sqlSelect.setEntity("itens_loja");
+                sqlSelect.addColumn("estoque");
+                sqlSelect.setCriteria(criteriaSelect);
+                
+                PreparedStatement stmtSelect = this.conn.prepareStatement(sqlSelect
+                        .getInstruction());
+                
+                int idProduto = itensVenda.getItens().getProduto().getId();
+                int idLoja = itensVenda.getVenda().getLoja().getId();
+                
+                stmtSelect.setInt(1, idProduto);
+                stmtSelect.setInt(2, idLoja);
+                
+                ResultSet resultSetSelect = stmtSelect.executeQuery();
+                
+                if (resultSetSelect.next()) {
+                    Criteria criteriaUpdate = new Criteria();
+                    criteriaUpdate.add(new Filter("produto_id", "=", "?"),
+                            Expression.AND_OPERATOR);
+                    criteriaUpdate.add(new Filter("loja_id", "=", "?"),
+                            Expression.AND_OPERATOR);
+                    
+                    SqlUpdate sqlUpdate = new SqlUpdate();
+                    sqlUpdate.setEntity("itens_loja");
+                    sqlUpdate.setRowData("estoque", "?");
+                    sqlUpdate.setCriteria(criteriaUpdate);
+                    
+                    PreparedStatement stmtUpdate = this.conn.prepareStatement(
+                            sqlUpdate.getInstruction());
+                    
+                    stmtUpdate.setInt(1, resultSetSelect.getInt("estoque")
+                            - itensVenda.getQuantidade());
+                    stmtUpdate.setInt(2, idProduto);
+                    stmtUpdate.setInt(3, idLoja);
+                    
+                    stmtUpdate.execute();
+                }
+            }
+            
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return false;
+        }
+    }
+    
+    /**
+     * Método para retornar os produtos ao estoque quando uma venda for
+     * cancelada
+     * 
+     * @param listaItensVenda
+     * @return 
+     */
+    private boolean retornarEstoque(List<ItensVenda> listaItensVenda) {
+        try {
+            for (ItensVenda itensVenda : listaItensVenda) {
+                Criteria criteriaSelect = new Criteria();
+                criteriaSelect.add(new Filter("produto_id", "=", "?"),
+                        Expression.AND_OPERATOR);
+                criteriaSelect.add(new Filter("loja_id", "=", "?"),
+                        Expression.AND_OPERATOR);
+
+                SqlSelect sqlSelect = new SqlSelect();
+                sqlSelect.setEntity("itens_loja");
+                sqlSelect.addColumn("estoque");
+                sqlSelect.setCriteria(criteriaSelect);
+                
+                PreparedStatement stmtSelect = this.conn.prepareStatement(sqlSelect
+                        .getInstruction());
+                
+                int idProduto = itensVenda.getItens().getProduto().getId();
+                int idLoja = itensVenda.getVenda().getLoja().getId();
+                
+                stmtSelect.setInt(1, idProduto);
+                stmtSelect.setInt(2, idLoja);
+                
+                ResultSet resultSetSelect = stmtSelect.executeQuery();
+                
+                if (resultSetSelect.next()) {
+                    Criteria criteriaUpdate = new Criteria();
+                    criteriaUpdate.add(new Filter("produto_id", "=", "?"),
+                            Expression.AND_OPERATOR);
+                    criteriaUpdate.add(new Filter("loja_id", "=", "?"),
+                            Expression.AND_OPERATOR);
+                    
+                    SqlUpdate sqlUpdate = new SqlUpdate();
+                    sqlUpdate.setEntity("itens_loja");
+                    sqlUpdate.setRowData("estoque", "?");
+                    sqlUpdate.setCriteria(criteriaUpdate);
+                    
+                    PreparedStatement stmtUpdate = this.conn.prepareStatement(
+                            sqlUpdate.getInstruction());
+                    
+                    stmtUpdate.setInt(1, resultSetSelect.getInt("estoque")
+                            + itensVenda.getQuantidade());
+                    stmtUpdate.setInt(2, idProduto);
+                    stmtUpdate.setInt(3, idLoja);
+                    
+                    stmtUpdate.execute();
+                }
+            }
+            
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return false;
+        }
     }
 }
