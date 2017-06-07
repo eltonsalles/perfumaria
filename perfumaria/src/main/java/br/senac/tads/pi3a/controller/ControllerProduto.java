@@ -150,10 +150,16 @@ public class ControllerProduto implements Logica {
             HttpServletResponse response, HttpSession session)
             throws Exception {
         try {
-            Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
+            
 
             // Pega a conexão
             Connection conn = (Connection) request.getAttribute("connection");
+            
+             Loja loja = new Loja();
+            DaoLoja daoLoja = new DaoLoja(conn);
+            List<Model> listaLoja = daoLoja.findAll(loja);
+
+            session.setAttribute("listaLoja", listaLoja);
 
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
@@ -176,7 +182,7 @@ public class ControllerProduto implements Logica {
 
                     // Garante que as alterações não dupliquem o nome do produto
                     if (daoProduto.produtoExisteLoja(
-                            itensLoja.getProduto().getNome().toUpperCase(), user.getFuncionario().getLoja().getId())
+                            itensLoja.getProduto().getNome().toUpperCase(), itensLoja.getLoja().getId())
                             == itensLoja.getProduto().getId()) {
                         // Chama a DAO de itens de loja passando a conexão e o
                         // objeto a ser alterado
@@ -226,22 +232,17 @@ public class ControllerProduto implements Logica {
                 }
 
                 if (digito) {
-                    Model itensLoja = new ItensLoja();
-
+                    Model itensLoja = new ItensLoja();     
                     // Chama a DAO passando a conexão
                     DaoItensLoja dao = new DaoItensLoja(conn);
 
                     // Faz uma consulta usando como critério o id do produto
                     // e id da loja para exibir os dados do produto para
                     // determinada loja
-                    List lista = dao.findAll(itensLoja,
-                            new String[]{"produto_id", "loja_id"},
-                            new String[]{"=", "="},
-                            new String[]{id, Integer.toString(user.getFuncionario().getLoja().getId())},
-                            new String[]{"and", "and"});
+                    List lista = dao.findAll(itensLoja, "produto_id","=",id);
                     
                     // ARRUMAR AQUI 
-                    if (lista.size() == user.getFuncionario().getLoja().getId()) {
+                    if (!lista.isEmpty()) {
                         session.setAttribute("itensLoja", lista.get(0));
                     }
                 }

@@ -14,8 +14,8 @@
            
                     <div class="form-group col-md-3 <c:if test="${errorValidation.loja eq true}">has-error</c:if>">
             <label class="control-label" for="loja">Nome da Loja</label>
-            <select class="form-control" id="loja" name="loja">
-                <option value></option>
+            <select class="form-control" id="loja" name="loja" <c:if test="${sessionScope.itensLoja.produto.id > 0}">readonly</c:if>>
+                <option value> </option>
                 <c:forEach items="${sessionScope.listaLoja}" var="loja">
                     <option value="<c:out value="${loja.id}"></c:out>" <c:if test="${sessionScope.itensLoja.loja.id == loja.id}">selected</c:if>><c:out value="${loja.razaoSocial}"></c:out></option>
                 </c:forEach>
