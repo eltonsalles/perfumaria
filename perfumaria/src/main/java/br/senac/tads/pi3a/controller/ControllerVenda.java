@@ -177,7 +177,7 @@ public class ControllerVenda implements Logica {
 
                     if (!lista.isEmpty()) {
                         // O update é para alterar o status da venda para false
-                        if (daoVenda.update(Integer.valueOf(id))) {
+                        if (daoVenda.update(lista.get(0))) {
                             session.setAttribute("alert", "alert-warning");
                             session.setAttribute("alertMessage",
                                     "Venda cancelada com sucesso.");
