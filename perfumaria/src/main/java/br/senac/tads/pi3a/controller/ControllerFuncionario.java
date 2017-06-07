@@ -24,8 +24,10 @@
 package br.senac.tads.pi3a.controller;
 
 import br.senac.tads.pi3a.dao.DaoFuncionario;
+import br.senac.tads.pi3a.dao.DaoLoja;
 import br.senac.tads.pi3a.inputFilter.InputFilterFuncionario;
 import br.senac.tads.pi3a.model.Funcionario;
+import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
 import java.sql.Connection;
 import java.util.List;
@@ -43,6 +45,7 @@ public class ControllerFuncionario implements Logica {
     public String novo(HttpServletRequest request, HttpServletResponse response,
             HttpSession session) throws Exception {
         try {
+            Connection conn = (Connection) request.getAttribute("connection");
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 // Classe de validação do formulário funcionário
@@ -88,9 +91,12 @@ public class ControllerFuncionario implements Logica {
                     session.setAttribute("alertMessage",
                             "Verifique o(s) campo(s) em vermelho.");
                 }
-
             }
+            Loja loja = new Loja();
+            DaoLoja daoLoja = new DaoLoja(conn);
+            List<Model> listaLoja = daoLoja.findAll(loja);
 
+            session.setAttribute("listaLoja", listaLoja);
             return "/WEB-INF/jsp/cadastrar-funcionario.jsp";
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -106,6 +112,7 @@ public class ControllerFuncionario implements Logica {
             HttpServletResponse response, HttpSession session)
             throws Exception {
         try {
+            Connection conn = (Connection) request.getAttribute("connection");
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 // Classe de validação do formulário funcionário
@@ -178,7 +185,7 @@ public class ControllerFuncionario implements Logica {
 
                     if (digito) {
                         Model funcionario = new Funcionario();
-                        DaoFuncionario dao 
+                        DaoFuncionario dao
                                 = new DaoFuncionario((Connection) request
                                         .getAttribute("connection"));
                         funcionario = dao.findOne(funcionario,
@@ -188,7 +195,11 @@ public class ControllerFuncionario implements Logica {
                     }
                 }
             }
+            Loja loja = new Loja();
+            DaoLoja daoLoja = new DaoLoja(conn);
+            List<Model> listaLoja = daoLoja.findAll(loja);
 
+            session.setAttribute("listaLoja", listaLoja);
             return "/WEB-INF/jsp/cadastrar-funcionario.jsp";
         } catch (Exception e) {
             e.printStackTrace(System.err);
