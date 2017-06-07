@@ -68,7 +68,14 @@ public class InputFilterProduto extends InputFilter {
                 this.errorValidation.replace("id", false);
             }
         }
-
+   // Validação para Loja - campo em cadastrar-produto.jsp
+        if (this.allMap.containsKey("loja")) {
+            if (validationInt.isValid(this.allMap.get("loja")[0])) {
+                if (Integer.valueOf(this.allMap.get("loja")[0]) > 0) {
+                    this.errorValidation.replace("loja", false);
+                }
+            }
+        }
         // Validar nome produto
         if (this.allMap.containsKey("nome")) {
             validationTamanho.setTamanho(150);
@@ -251,9 +258,9 @@ public class InputFilterProduto extends InputFilter {
 
             itensLoja.setProduto(produto);
 
-            // #MOCK
+           
             Loja loja = new Loja();
-            loja.setId(1);
+            loja.setId(Integer.parseInt(this.allMap.get("loja")[0]));
             itensLoja.setLoja(loja);
         } catch (NumberFormatException | ParseException e) {
             e.printStackTrace(System.err);

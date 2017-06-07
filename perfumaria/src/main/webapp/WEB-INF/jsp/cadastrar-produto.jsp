@@ -10,7 +10,19 @@
         <div class="form-group col-md-12">
             <input class="control-label" type="hidden" id="id" name="id" value="<c:out value="${sessionScope.itensLoja.produto.id > 0 ? sessionScope.itensLoja.produto.id : ''}"></c:out>">
         </div>
-        <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
+       <div class="form-group col-md-12"> 
+           
+                    <div class="form-group col-md-3 <c:if test="${errorValidation.loja eq true}">has-error</c:if>">
+            <label class="control-label" for="loja">Nome da Loja</label>
+            <select class="form-control" id="loja" name="loja" <c:if test="${sessionScope.itensLoja.produto.id > 0}">readonly</c:if>>
+                <option value> </option>
+                <c:forEach items="${sessionScope.listaLoja}" var="loja">
+                    <option value="<c:out value="${loja.id}"></c:out>" <c:if test="${sessionScope.itensLoja.loja.id == loja.id}">selected</c:if>><c:out value="${loja.razaoSocial}"></c:out></option>
+                </c:forEach>
+            </select> 
+        </div>
+            </div>
+            <div class="form-group col-md-5 <c:if test="${errorValidation.nome eq true}">has-error</c:if>">
             <label class="control-label" for="nome">Nome</label>
             <input type="text" class="form-control" id="nome" placeholder="Nome do produto" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.itensLoja.produto.nome}"></c:out>" <c:if test="${sessionScope.itensLoja.produto.id > 0}">readonly</c:if>>
         </div>
