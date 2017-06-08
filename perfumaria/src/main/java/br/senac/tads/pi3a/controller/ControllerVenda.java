@@ -35,6 +35,7 @@ import br.senac.tads.pi3a.validation.ValidationDate;
 import java.sql.Connection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,20 @@ public class ControllerVenda implements Logica {
                     for (int i = 0; i < idsProdutos.length; i++) {
                         idsProdutos[i] = venda.getListaItensVenda().get(i)
                                 .getItens().getProduto().getId();
+                        
+                        // Garante que não existam ids repetidos
+                        for (int j = 0; j < idsProdutos.length; j++) {
+                            if (idsProdutos[i] == venda.getListaItensVenda()
+                                    .get(j).getItens().getProduto().getId()
+                                    && i != j) {
+                                session.setAttribute("data", data);
+                                session.setAttribute("alert", "alert-danger");
+                                session.setAttribute("alertMessage", "Exitem"
+                                        + " dois ou mais produtos na venda que"
+                                        + " estão com o mesmo código.");
+                                return "WEB-INF/jsp/cadastrar-venda.jsp";
+                            }
+                        }
                     }
                     
                     // Faz uma consulta trazendo o estoque de cada
