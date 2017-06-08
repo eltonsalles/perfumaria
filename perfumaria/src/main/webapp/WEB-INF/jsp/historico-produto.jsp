@@ -22,7 +22,6 @@
     <br>
     <table class="table table-striped">
         <tr>
-            <th>Código</th>
             <th>Nome do Produto</th>
             <th>Nome da Loja</th>
             <th>Justificativa</th>
@@ -32,7 +31,6 @@
         </tr>
         <c:forEach items="${sessionScope.listaProdutos}" var="item">
             <tr>
-                <td><c:out value="${item.id}"></c:out></td>
                 <td><c:out value="${item.produto.nome}"></c:out></td>
                 <td><c:out value="${item.loja.razaoSocial}"></c:out></td>
                 <td><c:out value="${item.tipoMovimentacao}"></c:out></td>
