@@ -25,6 +25,7 @@
             <th>Nome</th>
             <th>Data de Nascimento</th>
             <th>CPF</th>
+            <th>Loja</th>
             <th>Ações</th>
         </tr>
         <c:forEach items="${sessionScope.listaFuncionarios}" var="funcionario">
@@ -34,6 +35,7 @@
                 <td><c:out value="${funcionario.nome}"></c:out></td>
                 <td><fmt:formatDate pattern="dd/MM/yyyy" value="${funcionario.dataNascimento}" /></td>
                 <td class="cpfs"><c:out value="${funcionario.cpf}"></c:out></td>
+                <td><c:out value="${funcionario.loja.razaoSocial}"></c:out></td>
                 <td>
                     <a href="sistema?controller=Funcionario&action=editar&id=<c:out value="${funcionario.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
