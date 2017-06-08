@@ -70,9 +70,6 @@ public class DaoItensLoja extends AbstractDao {
         List<Model> lista = new ArrayList<>();
 
         try {
-            PreparedStatement stmt;
-            ResultSet resultSetProduto, resultSetItensLoja;
-            
             Criteria criteriaLoja = new Criteria();
             criteriaLoja.add(new Filter("id", "=", "?"));
 
@@ -105,64 +102,43 @@ public class DaoItensLoja extends AbstractDao {
             sqlProduto.setEntity("produto INNER JOIN itens_loja on"
                     + " itens_loja.produto_id = produto.id");
             sqlProduto.addColumn("produto.*");
+            sqlProduto.addColumn("itens_loja.*");
             sqlProduto.setCriteria(criteriaProduto);
 
-            stmt = this.getConnection().prepareStatement(sqlProduto
+            PreparedStatement stmtProduto = this.getConnection()
+                    .prepareStatement(sqlProduto
                     .getInstruction());
-            stmt.setString(1, nomeProduto);
-            stmt.setInt(2, idLoja);
+            stmtProduto.setString(1, nomeProduto);
+            stmtProduto.setInt(2, idLoja);
 
-            resultSetProduto = stmt.executeQuery();
+            ResultSet resultSetProduto = stmtProduto.executeQuery();
 
             while (resultSetProduto.next()) {
                 ItensLoja itensLoja = new ItensLoja();
                 itensLoja.setLoja(loja);
 
-                SqlSelect sqlItensLoja = new SqlSelect();
+                Produto produto = new Produto();
+                produto.setId(resultSetProduto.getInt("id"));
+                produto.setNome(resultSetProduto.getString("nome"));
+                produto.setMarca(resultSetProduto.getString("marca"));
+                produto.setCategoria(resultSetProduto
+                        .getString("categoria"));
+                produto.setValorUnidadeMedida(resultSetProduto
+                        .getInt("vlr_unidade_medida"));
+                produto.setUnidadeMedida(resultSetProduto
+                        .getString("unidade_medida"));
+                produto.setGenero(resultSetProduto.getString("genero"));
+                produto.setDescricao(resultSetProduto
+                        .getString("descricao"));
 
-                Criteria criteriaItensLoja = new Criteria();
-                criteriaItensLoja.add(new Filter("produto_id", "=", "?"),
-                        Expression.AND_OPERATOR);
-                criteriaItensLoja.add(new Filter("loja_id", "=", "?"),
-                        Expression.AND_OPERATOR);
-
-                sqlItensLoja.setEntity("itens_loja");
-                sqlItensLoja.addColumn("*");
-                sqlItensLoja.setCriteria(criteriaItensLoja);
-
-                stmt = getConnection().prepareStatement(sqlItensLoja
-                        .getInstruction());
-                stmt.setInt(1, resultSetProduto.getInt("id"));
-                stmt.setInt(2, idLoja);
-
-                resultSetItensLoja = stmt.executeQuery();
-
-                if (resultSetItensLoja.next()) {
-                    Produto produto = new Produto();
-
-                    produto.setId(resultSetProduto.getInt("id"));
-                    produto.setNome(resultSetProduto.getString("nome"));
-                    produto.setMarca(resultSetProduto.getString("marca"));
-                    produto.setCategoria(resultSetProduto
-                            .getString("categoria"));
-                    produto.setValorUnidadeMedida(resultSetProduto
-                            .getInt("vlr_unidade_medida"));
-                    produto.setUnidadeMedida(resultSetProduto
-                            .getString("unidade_medida"));
-                    produto.setGenero(resultSetProduto.getString("genero"));
-                    produto.setDescricao(resultSetProduto
-                            .getString("descricao"));
-
-                    itensLoja.setProduto(produto);
-                }
-
-                itensLoja.setStatus(resultSetItensLoja.getBoolean("status"));
-                itensLoja.setDataCadastro(new Date(resultSetItensLoja
+                itensLoja.setProduto(produto);
+                itensLoja.setStatus(resultSetProduto.getBoolean("status"));
+                itensLoja.setDataCadastro(new Date(resultSetProduto
                         .getDate("data_cadastro").getTime()));
-                itensLoja.setEstoque(resultSetItensLoja.getInt("estoque"));
-                itensLoja.setValorCompra(resultSetItensLoja
+                itensLoja.setEstoque(resultSetProduto.getInt("estoque"));
+                itensLoja.setValorCompra(resultSetProduto
                         .getFloat("vlr_compra"));
-                itensLoja.setValorVenda(resultSetItensLoja
+                itensLoja.setValorVenda(resultSetProduto
                         .getFloat("vlr_venda"));
 
                 lista.add(itensLoja);
@@ -186,9 +162,6 @@ public class DaoItensLoja extends AbstractDao {
         List<Model> lista = new ArrayList<>();
 
         try {
-            PreparedStatement stmt;
-            ResultSet resultSetProduto, resultSetItensLoja;
-
             Criteria criteriaProduto = new Criteria();
             criteriaProduto.add(new Filter("UPPER(produto.nome)", "LIKE", "?"));
 
@@ -196,58 +169,41 @@ public class DaoItensLoja extends AbstractDao {
             sqlProduto.setEntity("produto INNER JOIN itens_loja on"
                     + " itens_loja.produto_id = produto.id");
             sqlProduto.addColumn("produto.*");
+            sqlProduto.addColumn("itens_loja.*");
             sqlProduto.setCriteria(criteriaProduto);
 
-            stmt = this.getConnection().prepareStatement(sqlProduto
+            PreparedStatement stmtProduto = this.getConnection()
+                    .prepareStatement(sqlProduto
                     .getInstruction());
-            stmt.setString(1, nomeProduto);
+            stmtProduto.setString(1, nomeProduto);
 
-            resultSetProduto = stmt.executeQuery();
+            ResultSet resultSetProduto = stmtProduto.executeQuery();
 
             while (resultSetProduto.next()) {
                 ItensLoja itensLoja = new ItensLoja();
 
-                SqlSelect sqlItensLoja = new SqlSelect();
+                Produto produto = new Produto();
+                produto.setId(resultSetProduto.getInt("id"));
+                produto.setNome(resultSetProduto.getString("nome"));
+                produto.setMarca(resultSetProduto.getString("marca"));
+                produto.setCategoria(resultSetProduto
+                        .getString("categoria"));
+                produto.setValorUnidadeMedida(resultSetProduto
+                        .getInt("vlr_unidade_medida"));
+                produto.setUnidadeMedida(resultSetProduto
+                        .getString("unidade_medida"));
+                produto.setGenero(resultSetProduto.getString("genero"));
+                produto.setDescricao(resultSetProduto
+                        .getString("descricao"));
 
-                Criteria criteriaItensLoja = new Criteria();
-                criteriaItensLoja.add(new Filter("produto_id", "=", "?"));
-
-                sqlItensLoja.setEntity("itens_loja");
-                sqlItensLoja.addColumn("*");
-                sqlItensLoja.setCriteria(criteriaItensLoja);
-
-                stmt = getConnection().prepareStatement(sqlItensLoja
-                        .getInstruction());
-                stmt.setInt(1, resultSetProduto.getInt("id"));
-
-                resultSetItensLoja = stmt.executeQuery();
-
-                if (resultSetItensLoja.next()) {
-                    Produto produto = new Produto();
-
-                    produto.setId(resultSetProduto.getInt("id"));
-                    produto.setNome(resultSetProduto.getString("nome"));
-                    produto.setMarca(resultSetProduto.getString("marca"));
-                    produto.setCategoria(resultSetProduto
-                            .getString("categoria"));
-                    produto.setValorUnidadeMedida(resultSetProduto
-                            .getInt("vlr_unidade_medida"));
-                    produto.setUnidadeMedida(resultSetProduto
-                            .getString("unidade_medida"));
-                    produto.setGenero(resultSetProduto.getString("genero"));
-                    produto.setDescricao(resultSetProduto
-                            .getString("descricao"));
-
-                    itensLoja.setProduto(produto);
-                }
-
-                itensLoja.setStatus(resultSetItensLoja.getBoolean("status"));
-                itensLoja.setDataCadastro(new Date(resultSetItensLoja
+                itensLoja.setProduto(produto);
+                itensLoja.setStatus(resultSetProduto.getBoolean("status"));
+                itensLoja.setDataCadastro(new Date(resultSetProduto
                         .getDate("data_cadastro").getTime()));
-                itensLoja.setEstoque(resultSetItensLoja.getInt("estoque"));
-                itensLoja.setValorCompra(resultSetItensLoja
+                itensLoja.setEstoque(resultSetProduto.getInt("estoque"));
+                itensLoja.setValorCompra(resultSetProduto
                         .getFloat("vlr_compra"));
-                itensLoja.setValorVenda(resultSetItensLoja
+                itensLoja.setValorVenda(resultSetProduto
                         .getFloat("vlr_venda"));
                 
                 Criteria criteriaLoja = new Criteria();
@@ -261,7 +217,7 @@ public class DaoItensLoja extends AbstractDao {
                 PreparedStatement stmtLoja = this.getConnection()
                         .prepareStatement(sqlLoja.getInstruction());
 
-                stmtLoja.setInt(1, resultSetItensLoja.getInt("loja_id"));
+                stmtLoja.setInt(1, resultSetProduto.getInt("loja_id"));
 
                 ResultSet resultSetLoja = stmtLoja.executeQuery();
 
