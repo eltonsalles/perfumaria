@@ -31,6 +31,7 @@ import br.senac.tads.pi3a.ado.SqlSelect;
 import br.senac.tads.pi3a.ado.SqlUpdate;
 import br.senac.tads.pi3a.ado.Transaction;
 import br.senac.tads.pi3a.model.ItensLoja;
+import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
 import java.sql.Connection;
@@ -71,6 +72,28 @@ public class DaoItensLoja extends AbstractDao {
         try {
             PreparedStatement stmt;
             ResultSet resultSetProduto, resultSetItensLoja;
+            
+            Criteria criteriaLoja = new Criteria();
+            criteriaLoja.add(new Filter("id", "=", "?"));
+
+            SqlSelect sqlLoja = new SqlSelect();
+            sqlLoja.setEntity("loja");
+            sqlLoja.addColumn("*");
+            sqlLoja.setCriteria(criteriaLoja);
+
+            PreparedStatement stmtLoja = this.getConnection()
+                    .prepareStatement(sqlLoja.getInstruction());
+
+            stmtLoja.setInt(1, idLoja);
+
+            ResultSet resultSetLoja = stmtLoja.executeQuery();
+
+            Loja loja = new Loja();
+            if (resultSetLoja.next()) {
+                loja.setId(resultSetLoja.getInt("id"));
+                loja.setRazaoSocial(resultSetLoja
+                        .getString("razao_social"));
+            }
 
             Criteria criteriaProduto = new Criteria();
             criteriaProduto.add(new Filter("UPPER(produto.nome)", "LIKE", "?"),
@@ -93,6 +116,7 @@ public class DaoItensLoja extends AbstractDao {
 
             while (resultSetProduto.next()) {
                 ItensLoja itensLoja = new ItensLoja();
+                itensLoja.setLoja(loja);
 
                 SqlSelect sqlItensLoja = new SqlSelect();
 
@@ -225,6 +249,29 @@ public class DaoItensLoja extends AbstractDao {
                         .getFloat("vlr_compra"));
                 itensLoja.setValorVenda(resultSetItensLoja
                         .getFloat("vlr_venda"));
+                
+                Criteria criteriaLoja = new Criteria();
+                criteriaLoja.add(new Filter("id", "=", "?"));
+
+                SqlSelect sqlLoja = new SqlSelect();
+                sqlLoja.setEntity("loja");
+                sqlLoja.addColumn("*");
+                sqlLoja.setCriteria(criteriaLoja);
+
+                PreparedStatement stmtLoja = this.getConnection()
+                        .prepareStatement(sqlLoja.getInstruction());
+
+                stmtLoja.setInt(1, resultSetItensLoja.getInt("loja_id"));
+
+                ResultSet resultSetLoja = stmtLoja.executeQuery();
+
+                Loja loja = new Loja();
+                if (resultSetLoja.next()) {
+                    loja.setId(resultSetLoja.getInt("id"));
+                    loja.setRazaoSocial(resultSetLoja
+                            .getString("razao_social"));
+                }
+                itensLoja.setLoja(loja);
 
                 lista.add(itensLoja);
             }
