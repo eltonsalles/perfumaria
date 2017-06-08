@@ -84,3 +84,9 @@ body,
 #inserir-produto {
     margin-top: 25px;
 }
+
+select[readonly] {
+  background: #eee; /*Simular campo inativo*/
+  pointer-events: none;
+  touch-action: none;
+}
