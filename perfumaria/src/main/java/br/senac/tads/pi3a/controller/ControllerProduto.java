@@ -546,12 +546,11 @@ public class ControllerProduto implements Logica {
                         // antes de hoje
                         if (dF.after(dI) && dF.before(new Date())) {
                             lista = dao.findAll(itensLoja,
-                                    new String[]{"status", "loja_id",
+                                    new String[]{"status",
                                         "data_cadastro", "data_cadastro"},
-                                    new String[]{"=", "=", ">=", "<="},
-                                    new String[]{"true", "1", // #MOCK
-                                        dataInicial, dataFinal},
-                                    new String[]{"and", "and", "and", "and"});
+                                    new String[]{"=", ">=", "<="},
+                                    new String[]{"true", dataInicial, dataFinal},
+                                    new String[]{"and", "and", "and"});
                         } else {
                             session.setAttribute("alert", "alert-danger");
                             session.setAttribute("alertMessage",
