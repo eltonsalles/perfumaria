@@ -36,6 +36,7 @@ import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
 import br.senac.tads.pi3a.model.Usuario;
 import br.senac.tads.pi3a.validation.ValidationDate;
+import br.senac.tads.pi3a.validation.ValidationInt;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -63,7 +64,10 @@ public class ControllerProduto implements Logica {
             List<Model> listaLoja = daoLoja.findAll(loja);
 
             session.setAttribute("listaLoja", listaLoja);
-            Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
+            
+            // Usuário logado
+            Usuario user = (Usuario) request.getSession()
+                    .getAttribute("usuarioLogado");
 
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
@@ -87,11 +91,12 @@ public class ControllerProduto implements Logica {
                     // Garante que o produto ainda não existe na loja
                     // que está se cadastrando
                     if (daoProduto.produtoExisteLoja(itensLoja.getProduto()
-                            .getNome().toUpperCase(), user.getFuncionario().getLoja().getId()) == -1) {
+                            .getNome().toUpperCase(), user.getFuncionario()
+                                    .getLoja().getId()) == -1) {
 
                         List listaPorNome = daoProduto.findAll(itensLoja
                                 .getProduto(), "UPPER(nome)", "=", itensLoja
-                                        .getProduto().getNome().toUpperCase());
+                                .getProduto().getNome().toUpperCase());
 
                         int idProduto;
                         if (listaPorNome.isEmpty()) {
@@ -150,12 +155,10 @@ public class ControllerProduto implements Logica {
             HttpServletResponse response, HttpSession session)
             throws Exception {
         try {
-            
-
             // Pega a conexão
             Connection conn = (Connection) request.getAttribute("connection");
-            
-             Loja loja = new Loja();
+
+            Loja loja = new Loja();
             DaoLoja daoLoja = new DaoLoja(conn);
             List<Model> listaLoja = daoLoja.findAll(loja);
 
@@ -182,7 +185,8 @@ public class ControllerProduto implements Logica {
 
                     // Garante que as alterações não dupliquem o nome do produto
                     if (daoProduto.produtoExisteLoja(
-                            itensLoja.getProduto().getNome().toUpperCase(), itensLoja.getLoja().getId())
+                            itensLoja.getProduto().getNome().toUpperCase(),
+                            itensLoja.getLoja().getId()) 
                             == itensLoja.getProduto().getId()) {
                         // Chama a DAO de itens de loja passando a conexão e o
                         // objeto a ser alterado
@@ -218,35 +222,39 @@ public class ControllerProduto implements Logica {
                     session.setAttribute("alertMessage",
                             "Verifique o(s) campo(s) em vermelho.");
                 }
-            } else // Verifica se existe o parâmetro id
-            if (request.getParameter("id") != null) {
-                String id = request.getParameter("id");
-                boolean digito = true;
-
-                // Garante que o id seja apenas números
-                for (int i = 0; i < id.length(); i++) {
-                    if (!Character.isDigit(id.charAt(i))) {
-                        digito = false;
-                        break;
-                    }
-                }
-
-                if (digito) {
-                    Model itensLoja = new ItensLoja();     
-                    // Chama a DAO passando a conexão
-                    DaoItensLoja dao = new DaoItensLoja(conn);
-
-                    // Faz uma consulta usando como critério o id do produto
-                    // e id da loja para exibir os dados do produto para
-                    // determinada loja
-                    List lista = dao.findAll(itensLoja, "produto_id","=",id);
+            } else {
+                // Verifica se existe o parâmetro id
+                if (request.getParameter("id") != null
+                        && request.getParameter("loja") != null) {
+                    String id = request.getParameter("id");
+                    String idLoja = request.getParameter("loja");
                     
-                    // ARRUMAR AQUI 
-                    if (!lista.isEmpty()) {
-                        session.setAttribute("itensLoja", lista.get(0));
+                    ValidationInt validationInt = new ValidationInt();
+
+                    // Se os ids forem número válidos é feito a busca
+                    if (validationInt.isValid(id)
+                            && validationInt.isValid(idLoja)) {
+                        Model itensLoja = new ItensLoja();
+                        
+                        // Chama a DAO passando a conexão
+                        DaoItensLoja dao = new DaoItensLoja(conn);
+
+                        // Faz uma consulta usando como critério o id do produto
+                        // e id da loja para exibir os dados do produto para
+                        // determinada loja
+                        List lista = dao.findAll(itensLoja,
+                                new String[]{"produto_id", "loja_id"},
+                                new String[]{"=", "="},
+                                new String[]{id, idLoja},
+                                new String[]{"and", "and"});
+
+                        if (!lista.isEmpty()) {
+                            session.setAttribute("itensLoja", lista.get(0));
+                        }
                     }
                 }
             }
+            
             return "/WEB-INF/jsp/cadastrar-produto.jsp";
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -286,8 +294,8 @@ public class ControllerProduto implements Logica {
                     DaoItensLoja daoItensLoja
                             = new DaoItensLoja(conn, itensLoja);
 
-                     Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
-                     
+                    Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
+
                     if (daoItensLoja.delete(Integer.valueOf(id),
                             user.getFuncionario().getLoja().getId())) {
                         session.setAttribute("alert", "alert-warning");
@@ -313,8 +321,13 @@ public class ControllerProduto implements Logica {
             HttpServletResponse response, HttpSession session)
             throws Exception {
         try {
+            // Pega o usuário logado
+            Usuario usuario = (Usuario) request.getSession()
+                    .getAttribute("usuarioLogado");
             
-            Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
+            int idLoja = usuario.getFuncionario().getLoja().getId();
+            int idNivelAcesso = usuario.getNivelUsuario().getId();
+            
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 ItensLoja itensLoja = new ItensLoja();
@@ -335,32 +348,37 @@ public class ControllerProduto implements Logica {
                             break;
                         }
                     }
-                    if(user.getNivelUsuario().getId() == 5 || user.getNivelUsuario().getId() ==8){
-                    if (digito) {
-                        lista = dao.findAll(itensLoja,
-                                new String[]{"produto_id", "loja_id"},
-                                new String[]{"=", "="},
-                                new String[]{pesquisar, Integer.toString(user.getFuncionario().getLoja().getId())},
-                                new String[]{"and", "and"});
+                    
+                    // 5 = gerente de vendas e 8 = vendedor
+                    if (idNivelAcesso == 5 || idNivelAcesso == 8) {
+                        if (digito) {
+                            lista = dao.findAll(itensLoja,
+                                    new String[]{"produto_id", "loja_id"},
+                                    new String[]{"=", "="},
+                                    new String[]{pesquisar,
+                                        String.valueOf(idLoja)},
+                                    new String[]{"and", "and"});
+                        } else {
+                            lista = dao.findAllPorNome(
+                                    "%" + pesquisar.toUpperCase() + "%",
+                                    idLoja);
+                        }
                     } else {
-                        lista = dao.findAllPorNome(
-                                "%" + pesquisar.toUpperCase() + "%",  user.getFuncionario().getLoja().getId());
-                    }
-                    }else{
-                         if (digito) {
-                        lista = dao.findAll(itensLoja,"produto_id","=",pesquisar);
-                    } else {
-                        lista = dao.findAllPorNome(
+                        if (digito) {
+                            lista = dao.findAll(itensLoja, "produto_id",
+                                    "=", pesquisar);
+                        } else {
+                            lista = dao.findAllPorNome(
                                 "%" + pesquisar.toUpperCase() + "%");
-                    }
+                        }
                     }
                 } else {
-                    if(user.getNivelUsuario().getId() == 5 || user.getNivelUsuario().getId() ==8){
-                    // Traz todos os produtos da loja informada
-                    lista = dao.findAll(itensLoja, "loja_id", "=",
-                            Integer.toString(user.getFuncionario().getLoja().getId()));
-                    }else{
-                       lista = dao.findAll(itensLoja);
+                    // 5 = gerente de vendas e 8 = vendedor
+                    if (idNivelAcesso == 5 || idNivelAcesso == 8) {
+                        lista = dao.findAll(itensLoja, "loja_id", "=",
+                                String.valueOf(idLoja));
+                    } else {
+                        lista = dao.findAll(itensLoja);
                     }
                 }
 
@@ -457,7 +475,7 @@ public class ControllerProduto implements Logica {
                         // Manda para a jsp os campos inválidos e uma mensagem
                         session.setAttribute("errorValidation",
                                 inputFilterManutencaoProduto
-                                        .getErrorValidation());
+                                .getErrorValidation());
                         session.setAttribute("historicoProduto",
                                 historicoProduto);
                         session.setAttribute("alert", "alert-danger");
