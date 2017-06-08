@@ -50,7 +50,7 @@
         </div>
         <div class="form-group col-md-3 <c:if test="${errorValidation.estoque eq true}">has-error</c:if>">
             <label class="control-label" for="estoque">Quantidade</label>
-            <input type="number" class="form-control" id="estoque" placeholder="Quantidade" name="estoque" min="0" required pattern="^\d+$" value="<c:out value="${sessionScope.itensLoja.estoque}"></c:out>">
+            <input type="number" class="form-control" id="estoque" placeholder="Quantidade" name="estoque" min="0" required pattern="^\d+$" value="<c:out value="${sessionScope.itensLoja.estoque}"></c:out>" <c:if test="${sessionScope.itensLoja.produto.id > 0}">readonly</c:if>>
         </div>
         <div class="form-group col-md-2 <c:if test="${errorValidation.valorUnidadeMedida eq true}">has-error</c:if>">
             <label class="control-label" for="valor-unidade-medida">Valor Unid. Medida</label>
