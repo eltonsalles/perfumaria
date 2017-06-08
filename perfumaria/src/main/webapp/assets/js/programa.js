@@ -447,11 +447,22 @@ function carregarProduto() {
     var venda = document.querySelector("#form-venda");
 
     if (venda !== null) {
-        var codigo = document.querySelectorAll(".codigo")[0];
-        buscarProdutoVenda(codigo, 0);
+        var codigos = document.querySelectorAll(".codigo");
+        codigos.forEach(function(codigo, i) {
+            buscarProdutoVenda(codigo, i);
+        });
 
-        var quantidade = document.querySelectorAll(".quantidade")[0];
-        alterarQuantidade(quantidade, 0);
+        var quantidades = document.querySelectorAll(".quantidade");
+        quantidades.forEach(function(quantidade, i) {
+            alterarQuantidade(quantidade, i);
+        });
+        
+        var btns = document.querySelectorAll(".btn-excluir");
+        btns.forEach(function (btn, i) {
+            if (i > 0) {
+                removerProduto(btn, i + 1);
+            }
+        });
     }
 }
 
@@ -464,11 +475,27 @@ function carregarProduto() {
  */
 function buscarProdutoVenda(field, i) {
     field.addEventListener('keyup', function () {
+        var codigos = document.querySelectorAll(".codigo");
         var produto = document.querySelectorAll(".produto")[i];
         var marca = document.querySelectorAll(".marca")[i];
         var quantidade = document.querySelectorAll(".quantidade")[i];
         var precoUnitario = document.querySelectorAll(".preco-unidade")[i];
         var precoTotal = document.querySelectorAll(".preco-total")[i];
+
+        // Impede que o mesmo produto esteja na mesma venda
+        for (var j = 0; j < codigos.length; j++) {
+            if (codigos[j].value === field.value && i !== j) {
+                alert("Este c\u00f3digo de produto j\u00e1 est\u00e1 na venda!");
+                
+                codigos[i].value = "";
+                produto.value = "";
+                marca.value = "";
+                quantidade.value = "";
+                precoUnitario.value = "";
+                precoTotal.value = "";
+                return false;
+            }
+        }
 
         var pattern = /^[0-9]+$/i;
 
