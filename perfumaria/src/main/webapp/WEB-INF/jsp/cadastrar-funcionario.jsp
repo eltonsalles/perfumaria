@@ -6,12 +6,12 @@
 <div class="col-md-10 content">
     <h2><c:out value="${sessionScope.funcionario.id > 0 ? 'Alterar' : 'Cadastrar'}"></c:out> Funcionário</h2>
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
-    <form action="sistema?controller=Funcionario&action=<c:out value="${sessionScope.funcionario.id > 0 ? 'editar' : 'novo'}"></c:out>" method="post">
+    <form id="form-funcionarios" action="sistema?controller=Funcionario&action=<c:out value="${sessionScope.funcionario.id > 0 ? 'editar' : 'novo'}"></c:out>" method="post">
         <div class="col-md-12">
             <div class="row">
             <div class="form-group col-md-3 <c:if test="${errorValidation.loja eq true}">has-error</c:if>">
             <label class="control-label" for="loja">Nome da Loja</label>
-            <select class="form-control" id="loja" name="loja">
+            <select class="form-control" id="loja" name="loja" readonly="readonly">
                 <option value></option>
                 <c:forEach items="${sessionScope.listaLoja}" var="loja">
                     <option value="<c:out value="${loja.id}"></c:out>" <c:if test="${sessionScope.funcionario.loja.id == loja.id}">selected</c:if>><c:out value="${loja.razaoSocial}"></c:out></option>
