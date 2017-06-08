@@ -323,8 +323,13 @@ function carregarEndereco() {
 
 function selects() {
     var movimentarProduto = $("#movimentar-produto");
+    var produtos = $("#form-produtos");
+    var funcionarios = $("#form-funcionarios");
 
-    if (movimentarProduto !== null) {
+    // Formulários que possuiem campos de select muito grande e que
+    //  usaram a lib Chosen
+    if (movimentarProduto.length || produtos.length || funcionarios) {
+        var id = $("#id");
         var produto = $("#produto");
         var loja = $("#loja");
 
@@ -335,18 +340,24 @@ function selects() {
                 return false;
             }
         });
+        
+        // Aplica a lib se o campo existir
+        if (produto.length) {
+            produto.chosen({
+                placeholder_text_single: "Escolha um produto",
+                no_results_text: "Opção não encontrada:",
+                max_shown_results: 5
+            });
+        }
 
-        produto.chosen({
-            placeholder_text_single: "Escolha um produto",
-            no_results_text: "Opção não encontrada:",
-            max_shown_results: 5
-        });
-
-        loja.chosen({
-            placeholder_text_single: "Escolha uma loja",
-            no_results_text: "Opção não encontrada:",
-            max_shown_results: 5
-        });
+        // Aplica a lib se o campo existir e não for uma alteração
+        if (loja.length && id.val() === "") {
+            loja.chosen({
+                placeholder_text_single: "Escolha uma loja",
+                no_results_text: "Opção não encontrada:",
+                max_shown_results: 5
+            });
+        }
     }
 }
 
