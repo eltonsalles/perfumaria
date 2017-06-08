@@ -23,6 +23,7 @@
             <th>Nome</th>
             <th>Categoria</th>
             <th>Quantidade</th>
+            <th>Loja</th>
             <th>Ações</th>
         </tr>
         <c:forEach items="${sessionScope.listaItensLoja}" var="itemLoja">
@@ -31,8 +32,9 @@
                 <td><c:out value="${itemLoja.produto.nome}"></c:out></td>
                 <td><c:out value="${itemLoja.produto.categoria}"></c:out></td>
                 <td><c:out value="${itemLoja.estoque}"></c:out></td>
+                <td><c:out value="${itemLoja.loja.razaoSocial}"></c:out></td>
                 <td>
-                    <a href="sistema?controller=Produto&action=editar&id=<c:out value="${itemLoja.produto.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
+                    <a href="sistema?controller=Produto&action=editar&id=<c:out value="${itemLoja.produto.id}"></c:out>&loja=<c:out value="${itemLoja.loja.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </a>
                 </td>
