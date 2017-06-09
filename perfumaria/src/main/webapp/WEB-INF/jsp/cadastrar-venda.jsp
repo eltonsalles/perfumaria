@@ -52,7 +52,13 @@
                 </td>
                 <td>
                     <div class="form-group <c:if test="${errorValidation.produto eq true}">has-error</c:if>">
-                        <input type="text" class="form-control produto" name="produto" maxlength="150" placeholder="Nome do produto" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.data.produto[0]}"></c:out>"/>
+                        <!--<input type="text" class="form-control produto" name="produto" maxlength="150" placeholder="Nome do produto" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.data.produto[0]}"></c:out>"/>-->
+                        <select class="form-control produto" name="produto">
+                            <option value></option>
+                            <c:forEach items="${sessionScope.listaItensLoja}" var="itensLoja">
+                                <option value="<c:out value="${itensLoja.produto.id}"></c:out>" <c:if test="${sessionScope.data.produto[0] == itensLoja.produto.id}">selected</c:if>><c:out value="${itensLoja.produto.nome}"></c:out></option>
+                            </c:forEach>
+                        </select>
                     </div>
                 </td>
                 <td>
@@ -122,6 +128,8 @@
             </tr>
             <c:set var="i" value="${i + 1}"></c:set>
             </c:forEach>
+        <c:remove scope="session" var="listaClientes"></c:remove>
+        <c:remove scope="session" var="listaItensLoja"></c:remove>
         <c:remove scope="session" var="data"></c:remove>
         <c:remove scope="session" var="errorValidation"></c:remove>
         </table>
