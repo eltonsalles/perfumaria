@@ -5,7 +5,7 @@
 <div class="col-md-10 content">
     <h2><c:out value="${sessionScope.usuario.id > 0 ? 'Alterar' : 'Cadastrar'}"></c:out> Usuário</h2>
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
-    <form action="sistema?controller=Usuario&action=<c:out value="${sessionScope.usuario.id > 0 ? 'editar' : 'novo'}"></c:out>" method="post" class="col-md-4">
+    <form id="form-usuario" action="sistema?controller=Usuario&action=<c:out value="${sessionScope.usuario.id > 0 ? 'editar' : 'novo'}"></c:out>" method="post" class="col-md-4">
         <div class="form-group col-md-12">
             <input type="hidden" class="form-control" id="id" name="id" value="<c:out value="${sessionScope.usuario.id > 0 ? sessionScope.usuario.id : ''}"></c:out>">
         </div>
