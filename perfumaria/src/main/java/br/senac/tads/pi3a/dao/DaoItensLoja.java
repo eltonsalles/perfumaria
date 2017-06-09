@@ -316,15 +316,20 @@ public class DaoItensLoja extends AbstractDao {
         }
     }
     
-    public List<Object[]> findAllEstoque(int[] idsProdutos, int idLoja) {
+    /**
+     * Retorna o estoque de um produto
+     * 
+     * @param idProduto
+     * @param idLoja
+     * @return 
+     */
+    public List<Object[]> findAllEstoque(int idProduto, int idLoja) {
         List<Object[]> lista = new ArrayList<>();
         
         try {
             Criteria criteria = new Criteria();
-            for (int i = 0; i < idsProdutos.length; i++) {
-                criteria.add(new Filter("produto_id", "=", "?"),
-                        Expression.OR_OPERATOR);
-            }
+            criteria.add(new Filter("produto_id", "=", "?"),
+                        Expression.AND_OPERATOR);
             criteria.add(new Filter("loja_id", "=", "?"),
                     Expression.AND_OPERATOR);
             
@@ -338,10 +343,9 @@ public class DaoItensLoja extends AbstractDao {
             PreparedStatement stmt = this.getConnection()
                     .prepareStatement(sql.getInstruction());
             
-            for (int i = 0; i < idsProdutos.length; i++) {
-                stmt.setInt(i + 1, idsProdutos[i]);
-            }
-            stmt.setInt(idsProdutos.length + 1, idLoja);
+            
+            stmt.setInt(1, idProduto);
+            stmt.setInt(2, idLoja);
             
             ResultSet resultSet = stmt.executeQuery();
             
