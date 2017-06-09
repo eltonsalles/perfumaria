@@ -107,20 +107,19 @@ public class InputFilterVenda extends InputFilter {
             this.errorValidation.replace("codigo", error);
         }
         
-        // Verifica se o nome do produto é um válido válido
+        // Verifica se o id do produto é um número válido
         if (this.allMap.containsKey("produto")) {
+            ValidationInt validationInt = new ValidationInt();
             boolean error = true;
             
             for (int i = 0; i < this.allMap.get("produto").length; i++) {
-                validationTamanho.setTamanho(150);
-
-                if (validationTamanho.isValid(this.allMap.get("produto")[i])
-                        && validationString.isValid(this.allMap
-                                .get("produto")[i])) {
-                    error = false;
-                } else {
-                    error = true;
-                    break;
+                if (validationInt.isValid(this.allMap.get("produto")[i])) {
+                    if (Integer.valueOf(this.allMap.get("produto")[i]) > 0) {
+                        error = false;
+                    } else {
+                        error = true;
+                        break;
+                    }
                 }
             }
             
