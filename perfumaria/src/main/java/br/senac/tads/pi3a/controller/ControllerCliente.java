@@ -24,14 +24,13 @@
 package br.senac.tads.pi3a.controller;
 
 import br.senac.tads.pi3a.dao.DaoCliente;
-import br.senac.tads.pi3a.dao.DaoProduto;
 import br.senac.tads.pi3a.dao.DaoVenda;
 import br.senac.tads.pi3a.inputFilter.InputFilterCliente;
 import br.senac.tads.pi3a.model.Cliente;
 import br.senac.tads.pi3a.model.Model;
-import br.senac.tads.pi3a.model.Produto;
 import br.senac.tads.pi3a.model.Venda;
 import br.senac.tads.pi3a.validation.ValidationCpf;
+import br.senac.tads.pi3a.validation.ValidationInt;
 import java.sql.Connection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -335,6 +334,23 @@ public class ControllerCliente implements Logica {
                             .getAttribute("connection"));
 
                     List lista = dao.findAll(cliente, "cpf", "=", cpf);
+
+                    if (lista.size() == 1) {
+                        request.setAttribute("cliente", lista.get(0));
+                    }
+                }
+            } else if (request.getParameter("id") != null
+                    && !request.getParameter("id").isEmpty()) {
+                String id = request.getParameter("id").replaceAll("\\D", "");
+                
+                ValidationInt validationInt = new ValidationInt();
+                
+                if (validationInt.isValid(id)) {
+                    Cliente cliente  = new Cliente();
+                    DaoCliente dao = new DaoCliente((Connection) request
+                            .getAttribute("connection"));
+
+                    List lista = dao.findAll(cliente, "id", "=", id);
 
                     if (lista.size() == 1) {
                         request.setAttribute("cliente", lista.get(0));
