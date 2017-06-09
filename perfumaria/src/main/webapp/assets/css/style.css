@@ -13,7 +13,7 @@ body,
 }
 
 /* Cria um texto depois da div que está dentro da header */
-.header div::after {
+.header div:first-of-type::after {
     content: "THE CODE";
     color: hsl(0, 0%, 100%);
     font-weight: bold;
