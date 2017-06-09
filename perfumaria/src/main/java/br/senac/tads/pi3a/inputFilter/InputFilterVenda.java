@@ -32,6 +32,7 @@ import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
 import br.senac.tads.pi3a.model.Venda;
 import br.senac.tads.pi3a.validation.ValidationCpf;
+import br.senac.tads.pi3a.validation.ValidationFloat;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import br.senac.tads.pi3a.validation.ValidationString;
 import br.senac.tads.pi3a.validation.ValidationTamanho;
@@ -145,13 +146,56 @@ public class InputFilterVenda extends InputFilter {
             this.errorValidation.replace("quantidade", error);
         }
         
+        // Verifica se o valor do sub-total é um número válido
+        if (this.allMap.containsKey("preco-total")) {
+            ValidationFloat validationFloat = new ValidationFloat();
+            boolean error = true;
+            
+            for (int i = 0; i < this.allMap.get("preco-total").length; i++) {
+                String precoTotal = this.allMap.get("preco-total")[i]
+                        .replaceAll("\\.", "")
+                        .replaceAll(",", ".");
+                
+                if (validationFloat.isValid(precoTotal)) {
+                    if (Float.valueOf(precoTotal) > 0) {
+                        error = false;
+                    } else {
+                        error = true;
+                        break;
+                    }
+                }
+            }
+            
+            this.errorValidation.replace("precoTotal", error);
+        }
+        
+        // Verifica se o valor da venda é um número válido
+        if (this.allMap.containsKey("total")) {
+            ValidationFloat validationFloat = new ValidationFloat();
+            boolean error = true;
+            
+            for (int i = 0; i < this.allMap.get("total").length; i++) {
+                String total = this.allMap.get("total")[i]
+                        .replaceAll("\\.", "")
+                        .replaceAll(",", ".");
+                
+                if (validationFloat.isValid(total)) {
+                    if (Float.valueOf(total) > 0) {
+                        error = false;
+                    } else {
+                        error = true;
+                        break;
+                    }
+                }
+            }
+            
+            this.errorValidation.replace("total", error);
+        }
+        
         // Muda o status desses campos para a validação passar. Esses campos
         // são preenchidos de maneira automatica
-        this.errorValidation.replace("nome", false);
         this.errorValidation.replace("marca", false);
         this.errorValidation.replace("precoUnidade", false);
-        this.errorValidation.replace("precoTotal", false);
-        this.errorValidation.replace("total", false);
         
         return this.errorStatus();
     }
@@ -214,7 +258,6 @@ public class InputFilterVenda extends InputFilter {
         Map<String, Object[]> dados = new LinkedHashMap<>();
         
         dados.put("cpf", new Object[]{this.allMap.get("cpf")[0]});
-        dados.put("nome", new Object[]{this.allMap.get("nome")[0]});
         dados.put("idCliente", new Object[]{this.allMap.get("id-cliente")[0]});
         dados.put("total", new Object[]{this.allMap.get("total")[0]});
         
