@@ -30,7 +30,7 @@ function init() {
     carregarEndereco();
     selects();
     inserirProduto();
-    carregarCliente();
+    carregarClientePorCpf();
     carregarProduto();
 }
 
@@ -325,17 +325,18 @@ function selects() {
     var movimentarProduto = $("#movimentar-produto");
     var produtos = $("#form-produtos");
     var funcionarios = $("#form-funcionarios");
+    var venda = $("#form-venda");
 
     // Formulários que possuiem campos de select muito grande e que
     //  usaram a lib Chosen
-    if (movimentarProduto.length || produtos.length || funcionarios) {
+    if (movimentarProduto.length || produtos.length || funcionarios.length) {
         var id = $("#id");
         var produto = $("#produto");
         var loja = $("#loja");
 
         // Verifica se existe algo selecionado nos campos produto e loja
         $(movimentarProduto).submit(function () {
-            // Se os campos estiverem vazios, então não subimete p formulário
+            // Se os campos estiverem vazios, então não subimete o formulário
             if (produto.val() === "" || loja.val() === "") {
                 return false;
             }
@@ -357,6 +358,33 @@ function selects() {
                 no_results_text: "Opção não encontrada:",
                 max_shown_results: 5
             });
+        }
+    }
+    
+    if (venda.length) {
+        var idCliente = $("#id-cliente");
+        
+        // Verifica se existe algo selecionado no campo cliente
+        $(venda).submit(function () {
+            // Se o campo estiver vazio, então não subimete o formulário
+            if (idCliente.val() === "") {
+                alert("Selecione um cliente cadastrado.");
+                return false;
+            }
+        });
+        
+        if(idCliente.length) {
+            idCliente.chosen({
+                placeholder_text_single: "Escolha um cliente",
+                no_results_text: "Opção não encontrada:",
+                max_shown_results: 5
+            });
+            
+            idCliente.on("change", function (evt, params) {
+                carregarClientePorId(params.selected);
+            });
+            
+            idCliente.trigger("chosen:open").trigger("chosen:close");
         }
     }
 }
@@ -407,16 +435,15 @@ function removerProduto(btn, index) {
  * 
  * @returns
  */
-function carregarCliente() {
+function carregarClientePorCpf() {
     var venda = document.querySelector("#form-venda");
 
     if (venda !== null) {
         var cpf = document.querySelector("#cpf");
 
         cpf.addEventListener('keyup', function () {
-            var nome = document.querySelector("#nome");
-            var id = document.querySelector("#id-cliente");
-
+            var opcao = document.querySelector(".chosen-single span");
+            
             if (this.value.length === 11 || this.value.length === 14) {
                 $.ajax({
                     url: location.origin + '/perfumaria/sistema?controller=Cliente&action=cliente&cpf=' + this.value,
@@ -426,16 +453,48 @@ function carregarCliente() {
                         alert("Error");
                     },
                     success: function (data) {
-                        nome.value = data.nome;
-                        id.value = data.id;
+                        // Atualiza o select da lib
+                        var idCliente = $("#id-cliente");
+                        idCliente.val(data.id);
+                        idCliente.trigger("chosen:updated");
+                        
+                        // Atualiza o nome que exibe na tela
+                        opcao.textContent = data.nome;
                     }
                 });
             } else {
-                nome.value = "";
-                id.value = "";
+                // Limpa os campos
+                var ids = document.querySelectorAll("li[data-option-array-index]");
+                ids.forEach(function(id) {
+                    id.classList.remove("result-selected");
+                });
+                
+                opcao.textContent = "";
             }
         });
     }
+}
+
+/**
+ * Carrega as informações do cliente para a venda
+ * 
+ * @param {int} id
+ */
+function carregarClientePorId(id) {
+    var cpf = document.querySelector("#cpf");
+
+    $.ajax({
+        url: location.origin + '/perfumaria/sistema?controller=Cliente&action=cliente&id=' + id,
+        dataType: 'json',
+        contentType: "application/json",
+        error: function () {
+            alert("Error");
+            cpf.value = "";
+        },
+        success: function (data) {
+            cpf.value = formatarCpf(data.cpf);
+        }
+    });
 }
 
 /**
@@ -527,6 +586,7 @@ function buscarProdutoVenda(field, i) {
 function alterarQuantidade(field, i) {
     field.addEventListener("click", function () {
         var codigo = document.querySelectorAll(".codigo")[i].value;
+        var precoTotal = document.querySelectorAll(".preco-total");
 
         $.ajax({
             url: location.origin + '/perfumaria/sistema?controller=Produto&action=produto&id=' + codigo,
@@ -536,29 +596,35 @@ function alterarQuantidade(field, i) {
                 alert("Error");
             },
             success: function (data) {
+                var precoUnidade = document.querySelectorAll(".preco-unidade")[i];
+                
                 if (field.value <= data.quantidade) {
-                    var precoUnidade = document.querySelectorAll(".preco-unidade")[i];
-                    var precoTotal = document.querySelectorAll(".preco-total");
-
                     // Seta o valor total do item (itens * valor unitário)
                     precoTotal[i].value = (field.value * precoUnidade.value
                             .replace(".", "").replace(",", "."))
                             .toLocaleString("pt-BR", {minimumFractionDigits: 2});
-
-                    // Atualiza o valor total da venda
-                    var total = document.querySelector("#total");
-                    var t = 0;
-
-                    for (var j = 0; j < precoTotal.length; j++) {
-                        t += parseFloat(precoTotal[j].value
-                                .replace(".", "").replace(",", "."));
-                    }
-
-                    total.value = t.toLocaleString("pt-BR", {minimumFractionDigits: 2});
                 } else {
                     alert("Este produto n\xE3o tem a quantidade requerida em estoque.");
                     field.value = data.quantidade;
+                    
+                    // Seta o valor total do item (itens * valor unitário)
+                    //  conforme o máximo em estoque
+                    precoTotal[i].value = (field.value * precoUnidade.value
+                            .replace(".", "").replace(",", "."))
+                            .toLocaleString("pt-BR", {minimumFractionDigits: 2});
                 }
+            },
+            complete: function() {
+                var total = document.querySelector("#total");
+                var t = 0;
+        
+                // Atualiza o valor total da venda
+                for (var j = 0; j < precoTotal.length; j++) {
+                    t += parseFloat(precoTotal[j].value
+                            .replace(".", "").replace(",", "."));
+                }
+
+                total.value = t.toLocaleString("pt-BR", {minimumFractionDigits: 2});
             }
         });
     });
