@@ -1,4 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -32,8 +34,13 @@
     <body>
         <div class="container-fluid">
             <div class="row header">
-                <div class="col-md-offset-1 col-md-11">
+                <div class="col-md-offset-1 col-md-9">
                     <img src="assets/img/the-code.jpg" alt="The Code">
+                </div>
+                <div class="col-md-2">
+                    <c:if test="${not empty sessionScope.usuarioLogado}">
+                        <h4><span class="label label-default">Usuário: <c:out value="${fn:substring(sessionScope.usuarioLogado.funcionario.nome, 0, fn:indexOf(sessionScope.usuarioLogado.funcionario.nome, ' '))}"></c:out></span></h4>
+                    </c:if>
                 </div>
             </div>
             <div class="row division"></div>
