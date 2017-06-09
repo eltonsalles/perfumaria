@@ -23,6 +23,11 @@
  */
 window.addEventListener('load', init);
 
+/**
+ * Chama todas as funções para configurar as páginas 
+ * 
+ * @returns
+ */
 function init() {
     configurarForm();
     configurarLista();
@@ -34,6 +39,11 @@ function init() {
     carregarProduto();
 }
 
+/**
+ * Configura os formulários conforme o necessário
+ * 
+ * @returns
+ */
 function configurarForm() {
     var cpf = document.querySelector("#cpf");
     var celular = document.querySelector("#celular");
@@ -100,6 +110,8 @@ function configurarForm() {
     }
 }
 
+/* Funções de formatação */
+
 function formatarCpf(value) {
     var pattern = /^([\d]{3})([\d]{3})([\d]{3})([\d]{2})$/;
     value = value.replace(/[^\d]+/g, '');
@@ -154,6 +166,13 @@ function incluirDataDoDia(field) {
     field.value = new Date().toISOString().slice(0, 10);
 }
 
+/* Fim das funções de formatação */
+
+/**
+ * Configura as listas conforme o necessário
+ * 
+ * @returns
+ */
 function configurarLista() {
     var cpfs = document.querySelectorAll('.cpfs');
     var cnpjs = document.querySelectorAll('.cnpjs');
@@ -266,12 +285,23 @@ function carregarProdutos() {
     }
 }
 
+/**
+ * Filtra para poder retornar apenas os detalhes de um produto
+ * 
+ * @param {object} obj
+ * @returns {Boolean}
+ */
 function filtrarNome(obj) {
     var value = document.querySelector("#nome").value;
 
     return obj.nome.toUpperCase() === value.toUpperCase();
 }
 
+/**
+ * Faz a busca do endereço através da API do ViaCEP
+ * 
+ * @returns
+ */
 function carregarEndereco() {
     var cep = document.querySelector("#cep");
 
@@ -321,6 +351,11 @@ function carregarEndereco() {
     }
 }
 
+/**
+ * Configura todos os selects que usam a lib Chosen conforme o necessário
+ * 
+ * @returns
+ */
 function selects() {
     var movimentarProduto = $("#movimentar-produto");
     var produtos = $("#form-produtos");
@@ -397,6 +432,7 @@ function selects() {
     
     if (venda.length) {
         var idCliente = $("#id-cliente");
+        var idProduto = $(".produto");
         
         // Verifica se existe algo selecionado no campo cliente
         $(venda).submit(function () {
@@ -404,6 +440,13 @@ function selects() {
             if (idCliente.val() === "") {
                 alert("Selecione um cliente cadastrado.");
                 return false;
+            }
+            
+            for (var i = 0; i < idProduto.length; i++) {
+                if (idProduto.eq(i) === "") {
+                    alert("Preencha a linha " + (i + 1) + " com os dados do produto.");
+                    return false;
+                }
             }
         });
         
@@ -420,14 +463,34 @@ function selects() {
             
             idCliente.trigger("chosen:open").trigger("chosen:close");
         }
+        
+        if(idProduto.length) {
+            idProduto.eq(0).chosen({
+                placeholder_text_single: "Escolha um produto",
+                no_results_text: "Opção não encontrada:",
+                max_shown_results: 5
+            });
+            
+            idProduto.eq(0).on("change", function (evt, params) {
+                buscarProdutoVendaNome(params.selected, 0);
+            });
+            
+            idProduto.eq(0).trigger("chosen:open").trigger("chosen:close");
+        }
     }
 }
 
+/**
+ * Clona a primeira linha da tabela que tem os dados do produto para permitir
+ * que sejam incluidos quantos produtos forem necessários
+ * 
+ * @returns
+ */
 function inserirProduto() {
     var btn = document.querySelector("#inserir-produto");
 
     if (btn !== null) {
-        btn.addEventListener("click", function () {
+        btn.addEventListener("click", function (e) {
             var table = document.querySelector("#lista-itens-venda tbody");
             var tr = document.querySelector("#lista-itens-venda tr:nth-of-type(2)");
             var clone = tr.cloneNode(true);
@@ -444,14 +507,37 @@ function inserirProduto() {
             removerProduto(btns[index - 1], index);
 
             var codigos = document.querySelectorAll(".codigo");
-            buscarProdutoVenda(codigos[index - 1], index - 1);
-
+            buscarProdutoVendaId(codigos[index - 1], index - 1);
+            
+            var chosenRemove = $(".produto").eq(index - 1).siblings("div");
+            chosenRemove.remove();
+            
+            var idProdutos = $(".produto");
+            idProdutos.eq(index - 1).removeAttr("style");
+            
+            idProdutos.eq(index - 1).chosen({
+                placeholder_text_single: "Escolha um produto",
+                no_results_text: "Opção não encontrada:",
+                max_shown_results: 5
+            });
+            
+            idProdutos.eq(index - 1).on("change", function (evt, params) {
+                buscarProdutoVendaNome(params.selected, index - 1);
+            });
+            
             var quantidades = document.querySelectorAll(".quantidade");
             alterarQuantidade(quantidades[index - 1], index - 1);
         });
     }
 }
 
+/**
+ * Remove o último produto da tabela no cadastro de venda
+ * 
+ * @param {button} btn
+ * @param {int} index
+ * @returns
+ */
 function removerProduto(btn, index) {
     btn.addEventListener("click", function () {
         var table = document.querySelector("#lista-itens-venda");
@@ -465,7 +551,7 @@ function removerProduto(btn, index) {
 }
 
 /**
- * Carrega as informações do cliente para a venda
+ * Carrega as informações do cliente para a venda através do CPF
  * 
  * @returns
  */
@@ -510,7 +596,7 @@ function carregarClientePorCpf() {
 }
 
 /**
- * Carrega as informações do cliente para a venda
+ * Carrega as informações do cliente para a venda através do id (select nome)
  * 
  * @param {int} id
  */
@@ -542,7 +628,7 @@ function carregarProduto() {
     if (venda !== null) {
         var codigos = document.querySelectorAll(".codigo");
         codigos.forEach(function(codigo, i) {
-            buscarProdutoVenda(codigo, i);
+            buscarProdutoVendaId(codigo, i);
         });
 
         var quantidades = document.querySelectorAll(".quantidade");
@@ -560,16 +646,16 @@ function carregarProduto() {
 }
 
 /**
- * Quando adicionado mais itens na 
+ * Carrega as informações do produto para a venda através do id
  * 
  * @param {type} field
  * @param {type} i
- * @returns {undefined}
+ * @returns {Boolean}
  */
-function buscarProdutoVenda(field, i) {
+function buscarProdutoVendaId(field, i) {
     field.addEventListener('keyup', function () {
         var codigos = document.querySelectorAll(".codigo");
-        var produto = document.querySelectorAll(".produto")[i];
+        var opcao = document.querySelectorAll(".chosen-single span")[i + 1];
         var marca = document.querySelectorAll(".marca")[i];
         var quantidade = document.querySelectorAll(".quantidade")[i];
         var precoUnitario = document.querySelectorAll(".preco-unidade")[i];
@@ -581,7 +667,7 @@ function buscarProdutoVenda(field, i) {
                 alert("Este c\u00f3digo de produto j\u00e1 est\u00e1 na venda!");
                 
                 codigos[i].value = "";
-                produto.value = "";
+                opcao.textContent = "";
                 marca.value = "";
                 quantidade.value = "";
                 precoUnitario.value = "";
@@ -593,7 +679,7 @@ function buscarProdutoVenda(field, i) {
         var pattern = /^[0-9]+$/i;
 
         if (pattern.test(this.value)) {
-            produto.value = "";
+            opcao.textContent = "";
             marca.value = "";
             quantidade.value = "";
             precoUnitario.value = "";
@@ -607,7 +693,12 @@ function buscarProdutoVenda(field, i) {
                     alert("Error");
                 },
                 success: function (data) {
-                    produto.value = data.nome;
+                    // Atualiza o select da lib
+                    var idProdutos = $(".produto");
+                    idProdutos.eq(i).val(data.id);
+                    idProdutos.eq(i).trigger("chosen:updated");
+                        
+                    opcao.textContent = data.nome;
                     marca.value = data.marca;
                     precoUnitario.value = data.valorVenda
                             .toLocaleString("pt-BR", {minimumFractionDigits: 2});
@@ -617,6 +708,72 @@ function buscarProdutoVenda(field, i) {
     });
 }
 
+/**
+ * Carrega as informações do produto para a venda através do id (select nome)
+ * 
+ * @param {int} id
+ * @param {int} i
+ * @returns {Boolean}
+ */
+function buscarProdutoVendaNome(id, i) {    
+    var codigos = document.querySelectorAll(".codigo");
+    var produto = document.querySelectorAll(".produto")[i];
+    var marca = document.querySelectorAll(".marca")[i];
+    var quantidade = document.querySelectorAll(".quantidade")[i];
+    var precoUnitario = document.querySelectorAll(".preco-unidade")[i];
+    var precoTotal = document.querySelectorAll(".preco-total")[i];
+
+    // Impede que o mesmo produto esteja na mesma venda
+    for (var j = 0; j < codigos.length; j++) {
+        if (codigos[j].value === id && i !== j) {
+            alert("Este c\u00f3digo de produto j\u00e1 est\u00e1 na venda!");
+
+            codigos[i].value = "";
+            produto.value = "";
+            marca.value = "";
+            quantidade.value = "";
+            precoUnitario.value = "";
+            precoTotal.value = "";
+            return false;
+        }
+    }
+
+    var pattern = /^[0-9]+$/i;
+
+    if (pattern.test(id)) {
+        codigos[i].value = "";
+        produto.value = "";
+        marca.value = "";
+        quantidade.value = "";
+        precoUnitario.value = "";
+        precoTotal.value = "";
+
+        $.ajax({
+            url: location.origin + '/perfumaria/sistema?controller=Produto&action=produto&id=' + id,
+            dataType: 'json',
+            contentType: "application/json",
+            error: function () {
+                alert("Error");
+            },
+            success: function (data) {
+                codigos[i].value = id;
+                produto.value = data.nome;
+                marca.value = data.marca;
+                precoUnitario.value = data.valorVenda
+                        .toLocaleString("pt-BR", {minimumFractionDigits: 2});
+            }
+        });
+    }
+}
+
+/**
+ * Altera a quantidade de produto e já verifica se a quantidade desejada
+ * tem estoque
+ * 
+ * @param {element} field
+ * @param {int} i
+ * @returns
+ */
 function alterarQuantidade(field, i) {
     field.addEventListener("click", function () {
         var codigo = document.querySelectorAll(".codigo")[i].value;
