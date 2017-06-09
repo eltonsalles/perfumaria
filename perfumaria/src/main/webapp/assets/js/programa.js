@@ -326,18 +326,44 @@ function selects() {
     var produtos = $("#form-produtos");
     var funcionarios = $("#form-funcionarios");
     var venda = $("#form-venda");
+    var usuario = $("#form-usuario");
 
     // Formulários que possuiem campos de select muito grande e que
     //  usaram a lib Chosen
-    if (movimentarProduto.length || produtos.length || funcionarios.length) {
+    if (movimentarProduto.length || produtos.length || funcionarios.length || usuario.length) {
         var id = $("#id");
         var produto = $("#produto");
         var loja = $("#loja");
+        var funcionario = $("#funcionario");
 
         // Verifica se existe algo selecionado nos campos produto e loja
         $(movimentarProduto).submit(function () {
             // Se os campos estiverem vazios, então não subimete o formulário
             if (produto.val() === "" || loja.val() === "") {
+                return false;
+            }
+        });
+        
+        // Verifica se existe algo selecionado no campo loja
+        $(produtos).submit(function () {
+            // Se o campo estiver vazio, então não subimete o formulário
+            if (loja.val() === "") {
+                return false;
+            }
+        });
+        
+        // Verifica se existe algo selecionado no campo loja
+        $(funcionarios).submit(function () {
+            // Se o campo estiver vazio, então não subimete o formulário
+            if (loja.val() === "") {
+                return false;
+            }
+        });
+        
+        // Verifica se existe algo selecionado no campo funcionário
+        $(usuario).submit(function () {
+            // Se o campo estiver vazio, então não subimete o formulário
+            if (funcionario.val() === "") {
                 return false;
             }
         });
@@ -355,6 +381,14 @@ function selects() {
         if (loja.length && id.val() === "") {
             loja.chosen({
                 placeholder_text_single: "Escolha uma loja",
+                no_results_text: "Opção não encontrada:",
+                max_shown_results: 5
+            });
+        }
+        
+        if (funcionario.length) {
+            funcionario.chosen({
+                placeholder_text_single: "Escolha um funcionario",
                 no_results_text: "Opção não encontrada:",
                 max_shown_results: 5
             });
