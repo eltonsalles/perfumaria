@@ -35,7 +35,6 @@ import br.senac.tads.pi3a.validation.ValidationDate;
 import java.sql.Connection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +52,9 @@ public class ControllerVenda implements Logica {
     public String novo(HttpServletRequest request, HttpServletResponse response,
             HttpSession session) throws Exception {
         try {
+            // Pega a conexão
+            Connection conn = (Connection) request.getAttribute("connection");
+                    
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
                 // Classe de validação do formulário cliente
@@ -65,10 +67,6 @@ public class ControllerVenda implements Logica {
                 
                 // Faz a validação do formulário de venda
                 if (inputFilterVenda.isValid()) {
-                    // Pega a conexão
-                    Connection conn = (Connection) request
-                            .getAttribute("connection");
-                    
                     // Pega os dados do usuário logado
                     Usuario usuario = (Usuario) session
                             .getAttribute("usuarioLogado");
@@ -84,8 +82,7 @@ public class ControllerVenda implements Logica {
                     venda.getLoja().setId(idLoja);
                     
                     // Monta um vetor com os ids dos produtos da venda
-                    int[] idsProdutos = new int[venda.getListaItensVenda()
-                            .size()];
+                    int[] idsProdutos = new int[venda.getListaItensVenda().size()];
                     for (int i = 0; i < idsProdutos.length; i++) {
                         idsProdutos[i] = venda.getListaItensVenda().get(i)
                                 .getItens().getProduto().getId();
@@ -105,17 +102,20 @@ public class ControllerVenda implements Logica {
                         }
                     }
                     
-                    // Faz uma consulta trazendo o estoque de cada
-                    // produto da venda
                     DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
-                    List<Object[]> listaEstoque = daoItensLoja.findAllEstoque(
-                            idsProdutos, idLoja);
                     
                     // Verifica se o produto possui a quantidade para
                     // realizar a venda
                     for (int i = 0; i < idsProdutos.length; i++) {
+                        // Faz uma consulta trazendo o estoque de cada
+                        // produto da venda
+                        List<Object[]> listaEstoque = daoItensLoja
+                                .findAllEstoque(venda.getListaItensVenda()
+                                        .get(i).getItens().getProduto().getId(),
+                                        idLoja);
+                        
                         if (venda.getListaItensVenda().get(i).getQuantidade()
-                                > (int) listaEstoque.get(i)[2]) {
+                                > (int) listaEstoque.get(0)[2]) {
                             // A quantidade que está sendo vendida é maior
                             // que o estoque
                             session.setAttribute("data", data);
@@ -149,6 +149,12 @@ public class ControllerVenda implements Logica {
                             "Verifique o(s) campo(s) em vermelho.");
                 }
             }
+            
+            Cliente cliente = new Cliente();
+            DaoCliente daoCliente = new DaoCliente(conn);
+            List<Model> listaClientes = daoCliente.findAll(cliente);
+
+            session.setAttribute("listaClientes", listaClientes);
             
             return "WEB-INF/jsp/cadastrar-venda.jsp";
         } catch (Exception e) {
