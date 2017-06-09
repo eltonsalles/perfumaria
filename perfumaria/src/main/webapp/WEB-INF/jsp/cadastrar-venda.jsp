@@ -6,19 +6,23 @@
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
     <form id="form-venda" action="sistema?controller=Venda&action=novo" method="post">
         <div class="form-group col-md-12">
-            <div class="form-group col-md-2 <c:if test="${errorValidation.cpf eq true}">has-error</c:if>">
-                <label class="control-label" for="cpf">CPF</label>
-                <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required pattern="^\d{3}.\d{3}.\d{3}-\d{2}$" value="<c:out value="${sessionScope.data.cpf[0]}"></c:out>">
-            </div>
-            <div class="form-group col-md-6">
-                <label class="control-label" for="nome">Nome</label>
-                <input type="text" class="form-control" id="nome" placeholder="Nome completo" name="nome" maxlength="150" required pattern="^([a-zA-Zà-úÀ-Ú])([a-zA-Zà-úÀ-Ú]|\.|\s)+$" value="<c:out value="${sessionScope.data.nome[0]}"></c:out>" readonly="readonly">
-            </div>
-            <div class="form-group col-md-1">
-                <input type="hidden" class="form-control" id="id-cliente" name="id-cliente" value="<c:out value="${sessionScope.data.idCliente[0]}"></c:out>">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="control-label" for="nome">Nome</label>
+                    <select class="form-control" id="id-cliente" name="id-cliente">
+                        <option value></option>
+                        <c:forEach items="${sessionScope.listaClientes}" var="cliente">
+                            <option value="<c:out value="${cliente.id}"></c:out>" <c:if test="${sessionScope.data.idCliente[0] == cliente.id}">selected</c:if>><c:out value="${cliente.nome}"></c:out></option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="form-group col-md-2 <c:if test="${errorValidation.cpf eq true}">has-error</c:if>">
+                    <label class="control-label" for="cpf">CPF</label>
+                    <input type="text" class="form-control" id="cpf" placeholder="xxx.xxx.xxx-xx" name="cpf" maxlength="14" required pattern="^\d{3}.\d{3}.\d{3}-\d{2}$" value="<c:out value="${sessionScope.data.cpf[0]}"></c:out>">
+                </div>
             </div>
         </div>
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-3 <c:if test="${errorValidation.total eq true}">has-error</c:if>">
             <label class="control-label" for="total">Total</label>
             <div class="input-group">
                 <div class="input-group-addon">R$</div>
@@ -67,7 +71,7 @@
                     </div>
                 </td>
                 <td>
-                    <div class="form-group">
+                    <div class="form-group <c:if test="${errorValidation.precoTotal eq true}">has-error</c:if>">
                         <input type="text" class="form-control preco-total" name="preco-total" maxlength="12" placeholder="Sub-Total" pattern="(\d{1,3}\.)?\d{1,3},\d{2}$" required readonly="readonly" value="<c:out value="${sessionScope.data.precoTotal[0]}"></c:out>"/>
                     </div>
                 </td>
@@ -119,6 +123,7 @@
             <c:set var="i" value="${i + 1}"></c:set>
             </c:forEach>
         <c:remove scope="session" var="data"></c:remove>
+        <c:remove scope="session" var="errorValidation"></c:remove>
         </table>
         <div class="form-group col-md-offset-9 col-md-3">
             <c:if test="${sessionScope.venda.id > 0}">
