@@ -28,6 +28,7 @@ import br.senac.tads.pi3a.dao.DaoItensLoja;
 import br.senac.tads.pi3a.dao.DaoVenda;
 import br.senac.tads.pi3a.inputFilter.InputFilterVenda;
 import br.senac.tads.pi3a.model.Cliente;
+import br.senac.tads.pi3a.model.ItensLoja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Usuario;
 import br.senac.tads.pi3a.model.Venda;
@@ -54,6 +55,10 @@ public class ControllerVenda implements Logica {
         try {
             // Pega a conexão
             Connection conn = (Connection) request.getAttribute("connection");
+            
+            // Pega os dados do usuário logado
+            Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+            int idLoja = usuario.getFuncionario().getLoja().getId();
                     
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
@@ -67,12 +72,6 @@ public class ControllerVenda implements Logica {
                 
                 // Faz a validação do formulário de venda
                 if (inputFilterVenda.isValid()) {
-                    // Pega os dados do usuário logado
-                    Usuario usuario = (Usuario) session
-                            .getAttribute("usuarioLogado");
-                    
-                    int idLoja = usuario.getFuncionario().getLoja().getId();
-                    
                     // Cria um objeto venda com os dados válidos do formulário
                     Venda venda = (Venda) inputFilterVenda.createModel();
                     
@@ -155,6 +154,20 @@ public class ControllerVenda implements Logica {
             List<Model> listaClientes = daoCliente.findAll(cliente);
 
             session.setAttribute("listaClientes", listaClientes);
+            
+            DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
+            List<Model> listaItensLoja;
+            
+            // 5 = gerente de venda e 8 = vendedor
+            if (usuario.getNivelUsuario().getId() == 5
+                    || usuario.getNivelUsuario().getId() == 8) {
+                listaItensLoja = daoItensLoja.findAll(new ItensLoja(),
+                        "loja_id", "=", String.valueOf(idLoja));
+            } else {
+                listaItensLoja = daoItensLoja.findAll(new ItensLoja());
+            }
+            
+            session.setAttribute("listaItensLoja", listaItensLoja);
             
             return "WEB-INF/jsp/cadastrar-venda.jsp";
         } catch (Exception e) {
