@@ -91,8 +91,10 @@ public class InputFilterManutencaoProduto extends InputFilter {
                     .replaceAll("\\D", "");
 
             if (validationInt.isValid(estoque)) {
-                this.errorValidation.replace("quantidade", false);
-                this.allMap.replace("quantidade", new String[]{estoque});
+                if (Integer.valueOf(this.allMap.get("quantidade")[0]) > 0) {
+                    this.errorValidation.replace("quantidade", false);
+                    this.allMap.replace("quantidade", new String[]{estoque});
+                }
             }
         }
         
