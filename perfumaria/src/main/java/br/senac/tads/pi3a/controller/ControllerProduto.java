@@ -27,14 +27,17 @@ import br.senac.tads.pi3a.dao.DaoHistoricoProduto;
 import br.senac.tads.pi3a.dao.DaoItensLoja;
 import br.senac.tads.pi3a.dao.DaoLoja;
 import br.senac.tads.pi3a.dao.DaoProduto;
+import br.senac.tads.pi3a.dao.DaoVenda;
 import br.senac.tads.pi3a.inputFilter.InputFilterManutencaoProduto;
 import br.senac.tads.pi3a.inputFilter.InputFilterProduto;
 import br.senac.tads.pi3a.model.HistoricoProduto;
 import br.senac.tads.pi3a.model.ItensLoja;
+import br.senac.tads.pi3a.model.ItensVenda;
 import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
 import br.senac.tads.pi3a.model.Produto;
 import br.senac.tads.pi3a.model.Usuario;
+import br.senac.tads.pi3a.model.Venda;
 import br.senac.tads.pi3a.validation.ValidationDate;
 import br.senac.tads.pi3a.validation.ValidationInt;
 import java.sql.Connection;
@@ -274,32 +277,38 @@ public class ControllerProduto implements Logica {
             throws Exception {
         try {
             // Verifica se existe o parâmetro id
-            if (request.getParameter("id") != null) {
+            if (request.getParameter("id") != null
+                    && request.getParameter("loja") != null) {
                 String id = request.getParameter("id");
-                boolean digito = true;
-
-                // Garante que o id seja apenas números
-                for (int i = 0; i < id.length(); i++) {
-                    if (!Character.isDigit(id.charAt(i))) {
-                        digito = false;
-                        break;
-                    }
-                }
-
-                if (digito) {
+                String idLoja = request.getParameter("loja");
+                
+                ValidationInt validationInt = new ValidationInt();
+                
+                if (validationInt.isValid(id) && validationInt.isValid(idLoja)) {
                     // Pega a conexão
                     Connection conn = (Connection) request
                             .getAttribute("connection");
+                    
+                    DaoVenda daoVenda = new DaoVenda(conn);
+                    List<Venda> listaVenda = daoVenda.findAll("loja_id", "=", idLoja);
+                    
+                    for (Venda venda : listaVenda) {
+                        for (ItensVenda item : venda.getListaItensVenda()) {
+                            if (item.getItens().getProduto().getId() == Integer.valueOf(id)) {
+                                session.setAttribute("alert", "alert-danger");
+                                session.setAttribute("alertMessage", "O produto não"
+                                        + " pode ser excluído, pois possui venda(s).");
+                                return "excluir";
+                            }
+                        }
+                    }
 
                     ItensLoja itensLoja = new ItensLoja();
 
                     DaoItensLoja daoItensLoja
                             = new DaoItensLoja(conn, itensLoja);
 
-                    Usuario user = (Usuario) request.getSession().getAttribute("usuarioLogado");
-
-                    if (daoItensLoja.delete(Integer.valueOf(id),
-                            user.getFuncionario().getLoja().getId())) {
+                    if (daoItensLoja.delete(Integer.valueOf(id), Integer.valueOf(idLoja))) {
                         session.setAttribute("alert", "alert-warning");
                         session.setAttribute("alertMessage",
                                 "Produto excluído com sucesso.");
