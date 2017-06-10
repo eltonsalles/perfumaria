@@ -594,7 +594,8 @@ public class ControllerProduto implements Logica {
         }
     }
 
-    public String historico(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    public String historico(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session) {
         try {
             if (request.getMethod().equalsIgnoreCase("post")) {
                 HistoricoProduto historicoProduto = new HistoricoProduto();
@@ -602,22 +603,19 @@ public class ControllerProduto implements Logica {
                         (Connection) request.getAttribute("connection"));
                 List<Model> lista;
 
-                if (request.getParameter("pesquisar") != null
-                        && !request.getParameter("pesquisar").isEmpty()) {
-                    String pesquisar = request.getParameter("pesquisar");
-
-                    // Verifica por onde a consulta é feita por id ou nome
-                    boolean digito = true;
-                    for (int i = 0; i < pesquisar.length(); i++) {
-                        if (!Character.isDigit(pesquisar.charAt(i))) {
-                            digito = false;
-                            break;
-                        }
-                    }
-
-                    if (digito) {
+                if (request.getParameter("pesquisar") != null) {
+                    String[] pesquisar = request.getParameterValues("pesquisar");
+                    
+                    ValidationInt validationInt = new ValidationInt();
+                    
+                    if (validationInt.isValid(pesquisar[0])
+                            && validationInt.isValid(pesquisar[1])) {
                         lista = dao.findAll(historicoProduto,
-                                "produto_id", "=", pesquisar);
+                                new String[]{"produto_id", "loja_id"},
+                                new String[]{"=", "="},
+                                new String[]{pesquisar[0], pesquisar[1]},
+                                new String[]{"and", "and"});
+                        
                         if (lista != null & !lista.isEmpty()) {
                             session.setAttribute("listaProdutos", lista);
                             return "pesquisar";
@@ -626,11 +624,15 @@ public class ControllerProduto implements Logica {
                             session.setAttribute("alertMessage",
                                     "A consulta não retornou nenhum resultado.");
                         }
+                    } else {
+                        session.setAttribute("alert", "alert-warning");
+                        session.setAttribute("alertMessage", 
+                                "Informe o código do produto e da loja.");
                     }
                 } else {
                     session.setAttribute("alert", "alert-warning");
                     session.setAttribute("alertMessage",
-                            "Informe o código do produto.");
+                            "Informe o código do produto e da loja.");
                 }
             }
             return "/WEB-INF/jsp/historico-produto.jsp";
