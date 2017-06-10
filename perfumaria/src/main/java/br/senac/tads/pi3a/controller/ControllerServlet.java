@@ -81,10 +81,21 @@ public class ControllerServlet extends HttpServlet {
                     break;
                 
                 case "editar":
-                    response.sendRedirect(request.getContextPath()
+                    String url;
+                    if (controller.equalsIgnoreCase("Produto")) {
+                        url = request.getContextPath()
                             + "/sistema?controller=" + controller
                             + "&action=" + action
-                            + "&id=" + session.getAttribute("id"));
+                            + "&id=" + session.getAttribute("id")
+                            + "&loja=" + session.getAttribute("loja");
+                    } else {
+                        url = request.getContextPath()
+                            + "/sistema?controller=" + controller
+                            + "&action=" + action
+                            + "&id=" + session.getAttribute("id");
+                    }
+                    
+                    response.sendRedirect(url);
                     break;
                 
                 case "novo":
