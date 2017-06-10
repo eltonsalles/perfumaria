@@ -1,10 +1,9 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 <jsp:include page="/WEB-INF/layout/menu.jsp"/>
 <div class="col-md-10 content">
-    <h2>ManutenÃ§Ã£o de Produto</h2>
+    <h2>Manutenção de Produto</h2>
     <jsp:include page="/WEB-INF/layout/message.jsp"/>
     <form id="movimentar-produto" action="sistema?controller=Produto&action=movimentar" method="post">
         <div class="form-group col-md-6 <c:if test="${errorValidation.produto eq true}">has-error</c:if>">
@@ -44,8 +43,8 @@
             <input type="number" class="form-control" id="manutencao" placeholder="Quantidade" name="quantidade" min="0" required pattern="^\d+$" value="<c:out value="${sessionScope.historicoProduto.quantidade}"></c:out>">
         </div>
         <div class="form-group col-md-12 <c:if test="${errorValidation.descricao eq true}">has-error</c:if>">
-            <label class="control-label" for="descricao">ObservaÃ§Ã£o</label>
-            <textarea class="form-control" rows="3" name="descricao" pattern="^([a-zA-ZÃ -ÃºÃ€-Ãš0-9])([a-zA-ZÃ -ÃºÃ€-Ãš0-9]|,|\.|-|\s)+$"><c:out value="${sessionScope.historicoProduto.descricao}"></c:out></textarea>
+            <label class="control-label" for="descricao">Observação</label>
+            <textarea class="form-control" rows="3" name="descricao" pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|,|\.|-|\s)+$"><c:out value="${sessionScope.historicoProduto.descricao}"></c:out></textarea>
         </div>
         <div class="form-group col-md-offset-8 col-md-4">
             <button type="reset" class="btn btn-default">
