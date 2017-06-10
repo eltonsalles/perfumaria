@@ -203,6 +203,8 @@ public class ControllerProduto implements Logica {
                                     + " alterado com sucesso.");
                             session.setAttribute("id", itensLoja.getProduto()
                                     .getId());
+                            session.setAttribute("loja", itensLoja.getLoja()
+                                    .getId());
                             return "editar";
                         }
                     } else {
