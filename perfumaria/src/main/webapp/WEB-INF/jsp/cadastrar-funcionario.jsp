@@ -16,7 +16,7 @@
                 <c:forEach items="${sessionScope.listaLoja}" var="loja">
                     <option value="<c:out value="${loja.id}"></c:out>" <c:if test="${sessionScope.funcionario.loja.id == loja.id}">selected</c:if>><c:out value="${loja.razaoSocial}"></c:out></option>
                 </c:forEach>
-            </select> 
+            </select>
         </div>
             <div class="form-group col-md-offset-10 status">
             <label>Status</label><br>

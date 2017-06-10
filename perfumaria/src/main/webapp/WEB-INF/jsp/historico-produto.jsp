@@ -6,15 +6,25 @@
 <div class="col-md-10 content">
     <h2>Histórico de Produtos</h2>
      <jsp:include page="/WEB-INF/layout/message.jsp"/>
-    <form action="sistema?controller=Produto&action=historico" method="post" class="form-inline">
+     <form id="form-relatorio-historico" action="sistema?controller=Produto&action=historico" method="post" class="form-inline">
         <div class="form-group">
             <div class="input-group">
-                <span class="input-group-addon">Código do Produto</span>
-                <input type="text" class="form-control" id="pesquisar" placeholder="..." name="pesquisar" maxlength="150" pattern="\d+$">
+                <span class="input-group-addon">Selecione o produto</span>
+                <select class="form-control" id="produto" name="pesquisar">
+                    <option value></option>
+                    <c:forEach items="${sessionScope.listaProduto}" var="produto">
+                        <option value="<c:out value="${produto.id}"></c:out>"><c:out value="${produto.nome}"></c:out></option>
+                    </c:forEach>
+                </select>
             </div>
             <div class="input-group">
-                <span class="input-group-addon">Código da Loja</span>
-                <input type="text" class="form-control" id="pesquisar" placeholder="..." name="pesquisar" maxlength="150" pattern="\d+$">
+                <span class="input-group-addon">Selecione a Loja</span>
+                <select class="form-control" id="loja" name="pesquisar">
+                    <option value></option>
+                    <c:forEach items="${sessionScope.listaLoja}" var="loja">
+                        <option value="<c:out value="${loja.id}"></c:out>"><c:out value="${loja.razaoSocial}"></c:out></option>
+                    </c:forEach>
+                </select>
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -44,6 +54,8 @@
             </tr>
         </c:forEach>
     </table>
+    <c:remove scope="session" var="listaLoja"></c:remove>
+    <c:remove scope="session" var="listaProduto"></c:remove>
     <c:remove scope="session" var="listaProdutos"></c:remove>
 </div><!-- content -->
 <jsp:include page="/WEB-INF/layout/footer.jsp"/>
