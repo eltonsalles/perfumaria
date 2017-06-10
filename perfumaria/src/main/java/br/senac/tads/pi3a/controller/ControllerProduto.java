@@ -408,6 +408,18 @@ public class ControllerProduto implements Logica {
             HttpServletResponse response, HttpSession session) {
         try {
             Connection conn = (Connection) request.getAttribute("connection");
+            
+            Produto produto = new Produto();
+            DaoProduto daoProduto = new DaoProduto(conn);
+            List<Model> listaProdutos = daoProduto.findAll(produto);
+
+            session.setAttribute("listaProdutos", listaProdutos);
+
+            Loja loja = new Loja();
+            DaoLoja daoLoja = new DaoLoja(conn);
+            List<Model> listaLoja = daoLoja.findAll(loja);
+
+            session.setAttribute("listaLoja", listaLoja);
 
             // Se o formulário for submetido por post então entra aqui
             if (request.getMethod().equalsIgnoreCase("post")) {
@@ -428,7 +440,7 @@ public class ControllerProduto implements Logica {
                     ItensLoja itensLoja = new ItensLoja();
                     DaoItensLoja daoItensLoja = new DaoItensLoja(conn);
 
-                    List<Model> produto = daoItensLoja.findAll(itensLoja,
+                    List<Model> produtos = daoItensLoja.findAll(itensLoja,
                             new String[]{"produto_id", "loja_id"},
                             new String[]{"=", "="},
                             new String[]{String.valueOf(historicoProduto
@@ -438,8 +450,25 @@ public class ControllerProduto implements Logica {
                             new String[]{"and", "and"});
 
                     // Pega o produto se ele foi encontrado
-                    if (produto.size() == 1) {
-                        itensLoja = (ItensLoja) produto.get(0);
+                    if (produtos.size() == 1) {
+                        itensLoja = (ItensLoja) produtos.get(0);
+                    } else {
+                        session.setAttribute("historicoProduto", historicoProduto);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage",
+                                "Este produto não existe para essa loja.");
+                        return "/WEB-INF/jsp/manutencao-produto.jsp";
+                    }
+                    
+                    if (!historicoProduto.getTipoMovimentacao()
+                            .equalsIgnoreCase("entrada")
+                            && historicoProduto.getQuantidade()
+                            > itensLoja.getEstoque()) {
+                        session.setAttribute("historicoProduto", historicoProduto);
+                        session.setAttribute("alert", "alert-danger");
+                        session.setAttribute("alertMessage",
+                                "A quantidade informada é maior que o estoque.");
+                        return "/WEB-INF/jsp/manutencao-produto.jsp";
                     }
 
                     if (itensLoja.getProduto().getId() > 0) {
@@ -494,18 +523,6 @@ public class ControllerProduto implements Logica {
                             "Verifique o(s) campo(s) em vermelho.");
                 }
             }
-
-            Produto produto = new Produto();
-            DaoProduto daoProduto = new DaoProduto(conn);
-            List<Model> listaProdutos = daoProduto.findAll(produto);
-
-            session.setAttribute("listaProdutos", listaProdutos);
-
-            Loja loja = new Loja();
-            DaoLoja daoLoja = new DaoLoja(conn);
-            List<Model> listaLoja = daoLoja.findAll(loja);
-
-            session.setAttribute("listaLoja", listaLoja);
 
             return "/WEB-INF/jsp/manutencao-produto.jsp";
         } catch (Exception e) {
@@ -597,10 +614,23 @@ public class ControllerProduto implements Logica {
     public String historico(HttpServletRequest request,
             HttpServletResponse response, HttpSession session) {
         try {
+            Connection conn = (Connection) request.getAttribute("connection");
+            
+            Produto produto = new Produto();
+            DaoProduto daoProduto = new DaoProduto(conn);
+            List<Model> listaProdutos = daoProduto.findAll(produto);
+
+            session.setAttribute("listaProduto", listaProdutos);
+            
+            Loja loja = new Loja();
+            DaoLoja daoLoja = new DaoLoja(conn);
+            List<Model> listaLoja = daoLoja.findAll(loja);
+
+            session.setAttribute("listaLoja", listaLoja);
+            
             if (request.getMethod().equalsIgnoreCase("post")) {
                 HistoricoProduto historicoProduto = new HistoricoProduto();
-                DaoHistoricoProduto dao = new DaoHistoricoProduto(
-                        (Connection) request.getAttribute("connection"));
+                DaoHistoricoProduto dao = new DaoHistoricoProduto(conn);
                 List<Model> lista;
 
                 if (request.getParameter("pesquisar") != null) {
