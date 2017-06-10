@@ -6,11 +6,15 @@
 <div class="col-md-10 content">
     <h2>Histórico de Produtos</h2>
      <jsp:include page="/WEB-INF/layout/message.jsp"/>
-    <form action="sistema?controller=Produto&action=historico" method="post">
-         <div class="form-group col-md-6 <c:if test="${errorValidation eq true}">has-error</c:if>">
-            <label for="pesquisar">Pesquisar</label>
+    <form action="sistema?controller=Produto&action=historico" method="post" class="form-inline">
+        <div class="form-group">
             <div class="input-group">
-                <input type="text" class="form-control" id="pesquisar" placeholder="Digite o código do produto" name="pesquisar" maxlength="150" pattern="\d+$">
+                <span class="input-group-addon">Código do Produto</span>
+                <input type="text" class="form-control" id="pesquisar" placeholder="..." name="pesquisar" maxlength="150" pattern="\d+$">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">Código da Loja</span>
+                <input type="text" class="form-control" id="pesquisar" placeholder="..." name="pesquisar" maxlength="150" pattern="\d+$">
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
