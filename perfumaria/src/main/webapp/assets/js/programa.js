@@ -757,7 +757,7 @@ function buscarProdutoVendaNome(id, i) {
             },
             success: function (data) {
                 codigos[i].value = id;
-                produto.value = data.nome;
+                produto.value = id;
                 marca.value = data.marca;
                 precoUnitario.value = data.valorVenda
                         .toLocaleString("pt-BR", {minimumFractionDigits: 2});

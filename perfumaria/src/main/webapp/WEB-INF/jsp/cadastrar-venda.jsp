@@ -52,7 +52,6 @@
                 </td>
                 <td>
                     <div class="form-group <c:if test="${errorValidation.produto eq true}">has-error</c:if>">
-                        <!--<input type="text" class="form-control produto" name="produto" maxlength="150" placeholder="Nome do produto" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.data.produto[0]}"></c:out>"/>-->
                         <select class="form-control produto" name="produto">
                             <option value></option>
                             <c:forEach items="${sessionScope.listaItensLoja}" var="itensLoja">
@@ -97,7 +96,12 @@
                 </td>
                 <td>
                     <div class="form-group <c:if test="${errorValidation.produto eq true}">has-error</c:if>">
-                        <input type="text" class="form-control produto" name="produto" maxlength="150" placeholder="Nome do produto" required pattern="^([a-zA-Zà-úÀ-Ú0-9])([a-zA-Zà-úÀ-Ú0-9]|\.|-|\s)+$" value="<c:out value="${sessionScope.data.produto[i]}"></c:out>"/>
+                        <select class="form-control produto" name="produto">
+                            <option value></option>
+                            <c:forEach items="${sessionScope.listaItensLoja}" var="itensLoja">
+                                <option value="<c:out value="${itensLoja.produto.id}"></c:out>" <c:if test="${sessionScope.data.produto[i] == itensLoja.produto.id}">selected</c:if>><c:out value="${itensLoja.produto.nome}"></c:out></option>
+                            </c:forEach>
+                        </select>
                     </div>
                 </td>
                 <td>
