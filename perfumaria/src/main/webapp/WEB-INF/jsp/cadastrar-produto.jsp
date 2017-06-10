@@ -95,7 +95,7 @@
         </div>
         <div class="form-group col-md-offset-8 col-md-4">
             <c:if test="${sessionScope.itensLoja.produto.id > 0}">
-            <a href="sistema?controller=Produto&action=excluir&id=<c:out value="${sessionScope.itensLoja.produto.id}"></c:out>" class="btn btn-default">
+            <a href="sistema?controller=Produto&action=excluir&id=<c:out value="${sessionScope.itensLoja.produto.id}"></c:out>&loja=<c:out value="${sessionScope.itensLoja.loja.id}"></c:out>" class="btn btn-default">
                 Excluir&nbsp;&nbsp;<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </a>
             </c:if>
