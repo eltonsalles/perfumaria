@@ -357,6 +357,7 @@ function carregarEndereco() {
  * @returns
  */
 function selects() {
+    var relHistoricoProduto = $("#form-relatorio-historico");
     var movimentarProduto = $("#movimentar-produto");
     var produtos = $("#form-produtos");
     var funcionarios = $("#form-funcionarios");
@@ -424,6 +425,27 @@ function selects() {
         if (funcionario.length) {
             funcionario.chosen({
                 placeholder_text_single: "Escolha um funcionario",
+                no_results_text: "Opção não encontrada:",
+                max_shown_results: 5
+            });
+        }
+    }
+    
+    if (relHistoricoProduto.length) {
+        var loja = $("#loja");
+        var produto = $("#produto");
+        
+        if (loja.length) {
+            loja.chosen({
+                placeholder_text_single: "Escolha uma loja",
+                no_results_text: "Opção não encontrada:",
+                max_shown_results: 5
+            });
+        }
+        
+        if (produto.length) {
+            produto.chosen({
+                placeholder_text_single: "Escolha um produto",
                 no_results_text: "Opção não encontrada:",
                 max_shown_results: 5
             });
