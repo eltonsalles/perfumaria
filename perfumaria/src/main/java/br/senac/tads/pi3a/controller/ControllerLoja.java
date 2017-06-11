@@ -24,9 +24,11 @@
 package br.senac.tads.pi3a.controller;
 
 import br.senac.tads.pi3a.dao.DaoLoja;
+import br.senac.tads.pi3a.dao.DaoVenda;
 import br.senac.tads.pi3a.inputFilter.InputFilterLoja;
 import br.senac.tads.pi3a.model.Loja;
 import br.senac.tads.pi3a.model.Model;
+import br.senac.tads.pi3a.model.Venda;
 import java.sql.Connection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -308,5 +310,39 @@ public class ControllerLoja implements Logica {
                     "Não foi possível realizar a consulta.");
             return "pesquisar";
         }
+    }
+    
+    /**
+     * Método que gera um json com as informações da loja
+     *
+     * @param request
+     * @param response
+     * @param session
+     * @return
+     */
+    public String loja(HttpServletRequest request,
+            HttpServletResponse response, HttpSession session) {
+        try {
+            if (request.getParameter("id") != null
+                    && !request.getParameter("id").isEmpty()) {
+                String idProduto = request.getParameter("id");
+
+                Connection conn = (Connection) request
+                        .getAttribute("connection");
+                
+                DaoVenda daoVenda = new DaoVenda(conn);
+
+                List<Object[]> lista = daoVenda.findAllLoja(
+                        Integer.valueOf(idProduto));
+
+                if (!lista.isEmpty()) {
+                    request.setAttribute("lojas", lista);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+
+        return "/WEB-INF/api/loja.jsp";
     }
 }
