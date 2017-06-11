@@ -631,12 +631,6 @@ public class ControllerProduto implements Logica {
 
             session.setAttribute("listaProduto", listaProdutos);
             
-            Loja loja = new Loja();
-            DaoLoja daoLoja = new DaoLoja(conn);
-            List<Model> listaLoja = daoLoja.findAll(loja);
-
-            session.setAttribute("listaLoja", listaLoja);
-            
             if (request.getMethod().equalsIgnoreCase("post")) {
                 HistoricoProduto historicoProduto = new HistoricoProduto();
                 DaoHistoricoProduto dao = new DaoHistoricoProduto(conn);
