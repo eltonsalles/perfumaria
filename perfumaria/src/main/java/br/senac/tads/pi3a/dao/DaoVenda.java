@@ -542,7 +542,9 @@ public class DaoVenda {
 
             for (i = 0; i < lista.size(); i++) {
                 Venda venda = lista.get(i);
-                listaVendas.add(this.montarVenda(venda));
+                if (venda.getLoja().getId() == idLoja) {
+                    listaVendas.add(this.montarVenda(venda));
+                }
             }
             
             return listaVendas;
