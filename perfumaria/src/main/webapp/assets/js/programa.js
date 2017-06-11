@@ -435,19 +435,26 @@ function selects() {
         var loja = $("#loja");
         var produto = $("#produto");
         
-        if (loja.length) {
-            loja.chosen({
-                placeholder_text_single: "Escolha uma loja",
-                no_results_text: "Opção não encontrada:",
-                max_shown_results: 5
-            });
-        }
-        
         if (produto.length) {
             produto.chosen({
                 placeholder_text_single: "Escolha um produto",
                 no_results_text: "Opção não encontrada:",
                 max_shown_results: 5
+            });
+        }
+        
+        produto.on("change", function (evt, params) {
+            buscarLojasPorIdProduto(params.selected);
+            
+            loja.trigger("chosen:open").trigger("chosen:close");
+        });
+        
+        if (loja.length) {
+            loja.chosen({
+                placeholder_text_single: "Escolha uma loja",
+                no_results_text: "Opção não encontrada:",
+                max_shown_results: 5,
+                width: "250px"
             });
         }
     }
@@ -840,5 +847,36 @@ function alterarQuantidade(field, i) {
                 total.value = t.toLocaleString("pt-BR", {minimumFractionDigits: 2});
             }
         });
+    });
+}
+
+/**
+ * Carrega as lojas que têm vendas pesquisando por id do produto
+ * 
+ * @param {int} id
+ * @returns {Boolean}
+ */
+function buscarLojasPorIdProduto(id) {
+    var opcoes = $("#loja option");
+    
+    opcoes.remove();
+    
+    $.ajax({
+        url: location.origin + '/perfumaria/sistema?controller=Loja&action=loja&id=' + id,
+        dataType: 'json',
+        contentType: "application/json",
+        error: function () {
+            alert("Error");
+        },
+        success: function (data) {
+            var lojas = $("#loja");
+            
+            lojas.append("<option value=''></option>");
+            for (var i = 0; i < data.length; i++) {
+                // Atualiza o select da lib
+                lojas.append("<option value='" + data[i].id + "'>" + data[i].razaoSocial + "</option>");
+                lojas.trigger("chosen:updated");
+            }
+        }
     });
 }
