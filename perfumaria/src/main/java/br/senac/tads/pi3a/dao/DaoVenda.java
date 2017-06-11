@@ -379,6 +379,46 @@ public class DaoVenda {
     }
     
     /**
+     * Retorna as lojas que têm vendas
+     * 
+     * @param idProduto
+     * @return 
+     */
+    public List<Object[]> findAllLoja(int idProduto) {
+        List<Object[]> lista = new ArrayList<>();
+        
+        try {
+            Criteria criteria = new Criteria();
+            criteria.add(new Filter("itens_venda.produto_id", "=", "?"));
+            
+            SqlSelect sql = new SqlSelect();
+            sql.setEntity("loja inner join venda on venda.loja_id = loja.id inner join itens_venda on itens_venda.venda_id = venda.id");
+            sql.addColumn("loja.id");
+            sql.addColumn("loja.razao_social");
+            sql.setCriteria(criteria);
+            
+            PreparedStatement stmt = this.conn.prepareStatement(sql.getInstruction());
+            stmt.setInt(1, idProduto);
+            
+            ResultSet resultSet = stmt.executeQuery();
+            
+            while (resultSet.next()) {
+                Object[] object = new Object[2];
+                
+                object[0] = resultSet.getInt("id");
+                object[1] = resultSet.getString("razao_social");
+                
+                lista.add(object);
+            }
+            
+            return lista;
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            return null;
+        }
+    }
+    
+    /**
      * Retorna os dados de uma venda
      * 
      * @param idVenda
