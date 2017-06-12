@@ -31,7 +31,6 @@
             <select class="form-control" id="nivel-usuario" name="nivel-usuario">
             <c:set var="nivelUsuario" value="${sessionScope.usuario.nivelUsuario.id}"></c:set>
                 <option value="">---</option>
-                <option value="1" <c:if test="${fn:containsIgnoreCase(nivelUsuario, '1')}">selected</c:if> >Admin</option>
                 <option value="2" <c:if test="${fn:containsIgnoreCase(nivelUsuario, '2')}">selected</c:if> >Diretor</option>
                 <option value="3" <c:if test="${fn:containsIgnoreCase(nivelUsuario, '3')}">selected</c:if> >Gerente De Backoffice</option>
                 <option value="4" <c:if test="${fn:containsIgnoreCase(nivelUsuario, '4')}">selected</c:if> >Gerente De TI</option>
