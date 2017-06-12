@@ -176,6 +176,7 @@ function incluirDataDoDia(field) {
 function configurarLista() {
     var cpfs = document.querySelectorAll('.cpfs');
     var cnpjs = document.querySelectorAll('.cnpjs');
+    var telefones = document.querySelectorAll('.telefones');
     var dinheiro = document.querySelectorAll('.dinheiro');
     var dataInicial = document.querySelector('#data-inicial');
     var dataFinal = document.querySelector('#data-final');
@@ -189,6 +190,12 @@ function configurarLista() {
     if (cnpjs !== null) {
         cnpjs.forEach(function (td) {
             td.textContent = formatarCnpj(td.textContent);
+        });
+    }
+    
+    if (telefones !== null) {
+        telefones.forEach(function (td) {
+            td.textContent = formatarTelefone(td.textContent);
         });
     }
 
