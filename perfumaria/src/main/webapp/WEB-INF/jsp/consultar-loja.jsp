@@ -35,7 +35,7 @@
             <td><c:out value="${loja.status eq true ? 'Ativo' : 'Inativo'}"></c:out></td>
             <td><c:out value="${loja.razaoSocial}"></c:out></td>
             <td class="cnpjs"><c:out value="${loja.cnpj}"></c:out></td>
-            <td><c:out value="${loja.telefone}"></c:out></td>  
+            <td class="telefones"><c:out value="${loja.telefone}"></c:out></td>  
             <td><c:out value="${loja.email}"></c:out></td>
             <td>
                 <a href="sistema?controller=Loja&action=editar&id=<c:out value="${loja.id}"></c:out>" class="btn btn-default" role="button" title="Editar">
